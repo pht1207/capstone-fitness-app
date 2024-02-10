@@ -21,3 +21,9 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+#Manually added
+.env
+/.env
+/backend-code/node_modules
+/backend-code/.env
