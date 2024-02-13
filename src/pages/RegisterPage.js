@@ -9,7 +9,8 @@ function RegisterPage() {
 
   return (
     <div className="RegisterPage">
-
+        <h1>This is the registration page</h1>
+=
     </div>
   );
 }

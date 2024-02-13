@@ -9,7 +9,7 @@ function NutritionPage() {
 
   return (
     <div className="FitnessPage">
-
+        <h1>This is the nutrition page</h1>
     </div>
   );
 }
