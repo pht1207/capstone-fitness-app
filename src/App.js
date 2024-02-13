@@ -26,6 +26,7 @@ function App() {
                 <Link to="/FitnessPage">FitnessPage</Link>
                 <Link to="/NutritionPage">NutritionPage</Link>
                 <Link to="/ProfilePage">ProfilePage</Link>
+                {/* Use state to make login button change to username and profile picture if user is logged in */}
                 <Link to="/LoginPage">LoginPage</Link>
             </nav>
             
