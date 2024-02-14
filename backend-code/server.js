@@ -14,7 +14,7 @@ const upload = multer();
 //Imports the username and password from .env file
 const DBUsername = process.env.DBUsername;
 const DBPassword = process.env.DBPassword;
-const DBName = process.env.DBName
+const DBName = process.env.DBName;
 
 // Start the server
 const PORT = process.env.PORT || 5008;
@@ -93,56 +93,56 @@ const register = async function(req,res){
 
 
 
-  const login = async function(req, res) {    
-    let email = req.body.email;
-    let username = req.body.username;
-    let password = req.body.password;
-  
-    // Adjust the query to select from userTable
-    pool.query('SELECT * FROM userTable WHERE email = ? OR username = ?', [email, username], async function (error, results, fields) {      
-      if (error) {
-        res.send({
-          "code": 400,          
-          "failed": "error occurred",
-          "error": error
-        });
-      } else {
-        if (results.length > 0) {
-          // Compare the provided password with the stored hashed password
-          const comparison = await bcrypt.compare(password, results[0].password);          
-          if (comparison) {//if login successful
-            //creates a jwt upon login
-            const user = { id: results[0].userTable_id, username: results[0].username };
-            const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '31d' });
-        
+const login = async function(req, res) {    
+  let email = req.body.email;
+  let username = req.body.username;
+  let password = req.body.password;
 
-            res.send({
-              "code": 200,
-              "success": "login successful",
-              "userTable_id": results[0].userTable_id,
-              "username": results[0].username,
-              "accessToken": accessToken
+  // Adjust the query to select from userTable
+  pool.query('SELECT * FROM userTable WHERE email = ? OR username = ?', [email, username], async function (error, results, fields) {      
+    if (error) {
+      res.send({
+        "code": 400,          
+        "failed": "error occurred",
+        "error": error
+      });
+    } else {
+      if (results.length > 0) {
+        // Compare the provided password with the stored hashed password
+        const comparison = await bcrypt.compare(password, results[0].password);          
+        if (comparison) {//if login successful
+          //creates a jwt upon login
+          const user = { id: results[0].userTable_id, username: results[0].username };
+          const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '31d' });
+      
 
-            },
-            );
-          }
-          else {
-            // Password does not match
-            res.send({
-              "code": 204,
-              "error": "Password does not match provided username/email"
-            });
-          }
-        } else {
-          // Email does not exist
           res.send({
-            "code": 206,
-            "error": "Email/username does not exist"
+            "code": 200,
+            "success": "login successful",
+            "userTable_id": results[0].userTable_id,
+            "username": results[0].username,
+            "accessToken": accessToken
+
+          },
+          );
+        }
+        else {
+          // Password does not match
+          res.send({
+            "code": 204,
+            "error": "Password does not match provided username/email"
           });
         }
+      } else {
+        // Email does not exist
+        res.send({
+          "code": 206,
+          "error": "Email/username does not exist"
+        });
       }
-    });
-  }
+    }
+  });
+}
   
 
 
@@ -194,16 +194,17 @@ connection.connect(error => {
 
 
 //This function will be used to verify the json web token from the user
+//Acts as a middleware. When a method is called, it's HTTP headers are sent here first to be verified.
 const jwtVerify = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
-  if(token == null){
+  if(token == null){//If the token is null, then the user will be sent an error code
     return(res.sendStatus(401))
   }
   else{
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) =>{
-      if(err){
+      if(err){//If the token does not match a session, it will sent an error code
         return(res.sendStatus(403));
       }
       req.user = user;
@@ -218,6 +219,17 @@ const jwtVerify = (req, res, next) => {
 
 
 
+const updateProfile = async function(req, res) {    
+  //write code here that mirrors /register but use an alter statement instead of an insert statement
+}
+
+
+const logNutrition = async function(req, res) {    
+  //write code here that mirrors /register but use an alter statement instead of an insert statement
+}
+
+
+
 
 
 
@@ -228,3 +240,6 @@ app.post('/register', upload.none(), register);
 app.post('/login', upload.none(), login);
 app.get('/exampleGetRequest', upload.none(), exampleGetRequest);
 
+//method that allow users to update or change information regarding themselves in the DB
+app.post('/updateProfile'. jwtVerify, updateProfile);
+app.post('/logNutrition'. jwtVerify, logNutrition);
