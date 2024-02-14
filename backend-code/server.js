@@ -45,6 +45,7 @@ pool.query('SELECT * FROM userTable', (error, results, fields) => {
 //Function to register the users
 const register = async function(req,res){
   console.log("THIS IS THE REQ")
+  //Write a regex checker to make sure the password contains certain characteristics
   console.log(req.body)
   const password = req.body.password;
   const encryptedPassword = await bcrypt.hash(password, saltRounds)
@@ -60,24 +61,39 @@ const register = async function(req,res){
   }        
   pool.query('INSERT INTO userTable SET ?',users, function (error, results, fields) {      
   if (error) {    
-    if(error.code === "ER_DUP_ENTRY"){
+    console.log(error)
+    if(error.sqlMessage.includes("for key 'userTable.username'")){
       res.send({
         "code":400,          
-        "failed":"error occurred, email already used"})      
+        "failed":"error occurred, username already in use"})      
     }
+  
+    else if(error.sqlMessage.includes("for key 'userTable.email'")){
+      res.send({
+        "code":400,          
+        "failed":"error occurred, email already in use"})      
+    }
+
+    else if(error.code === "ER_DUP_ENTRY"){
+      res.send({
+        "code":400,          
+        "failed":"error occurred, username/email already in use"})      
+    }
+
     else{
       res.send({          
         "code":400,          
         "failed":"error occurred"})   
     }
-  } 
-  else {        
-  res.send({          
-  "code":200,          
-  "success":"user registered sucessfully"            
-  });        
-  }    
-  });  
+  }
+
+    else {        
+    res.send({          
+    "code":200,          
+    "success":"user registered sucessfully"            
+    });        
+    }    
+    });  
   }
 
 
