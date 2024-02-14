@@ -10,12 +10,9 @@ const saltRounds = 10;
 // Set up multer
 const upload = multer();
 
-
+//Imports the username and password from .env file
 const DBUsername = process.env.DBUsername;
 const DBPassword = process.env.DBPassword;
-console.log(DBUsername)
-console.log(DBPassword)
-
 
 // Start the server
 const PORT = process.env.PORT || 5008;
@@ -48,11 +45,17 @@ pool.query('SELECT * FROM userTable', (error, results, fields) => {
 const register = async function(req,res){
   console.log("THIS IS THE REQ")
   console.log(req.body)
-  const password = req.body.password;    
+  const password = req.body.password;
   const encryptedPassword = await bcrypt.hash(password, saltRounds)
   let users={       
-  "email":req.body.email,       
+  "email":req.body.email,
+  "username":req.body.username,
   "password":encryptedPassword,
+  "firstName":req.body.firstName,
+  "lastName":req.body.lastName,
+  "DOB":req.body.DOB,
+  "weight":req.body.weight,
+  "notificationsOn":req.body.notificationsOn
   }        
   pool.query('INSERT INTO userTable SET ?',users, function (error, results, fields) {      
   if (error) {    
@@ -119,15 +122,23 @@ const register = async function(req,res){
     });
   }
   
+
+  const exampleGetRequest = async function(req,res){
+      res.send("This was your request: "+ req)  
+    }
+  
+
+
   
 
 
 
 const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'capstone',
-  password:'Capstone@)@#',
-  database:'fitnessAppDB'
+  host            : 'localhost',
+  user            : DBUsername,
+  password        : DBPassword,
+  database        : 'fitnessAppDB'
+
 });
 
 connection.connect(error => {
@@ -162,3 +173,5 @@ connection.connect(error => {
 
 app.post('/register', upload.none(), register);
 app.post('/login', upload.none(), login);
+app.post('/exampleGetRequest', upload.none(), exampleGetRequest);
+
