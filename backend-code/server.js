@@ -13,6 +13,7 @@ const upload = multer();
 //Imports the username and password from .env file
 const DBUsername = process.env.DBUsername;
 const DBPassword = process.env.DBPassword;
+const DBName = process.env.DBName
 
 // Start the server
 const PORT = process.env.PORT || 5008;
@@ -27,7 +28,7 @@ const pool = mysql.createPool({
   host            : 'localhost',
   user            : DBUsername,
   password        : DBPassword,
-  database        : 'fitnessAppDB'
+  database        : DBName
 });
 
 
@@ -137,7 +138,7 @@ const connection = mysql.createConnection({
   host            : 'localhost',
   user            : DBUsername,
   password        : DBPassword,
-  database        : 'fitnessAppDB'
+  database        : DBName
 
 });
 
