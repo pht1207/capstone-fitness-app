@@ -74,12 +74,6 @@ const register = async function(req,res){
         "failed":"error occurred, email already in use"})      
     }
 
-    else if(error.code === "ER_DUP_ENTRY"){
-      res.send({
-        "code":400,          
-        "failed":"error occurred, username/email already in use"})      
-    }
-
     else{
       res.send({          
         "code":400,          
