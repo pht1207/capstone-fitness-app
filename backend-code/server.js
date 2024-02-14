@@ -193,6 +193,24 @@ connection.connect(error => {
 
 
 
+//This function will be used to verify the json web token from the user
+const jwtVerify = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if(token == null){
+    return(res.sendStatus(401))
+  }
+  else{
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) =>{
+      if(err){
+        return(res.sendStatus(403));
+      }
+      req.user = user;
+      next();
+    })
+  }
+}
 
 
 
@@ -200,6 +218,12 @@ connection.connect(error => {
 
 
 
+
+
+
+
+
+app.get('/jwtVerify', upload.none(), jwtVerify);
 app.post('/register', upload.none(), register);
 app.post('/login', upload.none(), login);
 app.get('/exampleGetRequest', upload.none(), exampleGetRequest);
