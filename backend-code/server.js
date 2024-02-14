@@ -124,9 +124,15 @@ const register = async function(req,res){
   }
   
 
-  const exampleGetRequest = async function(req,res){
-      res.send("This was your request: "+ req)  
-    }
+
+  //This is an exampleGetRequest to demonstrate to groupmates how a get request works
+  //Delete later once it is demonstrated
+  //To test, use capstone.parkert.dev/backend/exampleGetRequest     (make sure node program is open on server)
+  const exampleGetRequest = async function(req, res) {
+    console.log("Get request called")
+    res.send("You've connected to the backend via /exampleGetRequest");
+}
+
   
 
 
@@ -174,5 +180,5 @@ connection.connect(error => {
 
 app.post('/register', upload.none(), register);
 app.post('/login', upload.none(), login);
-app.post('/exampleGetRequest', upload.none(), exampleGetRequest);
+app.get('/exampleGetRequest', upload.none(), exampleGetRequest);
 
