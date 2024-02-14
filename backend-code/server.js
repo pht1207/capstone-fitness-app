@@ -224,22 +224,45 @@ const updateProfile = async function(req, res) {
 }
 
 
+//allows the use of the nutrition page to log food for the user
 const logNutrition = async function(req, res) {    
-  //write code here that mirrors /register but use an alter statement instead of an insert statement
+  //write insert statements for the user
 }
 
 
 
 
+const getFoods = async function(req, res){
+
+}
+
+
+const getExercises = async function(req, res){
+
+}
+
+const getWorkouts = async function(req, res){
+
+}
 
 
 
 
+//example used for demonstration
+app.get('/exampleGetRequest', upload.none(), exampleGetRequest);
+
+//used to login to the database, register and establish a jwt
 app.get('/jwtVerify', upload.none(), jwtVerify);
 app.post('/register', upload.none(), register);
 app.post('/login', upload.none(), login);
-app.get('/exampleGetRequest', upload.none(), exampleGetRequest);
 
-//method that allow users to update or change information regarding themselves in the DB
-app.post('/updateProfile'. jwtVerify, updateProfile);
-app.post('/logNutrition'. jwtVerify, logNutrition);
+//methods that allow users to update or change information regarding themselves in the DB
+app.post('/updateProfile', jwtVerify, updateProfile);
+app.post('/logNutrition', jwtVerify, logNutrition);
+
+//methods that allow users to get foods/exercises/workouts from db
+app.get('/getFoods', jwtVerify, getFoods);
+app.get('/getExercises', jwtVerify, getExercises);
+app.get('/getWorkouts', jwtVerify, getWorkouts);
+
+//methods that are used daily to calculate goals for users
