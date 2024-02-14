@@ -1,0 +1,20 @@
+  "email":req.body.email,
+  "username":req.body.username,
+  "password":encryptedPassword,
+  "firstName":req.body.firstName,
+  "lastName":req.body.lastName,
+  "DOB":req.body.DOB,
+  "weight":req.body.weight,
+  "notificationsOn":req.body.notificationsOn
+
+  When sending your request to the server, there will be many variables. They must be named and formatted as follows:
+
+  email 
+  username  
+  password  
+  firstName
+  lastName  
+  DOB       (formatted like 1999-12-31, year-month-date)
+  weight    (try not to let the user type more than 1 decimal place)
+  notificationsOn          (This is either a 0 (for false) or a 1 (for true)
+  

@@ -7,12 +7,13 @@ import {
   Link,
   Routes
 } from "react-router-dom";
-import FitnessPage from './pages/FitnessPage';
-import HomePage from './pages/HomePage';
-import LoginPage from './pages/LoginPage';
-import NutritionPage from './pages/NutritionPage';
-import ProfilePage from './pages/ProfilePage';
-import RegisterPage from './pages/RegisterPage';
+import FitnessPage from './pages/FitnessPage/FitnessPage';
+import HomePage from './pages/HomePage/HomePage';
+import LoginPage from './pages/LoginRegistrationPage/LoginPage';
+import RegisterPage from './pages/LoginRegistrationPage/RegisterPage';
+
+import NutritionPage from './pages/NutritionPage/NutritionPage';
+import ProfilePage from './pages/ProfilePage/ProfilePage';
 
 //test commit message washington
 

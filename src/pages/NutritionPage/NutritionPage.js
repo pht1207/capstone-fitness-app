@@ -1,6 +1,6 @@
-import '../css/FitnessPage.css'
+import './NutritionPage.css'
 
-function FitnessPage() {
+function NutritionPage() {
 
   //Your code to make the site functional goes in this empty space. The 'return()' below is what renders on the page (the html)
 
@@ -9,9 +9,9 @@ function FitnessPage() {
 
   return (
     <div className="FitnessPage">
-        <h1>This is the fitness page</h1>
+        <h1>This is the nutrition page</h1>
     </div>
   );
 }
 
-export default FitnessPage;
+export default NutritionPage;

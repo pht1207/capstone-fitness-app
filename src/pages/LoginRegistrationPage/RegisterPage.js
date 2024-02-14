@@ -1,4 +1,4 @@
-import '../css/RegisterPage.css'
+import './RegisterPage.css'
 
 function RegisterPage() {
 

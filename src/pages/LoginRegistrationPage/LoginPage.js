@@ -1,4 +1,4 @@
-import '../css/LoginPage.css'
+import './LoginPage.css'
 import RegisterPage from './RegisterPage';
 
 function LoginPage() {
