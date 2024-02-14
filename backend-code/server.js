@@ -60,7 +60,7 @@ const register = async function(req,res){
   "notificationsOn":req.body.notificationsOn
   }        
   pool.query('INSERT INTO userTable SET ?',users, function (error, results, fields) {      
-  if (error) {    
+  if (error) {
     console.log(error)
     if(error.sqlMessage.includes("for key 'userTable.username'")){
       res.send({
@@ -87,46 +87,47 @@ const register = async function(req,res){
     "success":"user registered sucessfully"            
     });        
     }    
-    });  
+    });
   }
 
 
 
   const login = async function(req, res) {    
-    var email = req.body.email;    
-    var password = req.body.password;    
+    let email = req.body.email;
+    let username = req.body.username;
+    let password = req.body.password;
   
     // Adjust the query to select from userTable
-    pool.query('SELECT * FROM userTable WHERE email = ?', [email], async function (error, results, fields) {      
-      if (error) {        
-        res.send({          
+    pool.query('SELECT * FROM userTable WHERE email = ? OR username = ?', [email, username], async function (error, results, fields) {      
+      if (error) {
+        res.send({
           "code": 400,          
-          "failed": "error occurred",          
-          "error": error        
-        });      
-      } else {        
+          "failed": "error occurred",
+          "error": error
+        });
+      } else {
         if (results.length > 0) {
           // Compare the provided password with the stored hashed password
           const comparison = await bcrypt.compare(password, results[0].password);          
           if (comparison) {
             // Login successful
-            res.send({                
-              "code": 200,                
-              "success": "login successful",                
-              "userID": results[0].userID  // Assuming 'userID' is the column name in your table         
-            });          
-          } else {            
+            res.send({
+              "code": 200,
+              "success": "login successful",
+              "userID": results[0].userID  // Assuming 'userID' is the column name in your table
+            });
+          } else {
             // Password does not match
-            res.send({                 
-              "code": 204,                 
-              "error": "Email and password does not match"
+            res.send({
+              "code": 204,
+              "error": "Password does not match provided username/email"
             });
           }
         } else {
           // Email does not exist
           res.send({
             "code": 206,
-            "error": "Email does not exist"
+            "error": "Email/username does not exist"
           });
         }
       }
