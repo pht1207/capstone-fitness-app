@@ -2,6 +2,7 @@ const mysql = require('mysql');
 const bcrypt = require('bcrypt');
 const express = require('express');
 const multer = require('multer');
+const jwt = require("jsonwebtoken");
 
 const app = express();
 app.use(express.json());
@@ -109,14 +110,23 @@ const register = async function(req,res){
         if (results.length > 0) {
           // Compare the provided password with the stored hashed password
           const comparison = await bcrypt.compare(password, results[0].password);          
-          if (comparison) {
-            // Login successful
+          if (comparison) {//if login successful
+            //creates a jwt upon login
+            const user = { id: results[0].userTable_id, username: results[0].username };
+            const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '31d' });
+        
+
             res.send({
               "code": 200,
               "success": "login successful",
-              "userID": results[0].userID  // Assuming 'userID' is the column name in your table
-            });
-          } else {
+              "userTable_id": results[0].userTable_id,
+              "username": results[0].username,
+              "accessToken": accessToken
+
+            },
+            );
+          }
+          else {
             // Password does not match
             res.send({
               "code": 204,
@@ -139,6 +149,7 @@ const register = async function(req,res){
   //This is an exampleGetRequest to demonstrate to groupmates how a get request works
   //Delete later once it is demonstrated
   //To test, use capstone.parkert.dev/backend/exampleGetRequest     (make sure node program is open on server)
+  //When you go the link above, it will call this method. This is the basis for all HTTP requests
   const exampleGetRequest = async function(req, res) {
     console.log("Get request called")
     res.send("You've connected to the backend via /exampleGetRequest");
