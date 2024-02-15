@@ -155,6 +155,10 @@ const login = async function(req, res) {
     res.send("You've connected to the backend via /exampleGetRequest");
 }
 
+app.get('/example', async (req, res) =>{
+  res.send("hello")
+})
+
   
 
 
