@@ -221,7 +221,9 @@ const jwtVerify = (req, res, next) => {
 
 const updateProfile = async function(req, res) {    
   //write code here that mirrors /register but use an alter statement instead of an insert statement
+  
 }
+
 
 
 //allows the use of the nutrition page to log food for the user
@@ -233,11 +235,12 @@ const logNutrition = async function(req, res) {
 
 
 const getFoods = async function(req, res){
-
 }
 
 
 const getExercises = async function(req, res){
+//in the request, have there be a musclegroup variable, so data can be sorted by muscle groups
+//have some sort of method to send users workout they have created as well
 
 }
 
