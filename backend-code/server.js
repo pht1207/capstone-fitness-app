@@ -176,7 +176,7 @@ connection.connect(error => {
   console.log("Successfully connected to the database.");
 
   // SQL query to select all data from a table
-  const selectQuery = 'SELECT * FROM userTable'; // Replace with your table name
+  const selectQuery = 'SELECT * FROM userTable';
 
   connection.query(selectQuery, (error, results, fields) => {
     if (error) throw error;
@@ -195,21 +195,21 @@ connection.connect(error => {
 
 
 //This function will be used to verify the json web token from the user
-//Acts as a middleware. When a method is called, it's HTTP headers are sent here first to be verified.
+//Acts as a middleware. When a method is called, it's HTTP headers are verified here first.
 const jwtVerify = (req, res, next) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+  const authHeader = req.headers['authorization']; //extracts the token from the http header
+  const token = authHeader && authHeader.split(' ')[1]; //object that contains the token
 
   if(token == null){//If the token is null, then the user will be sent an error code
-    return(res.sendStatus(401))
+    return(res.sendStatus(401)) //error code
   }
   else{
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) =>{
-      if(err){//If the token does not match a session, it will sent an error code
-        return(res.sendStatus(403));
+      if(err){//If the token does not match an ongoing session, it will sent an error code
+        return(res.sendStatus(403)); //error code
       }
-      req.user = user;
-      next();
+      req.user = user; //If user is updated via the request headers, sent the updated info to the code that is after the middleware
+      next(); //Go the the code that is after this middleware function
     })
   }
 }
