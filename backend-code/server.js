@@ -146,18 +146,15 @@ const login = async function(req, res) {
   
 
 
-  //This is an exampleGetRequest to demonstrate to groupmates how a get request works
-  //Delete later once it is demonstrated
-  //To test, use capstone.parkert.dev/backend/exampleGetRequest     (make sure node program is open on server)
-  //When you go the link above, it will call this method. This is the basis for all HTTP requests
-  const exampleGetRequest = async function(req, res) {
-    console.log("Get request called")
-    res.send("You've connected to the backend via /exampleGetRequest");
-}
-
+//This is an example to demonstrate to groupmates how a get request works
+//Delete later once it is demonstrated
+//To test, use capstone.parkert.dev/backend/example     (make sure node program is open on server)
+//When you go the link above, it will call this method. This is the basis for all HTTP requests
 app.get('/example', async (req, res) =>{
   res.send("hello")
 })
+
+
 
   
 
@@ -255,8 +252,6 @@ const getWorkouts = async function(req, res){
 
 
 
-//example used for demonstration
-app.get('/exampleGetRequest', upload.none(), exampleGetRequest);
 
 //used to login to the database, register and establish a jwt
 app.get('/jwtVerify', upload.none(), jwtVerify);
