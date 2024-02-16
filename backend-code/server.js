@@ -253,47 +253,60 @@ const getFoods = async function(req, res){
 }
 
 
+//Returns exercises that are stored in the database. These may be filtered by muscleGroups and will also show exercises created by users.
 const getExercises = async function(req, res){
   //in the request, have there be a musclegroup variable, so data can be sorted by muscle groups
   //have some sort of method to send users workout they have created as well
-  console.log("getExercises called")
   const userID = req.user.id;
-  //stores the muscleGroup if one was sent
-  let muscleGroup = req.query.muscleGroup;
 
-  //Will return every exercise, including ones made by the user, with a filter for what muscle group they are search for
-  if(req.body.muscleGroup !== undefined){
-    //FIX QUERY TO ALLOW EXERCISES WITH NULL VALUE IN CREATEDBY COLUMN
-    pool.query('SELECT exerciseTable.* FROM exerciseTable INNER JOIN userTable ON exerciseTable.createdBy = userTable.userTable_id WHERE userTable.userTable_id = ? AND exerciseTable.muscleGroup = ?', [userID, muscleGroup], (error, results, fields) => {
-    console.log("filtered by muscle group")
-    if(error){
-      // Handle the error
-      console.error("db query error", error);
-      res.status(500).send("Error fetching foods from database");
-    } 
-    else{
-        // Process the results
-        console.log("data from exercises: ", results);
-        res.json(results);
-      }
+  //Will return every exercise, including ones made by the user, with a filter for what muscle group they are search for (if one exists)
+  if(req.query.muscleGroup){
+    pool.query(
+      'SELECT exerciseTable.* ' +
+      'FROM exerciseTable ' +
+      'LEFT JOIN userTable ON exerciseTable.createdBy = userTable.userTable_id ' + //Joins all values from exerciseTable and when there is a match between the userTable_id and the createdBy columns & only if they match muscleGroup filter
+      'WHERE (userTable.userTable_id = ? AND exerciseTable.muscleGroup = ?) ' +
+      'OR (exerciseTable.createdBy IS NULL AND exerciseTable.muscleGroup = ?)', //Also gets every exercise that shows a NULL value in createdBy column & only if they match muscleGroup filter
+      [userID, req.query.muscleGroup, req.query.muscleGroup], 
+      (error, results, fields) => { 
+        console.log("filtered by muscle group")
+        if(error){
+          // Handle the error
+          console.error("db query error", error);
+          res.status(500).send("Error fetching foods from database");
+        } 
+        else{
+            // Process the results
+            console.log("data from exercises: ", results);
+            res.json(results);
+          }
     });
   }
 
   else{
     //Will return every exercise, including ones created by the user
-    //FIX QUERY TO ALLOW EXERCISES WITH NULL VALUE IN CREATEDBY COLUMN
-    pool.query('SELECT exerciseTable.* FROM exerciseTable INNER JOIN userTable ON exerciseTable.createdBy = userTable.userTable_id WHERE userTable.userTable_id = ?', [userID], (error, results, fields) => {
-      if(error){
-        // Handle the error
-        console.error("db query error", error);
-        res.status(500).send("Error fetching foods from database");
-      }
-      else{
-        console.log("data from exercises: ", results);
-        res.json(results);
-      }
+    pool.query(
+      'SELECT exerciseTable.* ' +
+      'FROM exerciseTable ' +
+      'LEFT JOIN userTable ON exerciseTable.createdBy = userTable.userTable_id ' + //Joins all values from exerciseTable and when there is a match between the userTable_id and the createdBy columns
+      'WHERE userTable.userTable_id = ? '+
+      'OR exerciseTable.createdBy IS NULL', //Also gets every exercise that shows a NULL value in createdBy column
+      [userID], 
+      (error, results, fields) => {      
+        if(error){
+          // Handle the error
+          console.error("db query error", error);
+          res.status(500).send("Error fetching foods from database");
+        }
+        else{
+          console.log("data from exercises: ", results);
+          res.json(results);
+        }
     });
   }
+}
+const createExercise = async function(req, res){
+
 }
 
 
@@ -320,3 +333,7 @@ app.get('/getExercises', jwtVerify, getExercises);
 app.get('/getWorkouts', jwtVerify, getWorkouts);
 
 //methods that are used daily to calculate goals for users
+
+
+//method uses to create exercises
+app.get('/createExercises', jwtVerify, createExercises);
