@@ -197,6 +197,7 @@ connection.connect(error => {
 //This function will be used to verify the json web token from the user
 //Acts as a middleware. When a method is called, it's HTTP headers are verified here first.
 const jwtVerify = (req, res, next) => {
+  console.log("jwtverify called")
   const authHeader = req.headers['authorization']; //extracts the token from the http header
   const token = authHeader && authHeader.split(' ')[1]; //object that contains the token
 
@@ -237,26 +238,18 @@ const logNutrition = async function(req, res) {
 
 
 const getFoods = async function(req, res){
-//return all foods as json, let frontend sort through it as there's not going to be much to it
-connection.connect(error => {
-  if (error) throw error;
-  console.log("Successfully connected to the database.");
-
-  // SQL query to select all data from a table
-  const selectQuery = 'SELECT * FROM foods';
-
-  connection.query(selectQuery, (error, results, fields) => {
-    if (error) throw error;
-
-    // Log the results
-    console.log("Data from the table:");
-    res.send(results);
-    console.log(results); // This will print the rows retrieved
-
-    // Close the connection
-    connection.end();
-  });
-});
+  console.log("getfoods called")
+  //return all foods as json, let frontend sort through it as there's not going to be much to it
+  pool.query('SELECT * FROM foodsTable', (error, results, fields) =>{
+    if(error){
+      console.error("db query error", error);
+      res.status(500).send("Error fetching foods from database");
+    }
+    else{
+      console.log("data from foods: ", results);
+      res.json(results);
+    }
+  })
 }
 
 
