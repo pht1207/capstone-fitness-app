@@ -15,13 +15,6 @@ import RegisterPage from './pages/LoginRegistrationPage/RegisterPage';
 import NutritionPage from './pages/NutritionPage/NutritionPage';
 import ProfilePage from './pages/ProfilePage/ProfilePage';
 
-//test commit message washington
-
-//test commit josiah
-
-
-//test commit comment 2
-
 
 function App() {
   return (
