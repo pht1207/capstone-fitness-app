@@ -258,15 +258,19 @@ const getExercises = async function(req, res){
   //have some sort of method to send users workout they have created as well
   console.log("getExercises called")
   const userID = req.user.id;
+  //stores the muscleGroup if one was sent
+  let muscleGroup = req.query.muscleGroup;
 
   //Will return every exercise, including ones made by the user, with a filter for what muscle group they are search for
   if(req.body.muscleGroup !== undefined){
-    pool.query('SELECT exerciseTable.* FROM exerciseTable INNER JOIN userTable ON exerciseTable.createdBy = userTable.userTable_id WHERE userTable.userTable_id = ?', [userID], (error, results, fields) => {
-      if(error){
-        // Handle the error
-        console.error("db query error", error);
-        res.status(500).send("Error fetching foods from database");
-      } 
+    //FIX QUERY TO ALLOW EXERCISES WITH NULL VALUE IN CREATEDBY COLUMN
+    pool.query('SELECT exerciseTable.* FROM exerciseTable INNER JOIN userTable ON exerciseTable.createdBy = userTable.userTable_id WHERE userTable.userTable_id = ? AND exerciseTable.muscleGroup = ?', [userID, muscleGroup], (error, results, fields) => {
+    console.log("filtered by muscle group")
+    if(error){
+      // Handle the error
+      console.error("db query error", error);
+      res.status(500).send("Error fetching foods from database");
+    } 
     else{
         // Process the results
         console.log("data from exercises: ", results);
@@ -277,12 +281,13 @@ const getExercises = async function(req, res){
 
   else{
     //Will return every exercise, including ones created by the user
+    //FIX QUERY TO ALLOW EXERCISES WITH NULL VALUE IN CREATEDBY COLUMN
     pool.query('SELECT exerciseTable.* FROM exerciseTable INNER JOIN userTable ON exerciseTable.createdBy = userTable.userTable_id WHERE userTable.userTable_id = ?', [userID], (error, results, fields) => {
-    if(error){
+      if(error){
         // Handle the error
         console.error("db query error", error);
         res.status(500).send("Error fetching foods from database");
-      } 
+      }
       else{
         console.log("data from exercises: ", results);
         res.json(results);
