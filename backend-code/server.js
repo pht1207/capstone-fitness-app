@@ -112,8 +112,8 @@ const login = async function(req, res) {
         const comparison = await bcrypt.compare(password, results[0].password);          
         if (comparison) {//if login successful
           //creates a jwt upon login
-          const user = { id: results[0].userTable_id, username: results[0].username };
-          const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '31d' });
+          const user = { id: results[0].userTable_id, username: results[0].username }; //user object is generated w/ username and userTable_id which is the primary key for each user
+          const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '31d' }); //jwt is generated with user object inside of it
       
 
           res.send({
@@ -208,7 +208,7 @@ const jwtVerify = (req, res, next) => {
       if(err){//If the token does not match an ongoing session, it will sent an error code
         return(res.sendStatus(403)); //error code
       }
-      req.user = user; //If user is updated via the request headers, sent the updated info to the code that is after the middleware
+      req.user = user; //Assign the jwt user values to the request so it may be sent to the following function
       next(); //Go the the code that is after this middleware function
     })
   }
@@ -230,12 +230,33 @@ const updateProfile = async function(req, res) {
 //allows the use of the nutrition page to log food for the user
 const logNutrition = async function(req, res) {    
   //write insert statements for the user
+  
 }
 
 
 
 
 const getFoods = async function(req, res){
+//return all foods as json, let frontend sort through it as there's not going to be much to it
+connection.connect(error => {
+  if (error) throw error;
+  console.log("Successfully connected to the database.");
+
+  // SQL query to select all data from a table
+  const selectQuery = 'SELECT * FROM foods';
+
+  connection.query(selectQuery, (error, results, fields) => {
+    if (error) throw error;
+
+    // Log the results
+    console.log("Data from the table:");
+    res.send(results);
+    console.log(results); // This will print the rows retrieved
+
+    // Close the connection
+    connection.end();
+  });
+});
 }
 
 
@@ -246,7 +267,7 @@ const getExercises = async function(req, res){
 }
 
 const getWorkouts = async function(req, res){
-
+//
 }
 
 
