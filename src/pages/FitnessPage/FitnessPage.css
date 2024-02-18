@@ -9,3 +9,14 @@
     padding-top: 50px;
     
 }
+
+.FitnessPage.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.FitnessPage.th, .FitnessPage.td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
