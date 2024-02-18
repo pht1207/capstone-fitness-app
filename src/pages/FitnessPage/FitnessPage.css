@@ -1,0 +1,11 @@
+ .FitnessPage.Baner{
+    width: 100%;
+    float: left;
+}
+ .FitnessPage .mworkout, .FitnessPage .recommend, .FitnessPage .workoutl{
+    width: 33.33%;
+    float: left;
+    height: 300px;
+    padding-top: 50px;
+    
+}
