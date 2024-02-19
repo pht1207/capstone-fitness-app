@@ -17,8 +17,9 @@ import ProfilePage from './pages/ProfilePage/ProfilePage';
 
 
 function App() {
-  localStorage.setItem("jwt", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJwaHQxMjA3IiwiaWF0IjoxNzA3OTM4MzMwLCJleHAiOjE3MTA2MTY3MzB9.dvdVApAsF_ql9z81A2kwAIgZ43By_7pDl1OMKDZpHDo")
+  localStorage.setItem("jwt", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ0ZXN0IiwiaWF0IjoxNzA4Mzc0NDU5LCJleHAiOjE3MTEwNTI4NTl9.cfXx0-wEZD5SKVuRDVlKfnUJIyNFxfTsJ8e_B5fUxHk")
   console.log(localStorage.getItem("jwt"))
+  
   return (
     <div className="App">
       {/*Below this text is the navigation bar. The default is the 'home page'. This page shouldn't need to be editted except to change the navigation bar. Change the 'fitnesspage.js', the 'homepage.js', etc. to change each page. */}
