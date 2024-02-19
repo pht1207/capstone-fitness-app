@@ -1,0 +1,9 @@
+.HomePage #homepage_img{
+    align-items: center;
+    justify-self: center;
+    margin: 0 auto;
+    width: 90%;
+    max-width: 1000px;
+    max-width: 500;
+    padding-top: 25px;
+}
