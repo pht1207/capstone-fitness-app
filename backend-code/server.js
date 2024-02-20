@@ -305,7 +305,7 @@ const getExercises = async function(req, res){
     });
   }
 }
-const createExercise = async function(req, res){
+const createExercises = async function(req, res){
 
 }
 
