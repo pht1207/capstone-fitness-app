@@ -10,13 +10,31 @@
     
 }
 
-.FitnessPage.table {
-    width: 100%;
+.FitnessPage .table {
     border-collapse: collapse;
-}
-
-.FitnessPage.th, .FitnessPage.td {
+    width: 100%;
+  }
+  
+  /* Style table headers */
+  .FitnessPage .th {
+    background-color: #f2f2f2;
+    border: 1px solid #ddd;
     padding: 8px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
-}
+  }
+  
+  /* Style table cells */
+  .FitnessPage .td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  /* Style alternating rows */
+  .FitnessPage .tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  /* Style hover effect */
+  .FitnessPage .tr:hover {
+    background-color: #ddd;
+  }
