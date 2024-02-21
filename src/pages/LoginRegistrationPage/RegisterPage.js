@@ -20,8 +20,7 @@ function RegisterPage() {
       notificationsOn:event.target[7].value
     }
 
-
-    const response = await axios.post("https://capstone.parkert.dev/backend/register", body, {
+    const response = await axios.post("http://192.168.1.127:5008/register", body, {
   
     })
     

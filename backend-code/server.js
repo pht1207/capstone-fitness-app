@@ -2,9 +2,16 @@ const mysql = require('mysql');
 const bcrypt = require('bcrypt');
 const express = require('express');
 const multer = require('multer');
-const jwt = require("jsonwebtoken");
-
 const app = express();
+const jwt = require("jsonwebtoken");
+const cors = require('cors');
+const corsOptions ={
+    origin:'http://localhost:3000', 
+    credentials:true,            //access-control-allow-credentials:true
+    optionSuccessStatus:200
+}
+app.use(cors(corsOptions));
+
 app.use(express.json());
 require('dotenv').config();
 const saltRounds = 10;
@@ -112,6 +119,7 @@ const login = async function(req, res) {
         const comparison = await bcrypt.compare(password, results[0].password);          
         if (comparison) {//if login successful
           //creates a jwt upon login
+          console.log(results)
           const user = { id: results[0].userTable_id, username: results[0].username }; //user object is generated w/ username and userTable_id which is the primary key for each user
           const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '31d' }); //jwt is generated with user object inside of it
       
@@ -153,13 +161,6 @@ const login = async function(req, res) {
 app.get('/example', async (req, res) =>{
   res.send("hello")
 })
-
-
-
-  
-
-
-  
 
 
 
@@ -345,15 +346,90 @@ const getExercises = async function(req, res){
     });
   }
 }
+
 const createExercises = async function(req, res){
 
 }
 
-
-const getWorkouts = async function(req, res){
-//
+//allows the use of the exercises page to log exercises for the user
+const logExercises = async function(req, res) {    
+  //write insert statements for the user
+  console.log(req.body)
+  const userID = req.user.id;
+  const exerciseLog = req.body.exerciseLog;
+  const query = "INSERT INTO user_exerciseTable (userTable_id, exerciseTable_id, timeStarted, timeCompleted)  VALUES (?, ?, ?, ?)"
+  const values = [userID, exerciseLog.exerciseTable_id || null, exerciseLog.timeStarted || null, exerciseLog.timeCompleted || null]
+  console.log("exerciseLog Called");
+  pool.query(query, values, (error, results) =>{
+    if(error){
+      console.log(error);
+    }
+    else{
+      console.log("logged exercise");
+      console.log(results);
+      res.send({
+        "code": 200,
+        "success": "logWorkouts successful",
+      });      
+    }
+  });
 }
 
+
+
+
+
+
+const getWorkouts = async function(req, res){
+  const userID = req.user.id;
+    //Will return every workout, including ones created by the user
+    pool.query(
+      'SELECT exerciseTable.* ' +
+      'FROM exerciseTable ' +
+      'LEFT JOIN userTable ON exerciseTable.createdBy = userTable.userTable_id ' + //Joins all values from exerciseTable and when there is a match between the userTable_id and the createdBy columns
+      'WHERE userTable.userTable_id = ? '+
+      'OR exerciseTable.createdBy IS NULL', //Also gets every exercise that shows a NULL value in createdBy column
+      [userID], 
+      (error, results, fields) => {      
+        if(error){
+          // Handle the error
+          console.error("db query error", error);
+          res.status(500).send("Error fetching foods from database");
+        }
+        else{
+          console.log("data from exercises: ", results);
+          res.json(results);
+        }
+    });
+  }
+
+  const createWorkouts = async function(req, res){
+
+  }
+
+//allows the use of the exercises page to log exercises for the user
+const logWorkouts = async function(req, res) {    
+  //write insert statements for the user
+  console.log(req.body)
+  const userID = req.user.id;
+  const workoutLog = req.body.workoutLog;
+  const query = "INSERT INTO user_workoutTable (userTable_id, workoutTable_id, timeStarted, timeCompleted)  VALUES (?, ?, ?, ?)"
+  const values = [userID, workoutLog.workoutTable_id || null, workoutLog.timeStarted || null, workoutLog.timeCompleted || null]
+  console.log("logWorkouts Called");
+  pool.query(query, values, (error, results) =>{
+    if(error){
+      console.log(error);
+    }
+    else{
+      console.log("logged workout");
+      console.log(results);
+      res.send({
+        "code": 200,
+        "success": "logWorkouts successful",
+      });      
+    }
+  });
+}
 
 
 
@@ -366,6 +442,9 @@ app.post('/login', upload.none(), login);
 //methods that allow users to update or change information regarding themselves in the DB
 app.post('/updateProfile', jwtVerify, updateProfile);
 app.post('/logNutrition', jwtVerify, logNutrition);
+app.post('/logExercises', jwtVerify, logExercises);
+app.post('/logWorkouts', jwtVerify, logWorkouts);
+
 
 //methods that allow users to get foods/exercises/workouts from db
 app.get('/getFoods', jwtVerify, getFoods);
@@ -377,5 +456,7 @@ app.get('/getNutrition', jwtVerify, getNutrition);
 //methods that are used daily to calculate goals for users
 
 
-//method uses to create exercises
+//method uses to create exercises/workouts
 app.get('/createExercises', jwtVerify, createExercises);
+app.get('/createWorkouts', jwtVerify, createWorkouts);
+
