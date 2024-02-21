@@ -487,6 +487,17 @@ const getUserWorkoutLog = async function(req, res) {
 
 
 
+cron.schedule('0 0 * * *', function() {
+  console.log('Running a task every day at 12 AM');
+  dailyNutritionTableCalculator()
+});
+function dailyNutritionTableCalculator(){
+
+}
+
+
+
+
 
 
 
