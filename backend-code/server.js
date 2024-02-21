@@ -257,7 +257,6 @@ const getNutrition = async function(req, res) {
   const dateAccessed = req.query.dateAccessed;
   const userID = req.user.id;
 
-
   pool.query(
   'SELECT * ' +
   'FROM userConsumptionTable ' +

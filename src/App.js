@@ -32,6 +32,8 @@ function App() {
                 <Link to="/ProfilePage">ProfilePage</Link>
                 {/* Use state to make login button change to username and profile picture if user is logged in */}
                 <Link to="/LoginPage">LoginPage</Link>
+                <Link to="/RegisterPage">RegisterPage</Link>
+
             </nav>
             
             <Routes>
@@ -40,6 +42,8 @@ function App() {
                 <Route path="/NutritionPage" element={<NutritionPage />} />
                 <Route path="/ProfilePage" element={<ProfilePage />} />
                 <Route path="/LoginPage" element={<LoginPage />} />
+                <Route path="/RegisterPage" element={<RegisterPage />} />
+
             </Routes>
         </Router>
     </div>
