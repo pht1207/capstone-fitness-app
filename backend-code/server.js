@@ -123,7 +123,7 @@ const login = async function(req, res) {
             "username": results[0].username,
             "accessToken": accessToken
 
-          },
+          }
           );
         }
         else {
@@ -237,14 +237,28 @@ const logNutrition = async function(req, res) {
   const values = [userID, nutritionLog.caloriesConsumed || null, nutritionLog.carbsConsumed || null, nutritionLog.proteinConsumed || null, nutritionLog.fatConsumed || null, nutritionLog.dateTimeConsumed || null]
   const query = "INSERT INTO userConsumptionTable (userTable_id, caloriesConsumed, carbsConsumed, proteinConsumed, fatsConsumed, dateTimeConsumed)  VALUES (?, ?, ?, ?, ?, ?)"
   console.log("logNutrition Called");
-  pool.query(query, values, (err, res) =>{
-    if(err){
-      console.log(err);
+  pool.query(query, values, (error, results) =>{
+    if(error){
+      console.log(error);
     }
     else{
-      console.log("logged nutrition")
+      console.log("logged nutrition");
+      console.log(results);
+      res.send({
+        "code": 200,
+        "success": "logNutrition successful",
+      });      
     }
   });
+}
+
+
+const getNutrition = async function(req, res) {
+  const userID = req.user.id;
+  const nutritionLog = req.body.nutritionLog;
+  const values = [userID, nutritionLog.caloriesConsumed || null, nutritionLog.carbsConsumed || null, nutritionLog.proteinConsumed || null, nutritionLog.fatConsumed || null, nutritionLog.dateTimeConsumed || null]
+  const query = "INSERT INTO userConsumptionTable (userTable_id, caloriesConsumed, carbsConsumed, proteinConsumed, fatsConsumed, dateTimeConsumed)  VALUES (?, ?, ?, ?, ?, ?)"
+
 }
 
 
