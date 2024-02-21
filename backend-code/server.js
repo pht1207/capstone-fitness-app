@@ -11,6 +11,9 @@ const corsOptions ={
     optionSuccessStatus:200
 }
 app.use(cors(corsOptions));
+const cron = require('node-cron');
+const cron = require('node-cron');
+
 
 app.use(express.json());
 require('dotenv').config();
