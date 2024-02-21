@@ -1,14 +1,35 @@
 import './RegisterPage.css'
+import axios from 'axios';
+
+
 function RegisterPage() {
 
   //Your code to make the site functional goes in this empty space. The 'return()' below is what renders on the page (the html)
-
-  //Inserted by parker: https://capstone.parkert.dev/backend/login
   
   //Added by Parker to be used later. Leave this code for now.
-  function handleSubmit(event){
+  async function handleSubmit(event){
     event.preventDefault();
+    console.log(event.target)
+    console.log(event.target[0].value)//gets value of form element 1
+
     console.log("form submitted");
+    const body = {
+      email:event.target[0].value,
+      username:event.target[1].value,
+      password:event.target[2].value,
+      firstName:event.target[3].value,
+      lastName:event.target[4].value,
+      DOB:event.target[5].value,
+      weight:event.target[6].value,
+      notificationsOn:event.target[7].value
+    }
+
+
+    const response = await axios.post("https://capstone.parkert.dev/backend/register", body, {
+      
+    })
+    
+
   }
 
 
