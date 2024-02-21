@@ -254,7 +254,7 @@ const logNutrition = async function(req, res) {
 }
 
 
-const getNutrition = async function(req, res) {
+const getUserNutritionLog = async function(req, res) {
   const dateAccessed = req.query.dateAccessed;
   const userID = req.user.id;
 
@@ -292,6 +292,11 @@ const getFoods = async function(req, res){
     }
   })
 }
+
+
+
+
+
 
 
 //Returns exercises that are stored in the database. These may be filtered by muscleGroups and will also show exercises created by users.
@@ -375,6 +380,27 @@ const logExercises = async function(req, res) {
   });
 }
 
+const getUserExerciseLog = async function(req, res) {
+  const dateAccessed = req.query.dateAccessed;
+  const userID = req.user.id;
+
+  pool.query(
+  'SELECT * ' +
+  'FROM user_exerciseTable ' +
+  'WHERE(userTable_id = ? AND DATE(timeCompleted) = ?)', //DATE(dateTimeConsumed) extracts only the date from dateTimeConsumed column
+  [userID, dateAccessed],
+  (error, results, fields) =>{
+    if(error){
+      console.error("db query error", error);
+      res.status(500).send("Error fetching foods from database");
+    }
+    else{
+      console.log("data from foods: ", results);
+      res.json(results);
+    }
+  })
+}
+
 
 
 
@@ -431,6 +457,32 @@ const logWorkouts = async function(req, res) {
   });
 }
 
+const getUserWorkoutLog = async function(req, res) {
+  const dateAccessed = req.query.dateAccessed;
+  const userID = req.user.id;
+
+  pool.query(
+  'SELECT * ' +
+  'FROM user_workoutTable ' +
+  'WHERE(userTable_id = ? AND DATE(timeCompleted) = ?)', //DATE(dateTimeConsumed) extracts only the date from dateTimeConsumed column
+  [userID, dateAccessed],
+  (error, results, fields) =>{
+    if(error){
+      console.error("db query error", error);
+      res.status(500).send("Error fetching foods from database");
+    }
+    else{
+      console.log("data from foods: ", results);
+      res.json(results);
+    }
+  })
+}
+
+
+
+
+
+
 
 
 
@@ -450,10 +502,15 @@ app.post('/logWorkouts', jwtVerify, logWorkouts);
 app.get('/getFoods', jwtVerify, getFoods);
 app.get('/getExercises', jwtVerify, getExercises);
 app.get('/getWorkouts', jwtVerify, getWorkouts);
-app.get('/getNutrition', jwtVerify, getNutrition);
 
 
 //methods that are used daily to calculate goals for users
+
+
+//Methods used to get the user's logs from the DB
+app.get('/getUserNutritionLog', jwtVerify, getUserNutritionLog);
+app.get('/getUserWorkoutLog', jwtVerify, getUserWorkoutLog);
+app.get('/getUserExerciseLog', jwtVerify, getUserExerciseLog);
 
 
 //method uses to create exercises/workouts
