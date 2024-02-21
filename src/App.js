@@ -17,7 +17,7 @@ import ProfilePage from './pages/ProfilePage/ProfilePage';
 
 
 function App() {
-  localStorage.setItem("jwt", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ0ZXN0IiwiaWF0IjoxNzA4MzgwMTg0LCJleHAiOjE3MTEwNTg1ODR9.9bjP5n299cS7eV8nPLpTPuZxgn63vG5AzThK-ajKQ_0")
+  localStorage.setItem("jwt", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ0ZXN0IiwiaWF0IjoxNzA4NDkzNjQ1LCJleHAiOjE3MTExNzIwNDV9.Efuj4QkwU5oxyr5EtHjZJx9RlmgueNeBnLYH41xboBQ")
   console.log(localStorage.getItem("jwt"))
 
   return (
