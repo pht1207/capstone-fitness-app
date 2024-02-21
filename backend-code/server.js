@@ -368,6 +368,7 @@ const logExercises = async function(req, res) {
   pool.query(query, values, (error, results) =>{
     if(error){
       console.log(error);
+      res.status(500).send("Error logging exercise to database");
     }
     else{
       console.log("logged exercise");
@@ -392,7 +393,7 @@ const getUserExerciseLog = async function(req, res) {
   (error, results, fields) =>{
     if(error){
       console.error("db query error", error);
-      res.status(500).send("Error fetching foods from database");
+      res.status(500).send("Error fetching exercise log from database");
     }
     else{
       console.log("data from foods: ", results);
@@ -445,6 +446,8 @@ const logWorkouts = async function(req, res) {
   pool.query(query, values, (error, results) =>{
     if(error){
       console.log(error);
+      res.status(500).send("Error logging workout to database");
+
     }
     else{
       console.log("logged workout");
@@ -469,7 +472,7 @@ const getUserWorkoutLog = async function(req, res) {
   (error, results, fields) =>{
     if(error){
       console.error("db query error", error);
-      res.status(500).send("Error fetching foods from database");
+      res.status(500).send("Error fetching workout log from database");
     }
     else{
       console.log("data from foods: ", results);
