@@ -6,12 +6,8 @@ function RegisterPage() {
 
   //Your code to make the site functional goes in this empty space. The 'return()' below is what renders on the page (the html)
   
-  //Added by Parker to be used later. Leave this code for now.
   async function handleSubmit(event){
     event.preventDefault();
-    console.log(event.target)
-    console.log(event.target[0].value)//gets value of form element 1
-
     console.log("form submitted");
     const body = {
       email:event.target[0].value,
@@ -26,7 +22,7 @@ function RegisterPage() {
 
 
     const response = await axios.post("https://capstone.parkert.dev/backend/register", body, {
-      
+  
     })
     
 
