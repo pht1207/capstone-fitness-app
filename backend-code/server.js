@@ -254,11 +254,25 @@ const logNutrition = async function(req, res) {
 
 
 const getNutrition = async function(req, res) {
+  const dateAccessed = req.query.dateAccessed;
   const userID = req.user.id;
-  const nutritionLog = req.body.nutritionLog;
-  const values = [userID, nutritionLog.caloriesConsumed || null, nutritionLog.carbsConsumed || null, nutritionLog.proteinConsumed || null, nutritionLog.fatConsumed || null, nutritionLog.dateTimeConsumed || null]
-  const query = "INSERT INTO userConsumptionTable (userTable_id, caloriesConsumed, carbsConsumed, proteinConsumed, fatsConsumed, dateTimeConsumed)  VALUES (?, ?, ?, ?, ?, ?)"
 
+
+  pool.query(
+  'SELECT * ' +
+  'FROM userConsumptionTable ' +
+  'WHERE(userTable_id = ? AND DATE(dateTimeConsumed) = ?)', //DATE(dateTimeConsumed) extracts only the date from dateTimeConsumed column
+  [userID, dateAccessed],
+  (error, results, fields) =>{
+    if(error){
+      console.error("db query error", error);
+      res.status(500).send("Error fetching foods from database");
+    }
+    else{
+      console.log("data from foods: ", results);
+      res.json(results);
+    }
+  })
 }
 
 
@@ -358,6 +372,8 @@ app.post('/logNutrition', jwtVerify, logNutrition);
 app.get('/getFoods', jwtVerify, getFoods);
 app.get('/getExercises', jwtVerify, getExercises);
 app.get('/getWorkouts', jwtVerify, getWorkouts);
+app.get('/getNutrition', jwtVerify, getNutrition);
+
 
 //methods that are used daily to calculate goals for users
 
