@@ -231,7 +231,20 @@ const updateProfile = async function(req, res) {
 //allows the use of the nutrition page to log food for the user
 const logNutrition = async function(req, res) {    
   //write insert statements for the user
-  
+  console.log(req.body)
+  const userID = req.user.id;
+  const nutritionLog = req.body.nutritionLog;
+  const values = [userID, nutritionLog.caloriesConsumed || null, nutritionLog.carbsConsumed || null, nutritionLog.proteinConsumed || null, nutritionLog.fatConsumed || null, nutritionLog.dateTimeConsumed || null]
+  const query = "INSERT INTO userConsumptionTable (userTable_id, caloriesConsumed, carbsConsumed, proteinConsumed, fatsConsumed, dateTimeConsumed)  VALUES (?, ?, ?, ?, ?, ?)"
+  console.log("logNutrition Called");
+  pool.query(query, values, (err, res) =>{
+    if(err){
+      console.log(err);
+    }
+    else{
+      console.log("logged nutrition")
+    }
+  });
 }
 
 
