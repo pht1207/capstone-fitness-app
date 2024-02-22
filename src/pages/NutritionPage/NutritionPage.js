@@ -20,7 +20,7 @@ function NutritionPage() {
 
     <div class="b">LOG NUTRITION</div>
 
-    <div class="c">Latest weight, {DATE} {Weight} lbs Goal Weight: {GOAL} lbs</div>
+    <div class="c">Latest weight, DATE, Weight lbs Goal Weight: GOAL lbs</div>
 
     <div class="d">Protein </div>
 
