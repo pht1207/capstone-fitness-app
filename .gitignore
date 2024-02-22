@@ -28,3 +28,5 @@ yarn-error.log*
 /backend-code/node_modules
 /backend-code/.env
 /build
+/.vscode
+.vscode
