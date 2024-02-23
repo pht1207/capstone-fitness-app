@@ -232,13 +232,16 @@ const updateProfile = async function(req, res) {
 
 const getProfileData = async function(req, res){
   const userID = req.user.id;
+  console.log(userID)
   //Write a query that can get the userTable information, get the user's weight info, and also get the goal info while joining the correct tables to convert the id's to their acutal values
   pool.query(
-    'SELECT userTable.email, userTable.username, userTable.firstName, userTable.lastName, user_goalTable.*, goalTable.* ' + //specify each column that should be gathered throughout the query
+    'SELECT userTable.email, userTable.username, userTable.firstName, userTable.lastName, goalTable.goalName, userWeightTable.userWeight, userWeightTable.dateTimeChanged ' + //specify each column that should be gathered throughout the query
     'FROM userTable ' + //get all rows from usertable and only show columns in select statement
     'LEFT JOIN user_goalTable ON userTable.userTable_id = user_goalTable.userTable_id '+ //get all rows from user_goalTable that match the userTable_id in userTable
     'INNER JOIN goalTable ON user_goalTable.goalTable_id = goalTable.goalTable_id '+ //Gets the rows from goalTable where goalTable_id matches both tables
-    'WHERE(userTable.userTable_id = ?) ', //filter all results to only show if they match the usertable_id in the request
+    'LEFT JOIN userWeightTable  ON userTable.userTable_id = userWeightTable.userTable_id ' +
+    'WHERE userTable.userTable_id = ? ' + //filter all results to only show if they match the usertable_id in the request
+    'ORDER BY userWeightTable.dateTimeChanged DESC LIMIT 1',
     [userID],
     (error, results, fields) =>{
       if(error){
