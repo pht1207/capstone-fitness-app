@@ -11,8 +11,6 @@ const corsOptions ={
     optionSuccessStatus:200
 }
 app.use(cors(corsOptions));
-const cron = require('node-cron');
-const cron = require('node-cron');
 
 
 app.use(express.json());
@@ -93,7 +91,8 @@ const register = async function(req,res){
   }
 
     else {        
-    res.send({          
+    res.send({         
+    //also input their fitnessgoal via req.body.fitnessGoal and log weight in input their weight via req.body.weight
     "code":200,          
     "success":"user registered sucessfully"            
     });        
@@ -228,6 +227,30 @@ const jwtVerify = (req, res, next) => {
 const updateProfile = async function(req, res) {    
   //write code here that mirrors /register but use an alter statement instead of an insert statement
   
+}
+
+
+const getProfileData = async function(req, res){
+  const userID = req.user.id;
+  //Write a query that can get the userTable information, get the user's weight info, and also get the goal info while joining the correct tables to convert the id's to their acutal values
+  pool.query(
+    'SELECT userTable.email, userTable.username, userTable.firstName, userTable.lastName, user_goalTable.*, goalTable.* ' + //specify each column that should be gathered throughout the query
+    'FROM userTable ' + //get all rows from usertable and only show columns in select statement
+    'LEFT JOIN user_goalTable ON userTable.userTable_id = user_goalTable.userTable_id '+ //get all rows from user_goalTable that match the userTable_id in userTable
+    'INNER JOIN goalTable ON user_goalTable.goalTable_id = goalTable.goalTable_id '+ //Gets the rows from goalTable where goalTable_id matches both tables
+    'WHERE(userTable.userTable_id = ?) ', //filter all results to only show if they match the usertable_id in the request
+    [userID],
+    (error, results, fields) =>{
+      if(error){
+        console.error("db query error", error);
+        res.status(500).send("Error fetching foods from database");
+      }
+      else{
+        console.log("data from query: ", results);
+        res.json(results);
+      }
+    })
+
 }
 
 
@@ -486,7 +509,7 @@ const getUserWorkoutLog = async function(req, res) {
 
 
 
-
+const cron = require('node-cron');
 cron.schedule('0 0 * * *', function() {
   console.log('Running a task every day at 12 AM');
   dailyNutritionTableCalculator()
@@ -534,3 +557,5 @@ app.get('/getUserExerciseLog', jwtVerify, getUserExerciseLog);
 app.get('/createExercises', jwtVerify, createExercises);
 app.get('/createWorkouts', jwtVerify, createWorkouts);
 
+
+app.get('/getProfileData', jwtVerify, getProfileData);
