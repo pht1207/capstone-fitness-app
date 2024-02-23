@@ -229,6 +229,29 @@ const updateProfile = async function(req, res) {
   
 }
 
+const logWeight = async function(req, res) {    
+  //write insert statements for the user
+  console.log(req.body)
+  const userID = req.user.id;
+  const weightLog = req.body.weightLog;
+  const values = [userID, weightLog.userWeight, weightLog.dateTimeChanged]
+  const query = "INSERT INTO userWeightTable (userTable_id, userWeight, dateTimeChanged)  VALUES (?, ?, ?)"
+  console.log("logWeight Called");
+  pool.query(query, values, (error, results) =>{
+    if(error){
+      console.log(error);
+    }
+    else{
+      console.log("logged weight");
+      console.log(results);
+      res.send({
+        "code": 200,
+        "success": "logWeight successful",
+      });      
+    }
+  });
+}
+
 
 const getProfileData = async function(req, res){
   const userID = req.user.id;
@@ -253,7 +276,6 @@ const getProfileData = async function(req, res){
         res.json(results);
       }
     })
-
 }
 
 
@@ -512,6 +534,8 @@ const getUserWorkoutLog = async function(req, res) {
 
 
 
+
+
 const cron = require('node-cron');
 cron.schedule('0 0 * * *', function() {
   console.log('Running a task every day at 12 AM');
@@ -539,6 +563,7 @@ app.post('/updateProfile', jwtVerify, updateProfile);
 app.post('/logNutrition', jwtVerify, logNutrition);
 app.post('/logExercises', jwtVerify, logExercises);
 app.post('/logWorkouts', jwtVerify, logWorkouts);
+app.post('/logWeight', jwtVerify, logWeight);
 
 
 //methods that allow users to get foods/exercises/workouts from db
