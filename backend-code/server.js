@@ -31,7 +31,7 @@ app.listen(PORT, () => {
 });
 
 
-// Create a pool of connections
+// Create a pool of connections so the DB is up and available for use
 const pool = mysql.createPool({
   connectionLimit : 10, // the maximum number of connections in the pool
   host            : 'localhost',
@@ -41,17 +41,20 @@ const pool = mysql.createPool({
 });
 
 
-// Use the pool to perform a query
-pool.query('SELECT * FROM userTable', (error, results, fields) => {
-  if (error) {
-    throw error;
-  }
-  console.log(results);
-  // No need to explicitly close the connection, it's managed by the pool
-});
 
 
+
+{/*
+* === SECTION START: LOGIN/REGISTER ===
+* This section is all related to the login and registration functions.
+* Methods in this section:
+*  -/register
+*  -/login
+*/}
+app.post('/register', upload.none(), register);
+app.post('/login', upload.none(), login);
 //Function to register the users
+//Need to add the user inputting their weight and selected goal to the registration process***
 const register = async function(req,res){
   console.log("THIS IS THE REQ")
   //Write a regex checker to make sure the password contains certain characteristics
@@ -153,106 +156,35 @@ const login = async function(req, res) {
     }
   });
 }
-  
-
-
-//This is an example to demonstrate to groupmates how a get request works
-//Delete later once it is demonstrated
-//To test, use capstone.parkert.dev/backend/example     (make sure node program is open on server)
-//When you go the link above, it will call this method. This is the basis for all HTTP requests
-app.get('/example', async (req, res) =>{
-  res.send("hello")
-})
-
-
-
-const connection = mysql.createConnection({
-  host            : 'localhost',
-  user            : DBUsername,
-  password        : DBPassword,
-  database        : DBName
-
-});
-
-connection.connect(error => {
-  if (error) throw error;
-  console.log("Successfully connected to the database.");
-
-  // SQL query to select all data from a table
-  const selectQuery = 'SELECT * FROM userTable';
-
-  connection.query(selectQuery, (error, results, fields) => {
-    if (error) throw error;
-
-    // Log the results
-    console.log("Data from the table:");
-    console.log(results); // This will print the rows retrieved
-
-    // Close the connection
-    connection.end();
-  });
-});
-
-
-
-
-
-//This function will be used to verify the json web token from the user.
-//Acts as a middleware. When a method is called, it's HTTP headers are verified here first.
-const jwtVerify = (req, res, next) => {
-  console.log("jwtverify called")
-  const authHeader = req.headers['authorization']; //extracts the token from the http header
-  const token = authHeader && authHeader.split(' ')[1]; //object that contains the token
-
-  if(token == null){//If the token is null, then the user will be sent an error code
-    return(res.sendStatus(401)) //error code
-  }
-  else{
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) =>{
-      if(err){//If the token does not match an ongoing session, it will sent an error code
-        return(res.sendStatus(403)); //error code
-      }
-      req.user = user; //Assign the jwt user values to the request so it may be sent to the following function
-      next(); //Go the the code that is after this middleware function
-    })
-  }
-}
+{/*
+  * END OF SECTION: LOGIN/REGISTER
+*/}
 
 
 
 
 
 
+
+
+
+
+
+
+{/*
+* === SECTION START: PROFILE ===
+* This section is all related to the profile information tables in the database.
+* Methods in this section:
+*  -/updateProfile
+*  -/getProfileData
+*/}
+app.post('/updateProfile', jwtVerify, updateProfile);
+app.get('/getProfileData', jwtVerify, getProfileData);
 
 const updateProfile = async function(req, res) {    
   //write code here that mirrors /register but use an alter statement instead of an insert statement
   
 }
-
-const logWeight = async function(req, res) {    
-  //write insert statements for the user
-  console.log(req.body)
-  const userID = req.user.id;
-  const weightLog = req.body.weightLog;
-  const values = [userID, weightLog.userWeight, weightLog.dateTimeChanged]
-  const query = "INSERT INTO userWeightTable (userTable_id, userWeight, dateTimeChanged)  VALUES (?, ?, ?)"
-  console.log("logWeight Called");
-  pool.query(query, values, (error, results) =>{
-    if(error){
-      console.log(error);
-    }
-    else{
-      console.log("logged weight");
-      console.log(results);
-      res.send({
-        "code": 200,
-        "success": "logWeight successful",
-      });      
-    }
-  });
-}
-
-
 const getProfileData = async function(req, res){
   const userID = req.user.id;
   console.log(userID)
@@ -277,7 +209,69 @@ const getProfileData = async function(req, res){
       }
     })
 }
+{/*
+  * END OF SECTION: PROFILE
+*/}
 
+
+
+
+
+
+{/*
+* === SECTION START: GOALS ===
+* This section is all related to the workouts tables in the database.
+* Methods in this section:
+*  -/setUserGoal
+*/}
+app.post('/setUserGoal', jwtVerify, setUserGoal);
+
+const setUserGoal = async function(req, res){
+  const userID = req.user.id;
+  console.log(userID)
+  //Make query to set userGoal in user_goalTable
+  pool.query(
+    'SELECT userTable.email, userTable.username, userTable.firstName, userTable.lastName, goalTable.goalName, userWeightTable.userWeight, userWeightTable.dateTimeChanged ' + //specify each column that should be gathered throughout the query
+    'FROM userTable ' + //get all rows from usertable and only show columns in select statement
+    'LEFT JOIN user_goalTable ON userTable.userTable_id = user_goalTable.userTable_id '+ //get all rows from user_goalTable that match the userTable_id in userTable
+    'INNER JOIN goalTable ON user_goalTable.goalTable_id = goalTable.goalTable_id '+ //Gets the rows from goalTable where goalTable_id matches both tables
+    'LEFT JOIN userWeightTable  ON userTable.userTable_id = userWeightTable.userTable_id ' +
+    'WHERE userTable.userTable_id = ? ' + //filter all results to only show if they match the usertable_id in the request
+    'ORDER BY userWeightTable.dateTimeChanged DESC LIMIT 1',
+    [userID],
+    (error, results, fields) =>{
+      if(error){
+        console.error("db query error", error);
+        res.status(500).send("Error fetching foods from database");
+      }
+      else{
+        console.log("data from query: ", results);
+        res.json(results);
+      }
+    })
+}
+{/*
+  * END OF SECTION: GOALS
+*/}
+
+
+
+
+
+
+
+{/*
+* === SECTION START: NUTRITION ===
+* This section is all related to the nutrition tables in the database.
+* Methods in this section:
+*  -/logNutrition
+*  -/getFoods
+*  -dailyNutritionTableCalculator (not a http method)
+*     -cron job to run this function everyday
+*/}
+app.post('/logNutrition', jwtVerify, logNutrition);
+app.get('/getFoods', jwtVerify, getFoods);
+app.get('/getUserNutritionLog', jwtVerify, getUserNutritionLog);
 
 
 //allows the use of the nutrition page to log food for the user
@@ -327,8 +321,6 @@ const getUserNutritionLog = async function(req, res) {
 }
 
 
-
-
 const getFoods = async function(req, res){
   console.log("getfoods called")
   //return all foods as json, let frontend sort through it as there's not going to be much to it
@@ -344,11 +336,117 @@ const getFoods = async function(req, res){
   })
 }
 
+//runs the function everyday at 12am
+const cron = require('node-cron');
+cron.schedule('0 0 * * *', function() {
+  console.log('Running daily user nutrition calculator every day at 12 AM');
+  dailyNutritionTableCalculator()
+});
+//Calculates a daily nutrition recommendation for each user in the DB based around their weight and goal as a user.
+function dailyNutritionTableCalculator(){
+  pool.query(
+    'SELECT userTable.userTable_id, goalTable.goalName, userWeightTable.userWeight, userWeightTable.dateTimeChanged ' +
+    'FROM userTable ' +
+    'LEFT JOIN user_goalTable ON userTable.userTable_id = user_goalTable.userTable_id ' +
+    'INNER JOIN goalTable ON user_goalTable.goalTable_id = goalTable.goalTable_id ' +
+    'LEFT JOIN userWeightTable ON userTable.userTable_id = userWeightTable.userTable_id ' +
+    'INNER JOIN (SELECT userTable_id, MAX(dateTimeChanged) as MaxDateTime ' +
+      'FROM userWeightTable ' +
+      'GROUP BY userTable_id) latestWeight ON userWeightTable.userTable_id = latestWeight.userTable_id AND userWeightTable.dateTimeChanged = latestWeight.MaxDateTime ' +
+    'ORDER BY userTable.userTable_id, userWeightTable.dateTimeChanged DESC',
+    (error, results, fields) =>{
+      if(error) {
+        console.error("db query error", error);
+      }
+      else {
+        userData = results;
+        let currentUser;
+        let mysqlDateTime;
+        for(let i = 0; i < userData.length; i++){
+          currentUser = userData[i];
+          let calculatedNutrition = nutritionCalculator(userData[i]);
+          mysqlDateTime = new Date().toISOString().slice(0, 19).replace('T', ' '); //this is a way to get the current date and time and format it so it will go into a datetime column in mysql correctly
+          let query = "INSERT INTO dailyNutritionTable (userTable_id, caloriesGoal, carbsGoal, proteinGoal, fatsGoal, dateCalculated)  VALUES (?, ?, ?, ?, ?, ?)"
+          let values = [currentUser.userTable_id, calculatedNutrition.dailyCalories || null, calculatedNutrition.gramsCarbs || null, calculatedNutrition.gramsProtein || null, calculatedNutrition.gramsFat || null, mysqlDateTime || null]
+          pool.query(query, values, (error, results) =>{
+            if(error){
+              console.log(error);        
+            }
+            else{
+              console.log("dailyUserNutrition successfully logged");
+            }
+          }) 
+        }
+      }
+  }); //End of pool query
+
+  //Calculates the daily calories and macronutrients for a user based on weight and goal
+  function nutritionCalculator(userData){
+    let goalName = userData.goalName;
+    let userWeight = userData.userWeight;
+    let maintenanceCalories = userWeight*14;
+    const carbCalories = 4;
+    const proteinCalories = 4;
+    const fatCalories = 9;
+
+    let dailyNutritionIntake = {
+      dailyCalories: null,
+      gramsCarbs: null,
+      gramsProtein: null,
+      gramsFat: null
+    }
+
+    if(goalName === "weightLoss"){ //40% carbs, 35% protein, 25% fat
+      dailyNutritionIntake.dailyCalories = maintenanceCalories-500;
+      dailyNutritionIntake.gramsCarbs = (Math.round(dailyNutritionIntake.dailyCalories*.40/carbCalories));
+      dailyNutritionIntake.gramsProtein = (Math.round(dailyNutritionIntake.dailyCalories*.35/proteinCalories));
+      dailyNutritionIntake.gramsFat = (Math.round(dailyNutritionIntake.dailyCalories*.25/fatCalories));
+
+      return(dailyNutritionIntake)
+    }
+    else if(goalName === "weightGain"){ //40% carbs, 30% protein, 30% fat
+      dailyNutritionIntake.dailyCalories = maintenanceCalories+500;
+      dailyNutritionIntake.gramsCarbs = (Math.round(dailyNutritionIntake.dailyCalories*.40/carbCalories));
+      dailyNutritionIntake.gramsProtein = (Math.round(dailyNutritionIntake.dailyCalories*.30/proteinCalories));
+      dailyNutritionIntake.gramsFat = (Math.round(dailyNutritionIntake.dailyCalories*.30/fatCalories));
+
+      return(dailyNutritionIntake)
+    }
+    else{ //Default case for 'health' (maintain weight) //50% carbs, 25% protein, 25% fat
+      dailyNutritionIntake.dailyCalories = maintenanceCalories;
+      dailyNutritionIntake.gramsCarbs = (Math.round(dailyNutritionIntake.dailyCalories*.50/carbCalories));
+      dailyNutritionIntake.gramsProtein = (Math.round(dailyNutritionIntake.dailyCalories*.25/proteinCalories));
+      dailyNutritionIntake.gramsFat = (Math.round(dailyNutritionIntake.dailyCalories*.25/fatCalories));
+      return(dailyNutritionIntake)
+    }
+  }
+  console.log("dailyNutritionTable values for all users logged");
+}
+{/*
+  * END OF SECTION: NUTRITION
+*/}
 
 
 
 
 
+
+
+
+
+{/*
+* === SECTION START: EXERCISES ===
+* This section is all related to the exercise tables in the database.
+* Methods in this section:
+*  -/getExercises
+*  -/createExercises
+*  -/logExercises
+*  -/getUserExerciseLog
+*/}
+app.get('/getExercises', jwtVerify, getExercises);
+app.get('/createExercises', jwtVerify, createExercises);
+app.post('/logExercises', jwtVerify, logExercises);
+app.get('/getUserExerciseLog', jwtVerify, getUserExerciseLog);
 
 //Returns exercises that are stored in the database. These may be filtered by muscleGroups and will also show exercises created by users.
 const getExercises = async function(req, res){
@@ -453,10 +551,29 @@ const getUserExerciseLog = async function(req, res) {
   })
 }
 
+{/*
+  * END OF SECTION: EXERCISES
+*/}
 
 
 
 
+
+
+
+{/*
+* === SECTION START: WORKOUTS ===
+* This section is all related to the workouts tables in the database.
+* Methods in this section:
+*  -/getWorkouts
+*  -/logWorkotus
+*  -/getUserWorkoutLog
+*  -/createWorkouts
+*/}
+app.get('/getWorkouts', jwtVerify, getWorkouts);
+app.get('/createWorkouts', jwtVerify, createWorkouts);
+app.get('/getUserWorkoutLog', jwtVerify, getUserWorkoutLog);
+app.post('/logWorkouts', jwtVerify, logWorkouts);
 
 const getWorkouts = async function(req, res){
   const userID = req.user.id;
@@ -481,9 +598,9 @@ const getWorkouts = async function(req, res){
     });
   }
 
-  const createWorkouts = async function(req, res){
+const createWorkouts = async function(req, res){
 
-  }
+}
 
 //allows the use of the exercises page to log exercises for the user
 const logWorkouts = async function(req, res) {    
@@ -532,134 +649,82 @@ const getUserWorkoutLog = async function(req, res) {
   })
 }
 
-
-
-
-//runs the function everyday at 12am
-const cron = require('node-cron');
-cron.schedule('0 0 * * *', function() {
-  console.log('Running daily user nutrition calculator every day at 12 AM');
-  dailyNutritionTableCalculator()
-});
-
-function dailyNutritionTableCalculator(){
-  pool.query(
-    'SELECT userTable.userTable_id, goalTable.goalName, userWeightTable.userWeight, userWeightTable.dateTimeChanged ' +
-    'FROM userTable ' +
-    'LEFT JOIN user_goalTable ON userTable.userTable_id = user_goalTable.userTable_id ' +
-    'INNER JOIN goalTable ON user_goalTable.goalTable_id = goalTable.goalTable_id ' +
-    'LEFT JOIN userWeightTable ON userTable.userTable_id = userWeightTable.userTable_id ' +
-    'INNER JOIN (SELECT userTable_id, MAX(dateTimeChanged) as MaxDateTime ' +
-      'FROM userWeightTable ' +
-      'GROUP BY userTable_id) latestWeight ON userWeightTable.userTable_id = latestWeight.userTable_id AND userWeightTable.dateTimeChanged = latestWeight.MaxDateTime ' +
-    'ORDER BY userTable.userTable_id, userWeightTable.dateTimeChanged DESC',
-    (error, results, fields) =>{
-      if(error) {
-        console.error("db query error", error);
-      }
-      else {
-        userData = results;
-        let currentUser;
-        let mysqlDateTime;
-        for(let i = 0; i < userData.length; i++){
-          currentUser = userData[i];
-          let calculatedNutrition = nutritionCalculator(userData[i]);
-          mysqlDateTime = new Date().toISOString().slice(0, 19).replace('T', ' '); //this is a way to get the current date and time and format it so it will go into a datetime column in mysql correctly
-          let query = "INSERT INTO dailyNutritionTable (userTable_id, caloriesGoal, carbsGoal, proteinGoal, fatsGoal, dateCalculated)  VALUES (?, ?, ?, ?, ?, ?)"
-          let values = [currentUser.userTable_id, calculatedNutrition.dailyCalories || null, calculatedNutrition.gramsCarbs || null, calculatedNutrition.gramsProtein || null, calculatedNutrition.gramsFat || null, mysqlDateTime || null]
-          pool.query(query, values, (error, results) =>{
-            if(error){
-              console.log(error);        
-            }
-            else{
-              console.log("dailyUserNutrition successfully logged");
-            }
-          }) 
-        }
-      }
-  }); //End of pool query
-
-  //Calculates the daily calories and macronutrients for a user based on weight and goal
-  function nutritionCalculator(userData){
-    let goalName = userData.goalName;
-    let userWeight = userData.userWeight;
-    let maintenanceCalories = userWeight*14;
-    const carbCalories = 4;
-    const proteinCalories = 4;
-    const fatCalories = 9;
-
-    let dailyNutritionIntake = {
-      dailyCalories: null,
-      gramsCarbs: null,
-      gramsProtein: null,
-      gramsFat: null
-    }
-
-    if(goalName === "weightLoss"){ //40% carbs, 35% protein, 25% fat
-      dailyNutritionIntake.dailyCalories = maintenanceCalories-500;
-      dailyNutritionIntake.gramsCarbs = (Math.round(dailyNutritionIntake.dailyCalories*.40/carbCalories));
-      dailyNutritionIntake.gramsProtein = (Math.round(dailyNutritionIntake.dailyCalories*.35/proteinCalories));
-      dailyNutritionIntake.gramsFat = (Math.round(dailyNutritionIntake.dailyCalories*.25/fatCalories));
-
-      return(dailyNutritionIntake)
-    }
-    else if(goalName === "weightGain"){ //40% carbs, 30% protein, 30% fat
-      dailyNutritionIntake.dailyCalories = maintenanceCalories+500;
-      dailyNutritionIntake.gramsCarbs = (Math.round(dailyNutritionIntake.dailyCalories*.40/carbCalories));
-      dailyNutritionIntake.gramsProtein = (Math.round(dailyNutritionIntake.dailyCalories*.30/proteinCalories));
-      dailyNutritionIntake.gramsFat = (Math.round(dailyNutritionIntake.dailyCalories*.30/fatCalories));
-
-      return(dailyNutritionIntake)
-    }
-    else{ //Default case for 'health' (maintain weight) //50% carbs, 25% protein, 25% fat
-      dailyNutritionIntake.dailyCalories = maintenanceCalories;
-      dailyNutritionIntake.gramsCarbs = (Math.round(dailyNutritionIntake.dailyCalories*.50/carbCalories));
-      dailyNutritionIntake.gramsProtein = (Math.round(dailyNutritionIntake.dailyCalories*.25/proteinCalories));
-      dailyNutritionIntake.gramsFat = (Math.round(dailyNutritionIntake.dailyCalories*.25/fatCalories));
-      return(dailyNutritionIntake)
-    }
-  }
-  console.log("dailyNutritionTable values for all users logged");
-}
+{/*
+  * END OF SECTION: WORKOUTS
+*/}
 
 
 
 
 
 
-
-
-//used to login to the database, register and establish a jwt
-app.get('/jwtVerify', upload.none(), jwtVerify);
-app.post('/register', upload.none(), register);
-app.post('/login', upload.none(), login);
-
-//methods that allow users to update or change information regarding themselves in the DB
-app.post('/updateProfile', jwtVerify, updateProfile);
-app.post('/logNutrition', jwtVerify, logNutrition);
-app.post('/logExercises', jwtVerify, logExercises);
-app.post('/logWorkouts', jwtVerify, logWorkouts);
+{/*
+* === SECTION START: WEIGHT ===
+* This section is all related to the tables in the database regarding weight.
+* Methods in this section:
+*  -/logWeight
+*/}
 app.post('/logWeight', jwtVerify, logWeight);
 
+const logWeight = async function(req, res) {    
+  //write insert statements for the user
+  console.log(req.body)
+  const userID = req.user.id;
+  const weightLog = req.body.weightLog;
+  const values = [userID, weightLog.userWeight, weightLog.dateTimeChanged]
+  const query = "INSERT INTO userWeightTable (userTable_id, userWeight, dateTimeChanged)  VALUES (?, ?, ?)"
+  console.log("logWeight Called");
+  pool.query(query, values, (error, results) =>{
+    if(error){
+      console.log(error);
+    }
+    else{
+      console.log("logged weight");
+      console.log(results);
+      res.send({
+        "code": 200,
+        "success": "logWeight successful",
+      });      
+    }
+  });
+}
+{/*
+  * END OF SECTION: WEIGHT
+*/}
 
-//methods that allow users to get foods/exercises/workouts from db
-app.get('/getFoods', jwtVerify, getFoods);
-app.get('/getExercises', jwtVerify, getExercises);
-app.get('/getWorkouts', jwtVerify, getWorkouts);
 
 
-//methods that are used daily to calculate goals for users
 
 
-//Methods used to get the user's logs from the DB
-app.get('/getUserNutritionLog', jwtVerify, getUserNutritionLog);
-app.get('/getUserWorkoutLog', jwtVerify, getUserWorkoutLog);
-app.get('/getUserExerciseLog', jwtVerify, getUserExerciseLog);
 
 
-//method uses to create exercises/workouts
-app.get('/createExercises', jwtVerify, createExercises);
-app.get('/createWorkouts', jwtVerify, createWorkouts);
+{/*
+* === SECTION START: JSON WEB TOKEN ===
+* This section is related to the verification of a users JWT.
+* Methods in this section:
+*  -/jwtVerify
+*/}
+//This function will be used to verify the json web token from the user.
+//Acts as a middleware. When a method is called, it's HTTP headers are verified here first.
+app.get('/jwtVerify', upload.none(), jwtVerify);
+const jwtVerify = (req, res, next) => {
+  console.log("jwtverify called")
+  const authHeader = req.headers['authorization']; //extracts the token from the http header
+  const token = authHeader && authHeader.split(' ')[1]; //object that contains the token
 
-
-app.get('/getProfileData', jwtVerify, getProfileData);
+  if(token == null){//If the token is null, then the user will be sent an error code
+    return(res.sendStatus(401)) //error code
+  }
+  else{
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) =>{
+      if(err){//If the token does not match an ongoing session, it will sent an error code
+        return(res.sendStatus(403)); //error code
+      }
+      req.user = user; //Assign the jwt user values to the request so it may be sent to the following function
+      next(); //Go the the code that is after this middleware function
+    })
+  }
+}
+{/*
+  * END OF SECTION: JSON WEB TOKEN
+*/}
