@@ -535,16 +535,92 @@ const getUserWorkoutLog = async function(req, res) {
 
 
 
-
+//runs the function everyday at 12am
 const cron = require('node-cron');
 cron.schedule('0 0 * * *', function() {
-  console.log('Running a task every day at 12 AM');
+  console.log('Running daily user nutrition calculator every day at 12 AM');
   dailyNutritionTableCalculator()
 });
+
 function dailyNutritionTableCalculator(){
+  pool.query(
+    'SELECT userTable.userTable_id, goalTable.goalName, userWeightTable.userWeight, userWeightTable.dateTimeChanged ' +
+    'FROM userTable ' +
+    'LEFT JOIN user_goalTable ON userTable.userTable_id = user_goalTable.userTable_id ' +
+    'INNER JOIN goalTable ON user_goalTable.goalTable_id = goalTable.goalTable_id ' +
+    'LEFT JOIN userWeightTable ON userTable.userTable_id = userWeightTable.userTable_id ' +
+    'INNER JOIN (SELECT userTable_id, MAX(dateTimeChanged) as MaxDateTime ' +
+      'FROM userWeightTable ' +
+      'GROUP BY userTable_id) latestWeight ON userWeightTable.userTable_id = latestWeight.userTable_id AND userWeightTable.dateTimeChanged = latestWeight.MaxDateTime ' +
+    'ORDER BY userTable.userTable_id, userWeightTable.dateTimeChanged DESC',
+    (error, results, fields) =>{
+      if(error) {
+        console.error("db query error", error);
+      }
+      else {
+        userData = results;
+        let currentUser;
+        let mysqlDateTime;
+        for(let i = 0; i < userData.length; i++){
+          currentUser = userData[i];
+          let calculatedNutrition = nutritionCalculator(userData[i]);
+          mysqlDateTime = new Date().toISOString().slice(0, 19).replace('T', ' '); //this is a way to get the current date and time and format it so it will go into a datetime column in mysql correctly
+          let query = "INSERT INTO dailyNutritionTable (userTable_id, caloriesGoal, carbsGoal, proteinGoal, fatsGoal, dateCalculated)  VALUES (?, ?, ?, ?, ?, ?)"
+          let values = [currentUser.userTable_id, calculatedNutrition.dailyCalories || null, calculatedNutrition.gramsCarbs || null, calculatedNutrition.gramsProtein || null, calculatedNutrition.gramsFat || null, mysqlDateTime || null]
+          pool.query(query, values, (error, results) =>{
+            if(error){
+              console.log(error);        
+            }
+            else{
+              console.log("dailyUserNutrition successfully logged");
+            }
+          }) 
+        }
+      }
+  }); //End of pool query
 
+  //Calculates the daily calories and macronutrients for a user based on weight and goal
+  function nutritionCalculator(userData){
+    let goalName = userData.goalName;
+    let userWeight = userData.userWeight;
+    let maintenanceCalories = userWeight*14;
+    const carbCalories = 4;
+    const proteinCalories = 4;
+    const fatCalories = 9;
+
+    let dailyNutritionIntake = {
+      dailyCalories: null,
+      gramsCarbs: null,
+      gramsProtein: null,
+      gramsFat: null
+    }
+
+    if(goalName === "weightLoss"){ //40% carbs, 35% protein, 25% fat
+      dailyNutritionIntake.dailyCalories = maintenanceCalories-500;
+      dailyNutritionIntake.gramsCarbs = (Math.round(dailyNutritionIntake.dailyCalories*.40/carbCalories));
+      dailyNutritionIntake.gramsProtein = (Math.round(dailyNutritionIntake.dailyCalories*.35/proteinCalories));
+      dailyNutritionIntake.gramsFat = (Math.round(dailyNutritionIntake.dailyCalories*.25/fatCalories));
+
+      return(dailyNutritionIntake)
+    }
+    else if(goalName === "weightGain"){ //40% carbs, 30% protein, 30% fat
+      dailyNutritionIntake.dailyCalories = maintenanceCalories+500;
+      dailyNutritionIntake.gramsCarbs = (Math.round(dailyNutritionIntake.dailyCalories*.40/carbCalories));
+      dailyNutritionIntake.gramsProtein = (Math.round(dailyNutritionIntake.dailyCalories*.30/proteinCalories));
+      dailyNutritionIntake.gramsFat = (Math.round(dailyNutritionIntake.dailyCalories*.30/fatCalories));
+
+      return(dailyNutritionIntake)
+    }
+    else{ //Default case for 'health' (maintain weight) //50% carbs, 25% protein, 25% fat
+      dailyNutritionIntake.dailyCalories = maintenanceCalories;
+      dailyNutritionIntake.gramsCarbs = (Math.round(dailyNutritionIntake.dailyCalories*.50/carbCalories));
+      dailyNutritionIntake.gramsProtein = (Math.round(dailyNutritionIntake.dailyCalories*.25/proteinCalories));
+      dailyNutritionIntake.gramsFat = (Math.round(dailyNutritionIntake.dailyCalories*.25/fatCalories));
+      return(dailyNutritionIntake)
+    }
+  }
+  console.log("dailyNutritionTable values for all users logged");
 }
-
 
 
 
