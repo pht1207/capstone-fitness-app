@@ -611,20 +611,20 @@ const getWorkouts = async function(req, res){
   const userID = req.user.id;
     //Will return every workout, including ones created by the user
     pool.query(
-      'SELECT exerciseTable.* ' +
-      'FROM exerciseTable ' +
-      'LEFT JOIN userTable ON exerciseTable.createdBy = userTable.userTable_id ' + //Joins all values from exerciseTable and when there is a match between the userTable_id and the createdBy columns
+      'SELECT workoutTable.* ' +
+      'FROM workoutTable ' +
+      'LEFT JOIN userTable ON workoutTable.createdBy = userTable.userTable_id ' + //Joins all values from workoutTable and when there is a match between the userTable_id and the createdBy columns
       'WHERE userTable.userTable_id = ? '+
-      'OR exerciseTable.createdBy IS NULL', //Also gets every exercise that shows a NULL value in createdBy column
+      'OR workoutTable.createdBy IS NULL', //Also gets every workout that shows a NULL value in createdBy column (created by server)
       [userID], 
       (error, results, fields) => {      
         if(error){
           // Handle the error
           console.error("db query error", error);
-          res.status(500).send("Error fetching foods from database");
+          res.status(500).send("Error fetching workouts from database");
         }
         else{
-          console.log("data from exercises: ", results);
+          console.log("data from workoutTable: ", results);
           res.json(results);
         }
     });
