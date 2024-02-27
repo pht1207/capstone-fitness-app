@@ -9,8 +9,14 @@ function editClicked(){
   //make code to toggle editprofileclicked to false or true
   setEditProfileClicked(!editProfileClicked);
 }
-
-//do ternary operator to toggle html
+{/* 
+This is the method used to get profile data https://capstone.parkert.dev/backend/getProfileData
+You will have to send an authentication token to access it which is stored in localstorage
+  - Localstorage authenticaction header can be accessed via localStorage.getItem("jwt")
+  - Store it in your code via const token = localStorage.getItem("jwt")
+You can call the method for getting the data via something like const response = await axios.get("https://capstone.parkert.dev./backend/getProfileData", {headers: {"Authorization" : 'Bearer ${token}}})
+Console.log(response) afterward and see what kind of data you receieve, and you can store it as state using useState and use it in your profile page
+*/}
 
 
   return (
