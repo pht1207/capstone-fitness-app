@@ -239,7 +239,32 @@ app.post('/login', upload.none(), login);
 
 const updateProfile = async function(req, res) {    
   //write code here that mirrors /register but use an alter statement instead of an insert statement
-  
+  const userID = req.user.id;
+  const requestData = req.body.data;
+  const email = requestData.email;
+  const username = requestData.username;
+  const firstName = requestData.firstName;
+  const lastName = requestData.lastName;
+  const DOB = requestData.DOB;
+  const notificationsOn = requestData.notificationsOn;
+  const query = (
+  "UPDATE userTable "+
+  "SET userTable.email = ?, userTable.username = ?, userTable.firstName = ?, userTable.lastName = ?, userTable.DOB = ?, userTable.notificationsOn = ? "+
+  "WHERE userTable.userTable_id = ?")
+  const values = [email, username, firstName, lastName, DOB, notificationsOn, userID]
+  pool.query(query, values, (error, results) =>{
+    if(error){
+      console.error("db query error", error);
+      res.status(500).send("Error updating profile in database");
+    }
+    else{
+      console.log("data from query: ", results);
+      res.json({
+        code:"200",
+        message:"updated profile"
+      });
+    }
+  })
 }
 const getProfileData = async function(req, res){
   const userID = req.user.id;
