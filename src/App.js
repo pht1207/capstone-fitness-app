@@ -17,7 +17,7 @@ import ProfilePage from './pages/ProfilePage/ProfilePage';
 import LoginRegisterPage from './pages/LoginRegistrationPage/LoginRegister';
 
 function App() {
-  localStorage.setItem("jwt", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ0ZXN0IiwiaWF0IjoxNzA4NDkzNjQ1LCJleHAiOjE3MTExNzIwNDV9.Efuj4QkwU5oxyr5EtHjZJx9RlmgueNeBnLYH41xboBQ")
+  localStorage.setItem("jwt", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ0ZXN0IiwiaWF0IjoxNzA4NjQ5MjExLCJleHAiOjE3MTEzMjc2MTF9._umAnFpQ1Y7sNRogBEY50tTdsGTKetHgZ0QbbOmv31U")
   console.log(localStorage.getItem("jwt"))
 
   return (
