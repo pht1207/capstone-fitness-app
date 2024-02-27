@@ -30,6 +30,12 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
+//function to get the current time
+function getCurrentTime(){
+  mysqlDateTime = new Date().toISOString().slice(0, 19).replace('T', ' '); //this is a way to get the current date and time and format it so it will go into a datetime column in mysql correctly
+  return mysqlDateTime;
+}
+
 
 // Create a pool of connections so the DB is up and available for use
 const pool = mysql.createPool({
@@ -39,6 +45,41 @@ const pool = mysql.createPool({
   password        : DBPassword,
   database        : DBName
 });
+
+
+{/*
+* === SECTION START: JSON WEB TOKEN ===
+* This section is related to the verification of a users JWT.
+* Methods in this section:
+*  -/jwtVerify
+*/}
+//This function will be used to verify the json web token from the user.
+//Acts as a middleware. When a method is called, it's HTTP headers are verified here first.
+const jwtVerify = (req, res, next) => {
+  console.log("jwtverify called")
+  const authHeader = req.headers['authorization']; //extracts the token from the http header
+  const token = authHeader && authHeader.split(' ')[1]; //object that contains the token
+
+  if(token == null){//If the token is null, then the user will be sent an error code
+    return(res.sendStatus(401)) //error code
+  }
+  else{
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) =>{
+      if(err){//If the token does not match an ongoing session, it will sent an error code
+        return(res.sendStatus(403)); //error code
+      }
+      req.user = user; //Assign the jwt user values to the request so it may be sent to the following function
+      next(); //Go the the code that is after this middleware function
+    })
+  }
+}
+app.get('/jwtVerify', upload.none(), jwtVerify);
+{/*
+  * END OF SECTION: JSON WEB TOKEN
+*/}
+
+
+
 
 
 
@@ -51,57 +92,72 @@ const pool = mysql.createPool({
 *  -/register
 *  -/login
 */}
-app.post('/register', upload.none(), register);
-app.post('/login', upload.none(), login);
 //Function to register the users
 //Need to add the user inputting their weight and selected goal to the registration process***
 const register = async function(req,res){
-  console.log("THIS IS THE REQ")
   //Write a regex checker to make sure the password contains certain characteristics
   console.log(req.body)
   const password = req.body.password;
   const encryptedPassword = await bcrypt.hash(password, saltRounds)
-  let users={       
+  let user={       
   "email":req.body.email,
   "username":req.body.username,
   "password":encryptedPassword,
   "firstName":req.body.firstName,
   "lastName":req.body.lastName,
   "DOB":req.body.DOB,
-  "weight":req.body.weight,
-  "notificationsOn":req.body.notificationsOn
-  }        
-  pool.query('INSERT INTO userTable SET ?',users, function (error, results, fields) {      
-  if (error) {
-    console.log(error)
-    if(error.sqlMessage.includes("for key 'userTable.username'")){
-      res.send({
-        "code":400,          
-        "failed":"error occurred, username already in use"})      
-    }
+  "notificationsOn":req.body.notificationsOn,
+
+  "goal":req.body.goal,
+
+  "weight":req.body.weight
+  }
+  {/* Need a function to check all data from the user's request and make sure it is appropriate and will not cause errors in the mysql query */}
+
+  //Creates a new user row in the userTable table
+  const userTableQuery = "INSERT INTO userTable (email, username, password, firstname, lastname, DOB, notificationsOn)  VALUES (?, ?, ?, ?, ?, ?, ?); ";
+  const userTableQueryValues = [user.email, user.username, encryptedPassword, user.firstName, user.lastName, user.DOB, user.notificationsOn];
+  const userTableInsert = await executeQuery(userTableQuery, userTableQueryValues);
+
+  //Gets and sets the userID made from the previous query
+  const setCurrentUserIDQuery = "SET @currentUser_id = LAST_INSERT_ID(); ";
+  const setCurrentUserIDPromise = await executeQuery(setCurrentUserIDQuery, []);
+
+  //Inserts the goal of the user
+  const userGoalTableQuery =   "INSERT INTO user_goalTable (goalTable_id, userTable_id, dateTimeChanged) VALUES (?, @currentUser_id, ?); "
+  const userGoalTableQueryValues = [user.goal, getCurrentTime()];
+  const userGoalTableInsert = await executeQuery(userGoalTableQuery, userGoalTableQueryValues);
   
-    else if(error.sqlMessage.includes("for key 'userTable.email'")){
-      res.send({
-        "code":400,          
-        "failed":"error occurred, email already in use"})      
-    }
+  //Inserts the weight of the user
+  const userWeightTableQuery =   "INSERT INTO userWeightTable (userTable_id, userWeight, dateTimeChanged) VALUES (@currentUser_id, ?, ?);";
+  const userWeightTableQueryValues = [user.weight, getCurrentTime()]
+  const userWeightTableInsert = await executeQuery(userWeightTableQuery, userWeightTableQueryValues);
+  
+  res.send({
+    code:"200",
+    message:"Account creation successful"
+  })
 
-    else{
-      res.send({          
-        "code":400,          
-        "failed":"error occurred"})   
-    }
+  //Used to execute queries
+  function executeQuery(query, values){
+    return new Promise((resolve, reject) =>{
+      pool.query(query, values, (error, results) =>{
+        if(error){
+          console.error(error)
+          reject(error);
+          res.send({
+            code:"400",
+            message:"error creating account"
+          })
+        }
+        else{
+          console.log(results);
+          resolve(results);
+        }
+      })
+    })
   }
-
-    else {        
-    res.send({         
-    //also input their fitnessgoal via req.body.fitnessGoal and log weight in input their weight via req.body.weight
-    "code":200,          
-    "success":"user registered sucessfully"            
-    });        
-    }    
-    });
-  }
+}
 
 
 
@@ -156,6 +212,8 @@ const login = async function(req, res) {
     }
   });
 }
+app.post('/register', upload.none(), register);
+app.post('/login', upload.none(), login);
 {/*
   * END OF SECTION: LOGIN/REGISTER
 */}
@@ -178,8 +236,6 @@ const login = async function(req, res) {
 *  -/updateProfile
 *  -/getProfileData
 */}
-app.post('/updateProfile', jwtVerify, updateProfile);
-app.get('/getProfileData', jwtVerify, getProfileData);
 
 const updateProfile = async function(req, res) {    
   //write code here that mirrors /register but use an alter statement instead of an insert statement
@@ -209,6 +265,8 @@ const getProfileData = async function(req, res){
       }
     })
 }
+app.post('/updateProfile', jwtVerify, updateProfile);
+app.get('/getProfileData', jwtVerify, getProfileData);
 {/*
   * END OF SECTION: PROFILE
 */}
@@ -220,36 +278,19 @@ const getProfileData = async function(req, res){
 
 {/*
 * === SECTION START: GOALS ===
-* This section is all related to the workouts tables in the database.
+* This section is all related to the goal tables in the database.
 * Methods in this section:
 *  -/setUserGoal
 */}
-app.post('/setUserGoal', jwtVerify, setUserGoal);
 
 const setUserGoal = async function(req, res){
   const userID = req.user.id;
   console.log(userID)
   //Make query to set userGoal in user_goalTable
-  pool.query(
-    'SELECT userTable.email, userTable.username, userTable.firstName, userTable.lastName, goalTable.goalName, userWeightTable.userWeight, userWeightTable.dateTimeChanged ' + //specify each column that should be gathered throughout the query
-    'FROM userTable ' + //get all rows from usertable and only show columns in select statement
-    'LEFT JOIN user_goalTable ON userTable.userTable_id = user_goalTable.userTable_id '+ //get all rows from user_goalTable that match the userTable_id in userTable
-    'INNER JOIN goalTable ON user_goalTable.goalTable_id = goalTable.goalTable_id '+ //Gets the rows from goalTable where goalTable_id matches both tables
-    'LEFT JOIN userWeightTable  ON userTable.userTable_id = userWeightTable.userTable_id ' +
-    'WHERE userTable.userTable_id = ? ' + //filter all results to only show if they match the usertable_id in the request
-    'ORDER BY userWeightTable.dateTimeChanged DESC LIMIT 1',
-    [userID],
-    (error, results, fields) =>{
-      if(error){
-        console.error("db query error", error);
-        res.status(500).send("Error fetching foods from database");
-      }
-      else{
-        console.log("data from query: ", results);
-        res.json(results);
-      }
-    })
+  pool.query()
 }
+app.post('/setUserGoal', jwtVerify, setUserGoal);
+
 {/*
   * END OF SECTION: GOALS
 */}
@@ -269,11 +310,6 @@ const setUserGoal = async function(req, res){
 *  -dailyNutritionTableCalculator (not a http method)
 *     -cron job to run this function everyday
 */}
-app.post('/logNutrition', jwtVerify, logNutrition);
-app.get('/getFoods', jwtVerify, getFoods);
-app.get('/getUserNutritionLog', jwtVerify, getUserNutritionLog);
-
-
 //allows the use of the nutrition page to log food for the user
 const logNutrition = async function(req, res) {    
   //write insert statements for the user
@@ -422,6 +458,9 @@ function dailyNutritionTableCalculator(){
   }
   console.log("dailyNutritionTable values for all users logged");
 }
+app.post('/logNutrition', jwtVerify, logNutrition);
+app.get('/getFoods', jwtVerify, getFoods);
+app.get('/getUserNutritionLog', jwtVerify, getUserNutritionLog);
 {/*
   * END OF SECTION: NUTRITION
 */}
@@ -443,11 +482,6 @@ function dailyNutritionTableCalculator(){
 *  -/logExercises
 *  -/getUserExerciseLog
 */}
-app.get('/getExercises', jwtVerify, getExercises);
-app.get('/createExercises', jwtVerify, createExercises);
-app.post('/logExercises', jwtVerify, logExercises);
-app.get('/getUserExerciseLog', jwtVerify, getUserExerciseLog);
-
 //Returns exercises that are stored in the database. These may be filtered by muscleGroups and will also show exercises created by users.
 const getExercises = async function(req, res){
   //in the request, have there be a musclegroup variable, so data can be sorted by muscle groups
@@ -550,7 +584,10 @@ const getUserExerciseLog = async function(req, res) {
     }
   })
 }
-
+app.get('/getExercises', jwtVerify, getExercises);
+app.get('/createExercises', jwtVerify, createExercises);
+app.post('/logExercises', jwtVerify, logExercises);
+app.get('/getUserExerciseLog', jwtVerify, getUserExerciseLog);
 {/*
   * END OF SECTION: EXERCISES
 */}
@@ -570,11 +607,6 @@ const getUserExerciseLog = async function(req, res) {
 *  -/getUserWorkoutLog
 *  -/createWorkouts
 */}
-app.get('/getWorkouts', jwtVerify, getWorkouts);
-app.get('/createWorkouts', jwtVerify, createWorkouts);
-app.get('/getUserWorkoutLog', jwtVerify, getUserWorkoutLog);
-app.post('/logWorkouts', jwtVerify, logWorkouts);
-
 const getWorkouts = async function(req, res){
   const userID = req.user.id;
     //Will return every workout, including ones created by the user
@@ -648,7 +680,10 @@ const getUserWorkoutLog = async function(req, res) {
     }
   })
 }
-
+app.get('/getWorkouts', jwtVerify, getWorkouts);
+app.get('/createWorkouts', jwtVerify, createWorkouts);
+app.get('/getUserWorkoutLog', jwtVerify, getUserWorkoutLog);
+app.post('/logWorkouts', jwtVerify, logWorkouts);
 {/*
   * END OF SECTION: WORKOUTS
 */}
@@ -664,8 +699,6 @@ const getUserWorkoutLog = async function(req, res) {
 * Methods in this section:
 *  -/logWeight
 */}
-app.post('/logWeight', jwtVerify, logWeight);
-
 const logWeight = async function(req, res) {    
   //write insert statements for the user
   console.log(req.body)
@@ -688,6 +721,7 @@ const logWeight = async function(req, res) {
     }
   });
 }
+app.post('/logWeight', jwtVerify, logWeight);
 {/*
   * END OF SECTION: WEIGHT
 */}
@@ -698,33 +732,3 @@ const logWeight = async function(req, res) {
 
 
 
-{/*
-* === SECTION START: JSON WEB TOKEN ===
-* This section is related to the verification of a users JWT.
-* Methods in this section:
-*  -/jwtVerify
-*/}
-//This function will be used to verify the json web token from the user.
-//Acts as a middleware. When a method is called, it's HTTP headers are verified here first.
-app.get('/jwtVerify', upload.none(), jwtVerify);
-const jwtVerify = (req, res, next) => {
-  console.log("jwtverify called")
-  const authHeader = req.headers['authorization']; //extracts the token from the http header
-  const token = authHeader && authHeader.split(' ')[1]; //object that contains the token
-
-  if(token == null){//If the token is null, then the user will be sent an error code
-    return(res.sendStatus(401)) //error code
-  }
-  else{
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) =>{
-      if(err){//If the token does not match an ongoing session, it will sent an error code
-        return(res.sendStatus(403)); //error code
-      }
-      req.user = user; //Assign the jwt user values to the request so it may be sent to the following function
-      next(); //Go the the code that is after this middleware function
-    })
-  }
-}
-{/*
-  * END OF SECTION: JSON WEB TOKEN
-*/}
