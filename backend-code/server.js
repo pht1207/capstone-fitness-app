@@ -536,7 +536,22 @@ const getExercises = async function(req, res){
 }
 
 const createExercises = async function(req, res){
-
+  const userID = req.user.id;
+  {/* Write a checker to see if the information inserted is appropriate for the DB columns */}
+  let exercise = req.body.exercise;
+  console.log(exercise)
+  const query = "INSERT INTO exerciseTable (exerciseName, muscleGroup, setCount, repCount, timeAmountInMins, createdBy) VALUES (?, ?, ?, ?, ?, ?)"
+  const values = [exercise.exerciseName || null, exercise.muscleGroup || null, exercise.setCount || null, exercise.repCount || null, exercise.timeAmountInMins || null, userID ]
+  pool.query(query, values, (error, results) =>{
+    if(error){
+      console.error(error);
+      res.status(500).send("Error creating exercise");
+    }
+    else{
+      console.log("exercise created");
+      res.status(200).send("Exercise created")
+    }
+  })
 }
 
 //allows the use of the exercises page to log exercises for the user
@@ -585,7 +600,7 @@ const getUserExerciseLog = async function(req, res) {
   })
 }
 app.get('/getExercises', jwtVerify, getExercises);
-app.get('/createExercises', jwtVerify, createExercises);
+app.post('/createExercises', jwtVerify, createExercises);
 app.post('/logExercises', jwtVerify, logExercises);
 app.get('/getUserExerciseLog', jwtVerify, getUserExerciseLog);
 {/*
@@ -631,7 +646,7 @@ const getWorkouts = async function(req, res){
   }
 
 const createWorkouts = async function(req, res){
-
+  const userID = req.user.id;
 }
 
 //allows the use of the exercises page to log exercises for the user
@@ -681,7 +696,7 @@ const getUserWorkoutLog = async function(req, res) {
   })
 }
 app.get('/getWorkouts', jwtVerify, getWorkouts);
-app.get('/createWorkouts', jwtVerify, createWorkouts);
+app.post('/createWorkouts', jwtVerify, createWorkouts);
 app.get('/getUserWorkoutLog', jwtVerify, getUserWorkoutLog);
 app.post('/logWorkouts', jwtVerify, logWorkouts);
 {/*
