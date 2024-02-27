@@ -1,0 +1,37 @@
+.LoginPage{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+.LoginForm{
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    justify-content: space-around;
+    border-style: solid;
+    width: 30%;
+    border-radius: 1em;
+    background-color: rgba(245, 245, 245, 0.719);
+}
+
+.LoginForm label{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin:.3em;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+.LoginForm button{
+    align-self: center;
+    margin:.3em;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+.LoginForm label *{
+    width: 30%;
+    padding: .1em;
+    border-width: .1em;
+}
