@@ -17,7 +17,9 @@ function RegisterPage() {
       lastName:event.target[4].value,
       DOB:event.target[5].value,
       weight:event.target[6].value,
-      notificationsOn:event.target[7].value
+      fitnessGoal:event.target[7].value,
+      notificationsOn:event.target[8].value
+
     }
 
     const response = await axios.post("http://192.168.1.127:5008/register", body, {
@@ -41,7 +43,15 @@ function RegisterPage() {
           <label>Your last name: <input type='text'></input></label>
           <label>Your date of birth: <input type='text'></input></label>
           <label>Your weight: <input type='text'></input></label>
+          <label>Fitness goal: 
+            <select>
+              <option value="weight loss">Weight loss</option>
+              <option value="weight loss">Weight gain</option>
+              <option value="weight loss">Health</option>
+            </select>
+          </label>
           <label>Notifications on: <input type='text'></input></label>
+
           <button type='submit'>Register</button>
         </form>
     </div>
