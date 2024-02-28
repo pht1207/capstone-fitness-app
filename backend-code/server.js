@@ -119,12 +119,10 @@ const register = async function(req,res){
   if (validationResult.error) {
     res.send({
       code:"400",
-      message:validationResult.error.details[0].path
+      message:"Error with "+validationResult.error.details[0].path
     })
   }
   else{
-    //Write a regex checker to make sure the password contains certain characteristics
-    console.log(req.body)
     const password = req.body.password;
     const encryptedPassword = await bcrypt.hash(password, saltRounds)
     let user={       
@@ -141,7 +139,7 @@ const register = async function(req,res){
     "weight":req.body.weight
     }
 
-
+    try{
     //Creates a new user row in the userTable table
     const userTableQuery = "INSERT INTO userTable (email, username, password, firstname, lastname, DOB, notificationsOn)  VALUES (?, ?, ?, ?, ?, ?, ?); ";
     const userTableQueryValues = [user.email, user.username, encryptedPassword, user.firstName, user.lastName, user.DOB, user.notificationsOn];
@@ -165,7 +163,10 @@ const register = async function(req,res){
       code:"200",
       message:"Account creation successful"
     })
-
+  }
+  catch{
+    console.error("error occured while registering account")
+  }
     //Used to execute queries
     function executeQuery(query, values){
       return new Promise((resolve, reject) =>{
@@ -173,10 +174,29 @@ const register = async function(req,res){
           if(error){
             console.error(error)
             reject(error);
-            res.send({
-              code:"400",
-              message:"error creating account"
-            })
+            if (error.code === 'ER_DUP_ENTRY') {
+              if (error.sqlMessage.includes('userTable.email_UNIQUE')) {
+                  //Error for if email is already in use
+                  res.send({
+                      code: "400",
+                      message: "Email already in use"
+                  });
+              }
+              else if (error.sqlMessage.includes('userTable.username_UNIQUE')) {
+                  //Error for if username is already in use
+                  res.send({
+                      code: "400",
+                      message: "Username already in use"
+                  });
+              }
+          }
+          else {
+              //Any other types of errors
+              res.send({
+                  code: "500",
+                  message: "Internal Server Error"
+              });
+          }
           }
           else{
             console.log(results);
