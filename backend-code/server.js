@@ -64,6 +64,13 @@ const registerSchema = Joi.object({
   weight: Joi.number().positive().required()
 });
 
+const loginSchema = Joi.object({
+  email: Joi.string().email().required(),
+  username: Joi.string().alphanum().min(3).max(45).required(),
+  password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
+});
+{/* End of form validation */}
+
 
 
 
