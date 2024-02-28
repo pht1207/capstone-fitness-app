@@ -47,6 +47,26 @@ const pool = mysql.createPool({
 });
 
 
+
+
+
+{/* Used in form validation */}
+const Joi = require('joi');
+const registerSchema = Joi.object({
+  email: Joi.string().email().required(),
+  username: Joi.string().alphanum().min(3).max(45).required(),
+  password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
+  firstName: Joi.string().alphanum().max(45).required(),
+  lastName: Joi.string().alphanum().max(45).required(),
+  DOB: Joi.date().iso().required(), // Checks for 'YYYY-MM-DD' format
+  notificationsOn: Joi.number().integer().valid(0, 1).required(),
+  goal: Joi.number().integer().valid(1, 2, 3).required(),
+  weight: Joi.number().positive().required()
+});
+
+
+
+
 {/*
 * === SECTION START: JSON WEB TOKEN ===
 * This section is related to the verification of a users JWT.
@@ -95,68 +115,79 @@ app.get('/jwtVerify', upload.none(), jwtVerify);
 //Function to register the users
 //Need to add the user inputting their weight and selected goal to the registration process***
 const register = async function(req,res){
-  //Write a regex checker to make sure the password contains certain characteristics
-  console.log(req.body)
-  const password = req.body.password;
-  const encryptedPassword = await bcrypt.hash(password, saltRounds)
-  let user={       
-  "email":req.body.email,
-  "username":req.body.username,
-  "password":encryptedPassword,
-  "firstName":req.body.firstName,
-  "lastName":req.body.lastName,
-  "DOB":req.body.DOB,
-  "notificationsOn":req.body.notificationsOn,
-
-  "goal":req.body.goal,
-
-  "weight":req.body.weight
-  }
-  {/* Need a function to check all data from the user's request and make sure it is appropriate and will not cause errors in the mysql query */}
-
-  //Creates a new user row in the userTable table
-  const userTableQuery = "INSERT INTO userTable (email, username, password, firstname, lastname, DOB, notificationsOn)  VALUES (?, ?, ?, ?, ?, ?, ?); ";
-  const userTableQueryValues = [user.email, user.username, encryptedPassword, user.firstName, user.lastName, user.DOB, user.notificationsOn];
-  const userTableInsert = await executeQuery(userTableQuery, userTableQueryValues);
-
-  //Gets and sets the userID made from the previous query
-  const setCurrentUserIDQuery = "SET @currentUser_id = LAST_INSERT_ID(); ";
-  const setCurrentUserIDPromise = await executeQuery(setCurrentUserIDQuery, []);
-
-  //Inserts the goal of the user
-  const userGoalTableQuery =   "INSERT INTO user_goalTable (goalTable_id, userTable_id, dateTimeChanged) VALUES (?, @currentUser_id, ?); "
-  const userGoalTableQueryValues = [user.goal, getCurrentTime()];
-  const userGoalTableInsert = await executeQuery(userGoalTableQuery, userGoalTableQueryValues);
-  
-  //Inserts the weight of the user
-  const userWeightTableQuery =   "INSERT INTO userWeightTable (userTable_id, userWeight, dateTimeChanged) VALUES (@currentUser_id, ?, ?);";
-  const userWeightTableQueryValues = [user.weight, getCurrentTime()]
-  const userWeightTableInsert = await executeQuery(userWeightTableQuery, userWeightTableQueryValues);
-  
-  res.send({
-    code:"200",
-    message:"Account creation successful"
-  })
-
-  //Used to execute queries
-  function executeQuery(query, values){
-    return new Promise((resolve, reject) =>{
-      pool.query(query, values, (error, results) =>{
-        if(error){
-          console.error(error)
-          reject(error);
-          res.send({
-            code:"400",
-            message:"error creating account"
-          })
-        }
-        else{
-          console.log(results);
-          resolve(results);
-        }
-      })
+  const validationResult = registerSchema.validate(req.body);
+  if (validationResult.error) {
+    res.send({
+      code:"400",
+      message:validationResult.error.details[0].path
     })
   }
+  else{
+    //Write a regex checker to make sure the password contains certain characteristics
+    console.log(req.body)
+    const password = req.body.password;
+    const encryptedPassword = await bcrypt.hash(password, saltRounds)
+    let user={       
+    "email":req.body.email,
+    "username":req.body.username,
+    "password":encryptedPassword,
+    "firstName":req.body.firstName,
+    "lastName":req.body.lastName,
+    "DOB":req.body.DOB,
+    "notificationsOn":req.body.notificationsOn,
+
+    "goal":req.body.goal,
+
+    "weight":req.body.weight
+    }
+
+
+    //Creates a new user row in the userTable table
+    const userTableQuery = "INSERT INTO userTable (email, username, password, firstname, lastname, DOB, notificationsOn)  VALUES (?, ?, ?, ?, ?, ?, ?); ";
+    const userTableQueryValues = [user.email, user.username, encryptedPassword, user.firstName, user.lastName, user.DOB, user.notificationsOn];
+    const userTableInsert = await executeQuery(userTableQuery, userTableQueryValues);
+
+    //Gets and sets the userID made from the previous query
+    const setCurrentUserIDQuery = "SET @currentUser_id = LAST_INSERT_ID(); ";
+    const setCurrentUserIDPromise = await executeQuery(setCurrentUserIDQuery, []);
+
+    //Inserts the goal of the user
+    const userGoalTableQuery =   "INSERT INTO user_goalTable (goalTable_id, userTable_id, dateTimeChanged) VALUES (?, @currentUser_id, ?); "
+    const userGoalTableQueryValues = [user.goal, getCurrentTime()];
+    const userGoalTableInsert = await executeQuery(userGoalTableQuery, userGoalTableQueryValues);
+    
+    //Inserts the weight of the user
+    const userWeightTableQuery =   "INSERT INTO userWeightTable (userTable_id, userWeight, dateTimeChanged) VALUES (@currentUser_id, ?, ?);";
+    const userWeightTableQueryValues = [user.weight, getCurrentTime()]
+    const userWeightTableInsert = await executeQuery(userWeightTableQuery, userWeightTableQueryValues);
+    
+    res.send({
+      code:"200",
+      message:"Account creation successful"
+    })
+
+    //Used to execute queries
+    function executeQuery(query, values){
+      return new Promise((resolve, reject) =>{
+        pool.query(query, values, (error, results) =>{
+          if(error){
+            console.error(error)
+            reject(error);
+            res.send({
+              code:"400",
+              message:"error creating account"
+            })
+          }
+          else{
+            console.log(results);
+            resolve(results);
+          }
+        })
+      })
+    }
+  }
+
+
 }
 
 
