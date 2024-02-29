@@ -219,56 +219,67 @@ const register = async function(req,res){
 
 
 
-const login = async function(req, res) {    
-  let email = req.body.email;
-  let username = req.body.username;
+const login = async function(req, res) {
+  let email = req.body.email || "placeholder@gmail.com"
+  let username = req.body.username || "placeholderUsername";
   let password = req.body.password;
+  let validatorObject = {email: email, username: username, password: password}
 
-  // Adjust the query to select from userTable
-  pool.query('SELECT * FROM userTable WHERE email = ? OR username = ?', [email, username], async function (error, results, fields) {      
-    if (error) {
-      res.send({
-        "code": 400,          
-        "failed": "error occurred",
-        "error": error
-      });
-    } else {
-      if (results.length > 0) {
-        // Compare the provided password with the stored hashed password
-        const comparison = await bcrypt.compare(password, results[0].password);          
-        if (comparison) {//if login successful
-          //creates a jwt upon login
-          console.log(results)
-          const user = { id: results[0].userTable_id, username: results[0].username }; //user object is generated w/ username and userTable_id which is the primary key for each user
-          const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '31d' }); //jwt is generated with user object inside of it
-      
+  console.log(validatorObject)
+  const validationResult = loginSchema.validate(validatorObject);
+  if (validationResult.error) {
+    res.send({
+      code:"400",
+      message:"Error with "+validationResult.error.details[0].path
+    })
+  }
+  else{
+    // Adjust the query to select from userTable
+    pool.query('SELECT * FROM userTable WHERE email = ? OR username = ?', [email, username], async function (error, results, fields) {      
+      if (error) {
+        res.send({
+          "code": 400,          
+          "failed": "error occurred",
+          "error": error
+        });
+      } else {
+        if (results.length > 0) {
+          // Compare the provided password with the stored hashed password
+          const comparison = await bcrypt.compare(password, results[0].password);          
+          if (comparison) {//if login successful
+            //creates a jwt upon login
+            console.log(results)
+            const user = { id: results[0].userTable_id, username: results[0].username }; //user object is generated w/ username and userTable_id which is the primary key for each user
+            const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '31d' }); //jwt is generated with user object inside of it
+        
 
-          res.send({
-            "code": 200,
-            "success": "login successful",
-            "userTable_id": results[0].userTable_id,
-            "username": results[0].username,
-            "accessToken": accessToken
+            res.send({
+              "code": 200,
+              "success": "login successful",
+              "userTable_id": results[0].userTable_id,
+              "username": results[0].username,
+              "accessToken": accessToken
 
+            }
+            );
           }
-          );
-        }
-        else {
-          // Password does not match
+          else {
+            // Password does not match
+            res.send({
+              "code": 204,
+              "error": "Password does not match provided username/email"
+            });
+          }
+        } else {
+          // Email does not exist
           res.send({
-            "code": 204,
-            "error": "Password does not match provided username/email"
+            "code": 206,
+            "error": "Email/username does not exist"
           });
         }
-      } else {
-        // Email does not exist
-        res.send({
-          "code": 206,
-          "error": "Email/username does not exist"
-        });
       }
-    }
-  });
+    });
+  }
 }
 app.post('/register', upload.none(), register);
 app.post('/login', upload.none(), login);
