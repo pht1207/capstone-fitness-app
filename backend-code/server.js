@@ -862,7 +862,7 @@ const logWeight = async function(req, res) {
   //write insert statements for the user
   console.log(req.body)
   const userID = req.user.id;
-  const weightLog = req.body.weightLog;
+  const weightLog = req.body;
   const values = [userID, weightLog.userWeight, weightLog.dateTimeChanged]
   const query = "INSERT INTO userWeightTable (userTable_id, userWeight, dateTimeChanged)  VALUES (?, ?, ?)"
   console.log("logWeight Called");
