@@ -306,7 +306,7 @@ app.post('/login', upload.none(), login);
 *  -/getProfileData
 */}
 
-const updateProfile = async function(req, res) {    
+const updateProfile = async function(req, res) {
   //write code here that mirrors /register but use an alter statement instead of an insert statement
   const userID = req.user.id;
   const requestData = req.body.data;
@@ -323,14 +323,36 @@ const updateProfile = async function(req, res) {
   const values = [email, username, firstName, lastName, DOB, notificationsOn, userID]
   pool.query(query, values, (error, results) =>{
     if(error){
-      console.error("db query error", error);
-      res.status(500).send("Error updating profile in database");
+      console.error(error)
+      if (error.code === 'ER_DUP_ENTRY') {
+        if (error.sqlMessage.includes('userTable.email_UNIQUE')) {
+            //Error for if email is already in use
+            res.send({
+                code: "400",
+                message: "Email already in use"
+            });
+        }
+        else if (error.sqlMessage.includes('userTable.username_UNIQUE')) {
+            //Error for if username is already in use
+            res.send({
+                code: "400",
+                message: "Username already in use"
+            });
+        }
+    }
+    else {
+        //Any other types of errors
+        res.send({
+            code: "500",
+            message: "Internal Server Error"
+        });
+    }
     }
     else{
       console.log("data from query: ", results);
       res.json({
         code:"200",
-        message:"updated profile"
+        message:"update profile successful"
       });
     }
   })
