@@ -1,7 +1,10 @@
 import './LoginPage.css'
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
 
 function LoginPage() {
+  const navigate = useNavigate();
 
   //Your code to make the site functional goes in this empty space. The 'return()' below is what renders on the page (the html)
   async function handleSubmit(event){
@@ -14,6 +17,8 @@ function LoginPage() {
     const response = await axios.post("https://capstone.parkert.dev/backend/login", body, {})
     if(response.data.code === 200){ //If successful, set the new json web token to localstorage
       localStorage.setItem('jwt', response.data.accessToken);
+      console.log("This is new token " + response.data.accessToken);
+      navigate('/'); //redirects the user to the homepage upon login
     }
     else{ //If failed, console.log the error message
       console.log(response.data.message)

@@ -15,10 +15,41 @@ import RegisterPage from './pages/LoginRegistrationPage/RegisterPage';
 import NutritionPage from './pages/NutritionPage/NutritionPage';
 import ProfilePage from './pages/ProfilePage/ProfilePage';
 import LoginRegisterPage from './pages/LoginRegistrationPage/LoginRegister';
+import { useEffect, useState } from 'react';
+import { jwtDecode } from 'jwt-decode';
+
 
 function App() {
-  localStorage.setItem("jwt", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ0ZXN0IiwiaWF0IjoxNzA4NjQ5MjExLCJleHAiOjE3MTEzMjc2MTF9._umAnFpQ1Y7sNRogBEY50tTdsGTKetHgZ0QbbOmv31U")
-  console.log(localStorage.getItem("jwt"))
+  //localStorage.setItem("jwt", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ0ZXN0IiwiaWF0IjoxNzA4NjQ5MjExLCJleHAiOjE3MTEzMjc2MTF9._umAnFpQ1Y7sNRogBEY50tTdsGTKetHgZ0QbbOmv31U")
+
+  const [isJWTExpired, setJWTExpired] = useState(true);
+
+  //Checks if jwt is expired using the jwtDecode library
+  function jwtExpiryCheck(jwt){
+    try{
+      const decoded = jwtDecode(jwt);
+      const currentTime = Date.now()/1000;
+      return decoded.exp < currentTime; //returns false if the current time is less than expiration date of jwt
+    }
+    catch{
+      console.error("Error decoding jwt")
+      return true
+    }
+  }
+
+  useEffect(() =>{
+    //If the user's json web token is not expired, show their profile page instead of the login/register
+    const usersJWT = localStorage.getItem('jwt');
+    if(jwtExpiryCheck(usersJWT))
+    {
+      console.log("JWT is expired")
+      setJWTExpired(true);
+    }
+    else{
+      setJWTExpired(false);
+    }
+
+  }, [])
 
   return (
     <div className="App">
@@ -29,8 +60,7 @@ function App() {
                 <Link to="/">HomePage</Link>
                 <Link to="/FitnessPage">FitnessPage</Link>
                 <Link to="/NutritionPage">NutritionPage</Link>
-                <Link to="/ProfilePage">ProfilePage</Link>
-                <Link to="/LoginRegisterPage">Login/Register</Link>
+                {isJWTExpired ? <Link to="/LoginRegisterPage">Login/Register</Link> : <Link to="/ProfilePage">ProfilePage</Link>}
             </nav>
             
             <Routes>
