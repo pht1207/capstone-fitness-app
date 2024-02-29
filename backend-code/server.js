@@ -682,7 +682,7 @@ const getExercises = async function(req, res){
 const createExercises = async function(req, res){
   const userID = req.user.id;
   {/* Write a checker to see if the information inserted is appropriate for the DB columns */}
-  let exercise = req.body.exercise;
+  let exercise = req.body;
   console.log(exercise)
   const query = "INSERT INTO exerciseTable (exerciseName, muscleGroup, setCount, repCount, timeAmountInMins, createdBy) VALUES (?, ?, ?, ?, ?, ?)"
   const values = [exercise.exerciseName || null, exercise.muscleGroup || null, exercise.setCount || null, exercise.repCount || null, exercise.timeAmountInMins || null, userID ]
