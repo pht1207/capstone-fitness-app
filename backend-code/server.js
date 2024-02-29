@@ -703,7 +703,7 @@ const logExercises = async function(req, res) {
   //write insert statements for the user
   console.log(req.body)
   const userID = req.user.id;
-  const exerciseLog = req.body.exerciseLog;
+  const exerciseLog = req.body;
   const query = "INSERT INTO user_exerciseTable (userTable_id, exerciseTable_id, timeStarted, timeCompleted)  VALUES (?, ?, ?, ?)"
   const values = [userID, exerciseLog.exerciseTable_id || null, exerciseLog.timeStarted || null, exerciseLog.timeCompleted || null]
   console.log("exerciseLog Called");
