@@ -23,10 +23,8 @@ function RegisterPage() {
 
     }
 
-    const response = await axios.post("https://capstone.parkert.dev/backend/register", body, {
-  
-    })
-    console.log(response);
+    const response = await axios.post("https://capstone.parkert.dev/backend/register", body, {})
+      console.log("code: "+response.data.code+" Message: "+response.data.message) //log the response from the server
     
 
   }

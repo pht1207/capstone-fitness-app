@@ -12,7 +12,12 @@ function LoginPage() {
       password:event.target[1].value,
     }
     const response = await axios.post("https://capstone.parkert.dev/backend/login", body, {})
-    console.log(response)
+    if(response.data.code === 200){ //If successful, set the new json web token to localstorage
+      localStorage.setItem('jwt', response.data.accessToken);
+    }
+    else{ //If failed, console.log the error message
+      console.log(response.data.message)
+    }
 
 
   }
