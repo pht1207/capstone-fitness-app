@@ -4,7 +4,7 @@ import { useState } from 'react';
 import LoginPage from './LoginPage';
 import RegisterPage from './RegisterPage';
 
-function LoginRegisterPage() {
+function LoginRegisterPage(props) {
 
     const [loginRegisterBoolean, setLoginRegisterBoolean] = useState(true)
   
@@ -15,7 +15,7 @@ function LoginRegisterPage() {
   return (
     <div className="LoginRegisterPage">
         <h1>This is the login/register page</h1>
-        {loginRegisterBoolean ? <LoginPage/> : <RegisterPage/>}
+        {loginRegisterBoolean ? <LoginPage loginEvent= {props.loginEvent} setLoginEvent={props.setLoginEvent}/> : <RegisterPage/>}
         <label><button onClick={handleBoolean}>Swap between Login and Register</button></label>
     </div>
   );

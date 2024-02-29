@@ -23,6 +23,7 @@ function App() {
   //localStorage.setItem("jwt", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ0ZXN0IiwiaWF0IjoxNzA4NjQ5MjExLCJleHAiOjE3MTEzMjc2MTF9._umAnFpQ1Y7sNRogBEY50tTdsGTKetHgZ0QbbOmv31U")
 
   const [isJWTExpired, setJWTExpired] = useState(true);
+  const [loginEvent, setLoginEvent] = useState(0) //loginpage.js will increment this upon login effectively re-rendering the homepage upon login, showing profilepage.js in the navigation bar rather than loginregister.js
 
   //Checks if jwt is expired using the jwtDecode library
   function jwtExpiryCheck(jwt){
@@ -60,7 +61,7 @@ function App() {
                 <Link to="/">HomePage</Link>
                 <Link to="/FitnessPage">FitnessPage</Link>
                 <Link to="/NutritionPage">NutritionPage</Link>
-                {isJWTExpired ? <Link to="/LoginRegisterPage">Login/Register</Link> : <Link to="/ProfilePage">ProfilePage</Link>}
+                {isJWTExpired ? <Link to="/LoginRegisterPage" >Login/Register</Link> : <Link to="/ProfilePage">ProfilePage</Link>}
             </nav>
             
             <Routes>
@@ -68,7 +69,7 @@ function App() {
                 <Route path="/FitnessPage" element={<FitnessPage />} />
                 <Route path="/NutritionPage" element={<NutritionPage />} />
                 <Route path="/ProfilePage" element={<ProfilePage />} />
-                <Route path="/LoginRegisterPage" element={<LoginRegisterPage />} />
+                <Route path="/LoginRegisterPage" element={<LoginRegisterPage loginEvent= {loginEvent} setLoginEvent={setLoginEvent}/>} />
             </Routes>
         </Router>
     </div>

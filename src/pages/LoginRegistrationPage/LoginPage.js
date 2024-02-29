@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 
-function LoginPage() {
+function LoginPage(props) {
   const navigate = useNavigate();
 
   //Your code to make the site functional goes in this empty space. The 'return()' below is what renders on the page (the html)
@@ -18,13 +18,12 @@ function LoginPage() {
     if(response.data.code === 200){ //If successful, set the new json web token to localstorage
       localStorage.setItem('jwt', response.data.accessToken);
       console.log("This is new token " + response.data.accessToken);
+      props.setLoginEvent(props.loginEvent+1) //This will re-render the homepage.js file, showing profilepage.js instead of loginregister.js
       navigate('/'); //redirects the user to the homepage upon login
     }
     else{ //If failed, console.log the error message
       console.log(response.data.message)
     }
-
-
   }
 
 
