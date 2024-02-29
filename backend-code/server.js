@@ -69,7 +69,18 @@ const loginSchema = Joi.object({
   username: Joi.string().alphanum().min(3).max(45).required(),
   password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
 });
+const updateProfileSchema = Joi.object({
+  email: Joi.string().email().required(),
+  username: Joi.string().alphanum().min(3).max(45).required(),
+  password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
+  firstName: Joi.string().alphanum().max(45).required(),
+  lastName: Joi.string().alphanum().max(45).required(),
+  DOB: Joi.date().iso().required(), // Checks for 'YYYY-MM-DD' format
+  notificationsOn: Joi.number().integer().valid(0, 1).required(),
+});
 {/* End of form validation */}
+
+
 
 
 
@@ -312,50 +323,68 @@ const updateProfile = async function(req, res) {
   const requestData = req.body.data;
   const email = requestData.email;
   const username = requestData.username;
+  const password = requestData.password;
   const firstName = requestData.firstName;
   const lastName = requestData.lastName;
   const DOB = requestData.DOB;
   const notificationsOn = requestData.notificationsOn;
-  const query = (
-  "UPDATE userTable "+
-  "SET userTable.email = ?, userTable.username = ?, userTable.firstName = ?, userTable.lastName = ?, userTable.DOB = ?, userTable.notificationsOn = ? "+
-  "WHERE userTable.userTable_id = ?")
-  const values = [email, username, firstName, lastName, DOB, notificationsOn, userID]
-  pool.query(query, values, (error, results) =>{
-    if(error){
-      console.error(error)
-      if (error.code === 'ER_DUP_ENTRY') {
-        if (error.sqlMessage.includes('userTable.email_UNIQUE')) {
-            //Error for if email is already in use
-            res.send({
-                code: "400",
-                message: "Email already in use"
-            });
-        }
-        else if (error.sqlMessage.includes('userTable.username_UNIQUE')) {
-            //Error for if username is already in use
-            res.send({
-                code: "400",
-                message: "Username already in use"
-            });
-        }
-    }
-    else {
-        //Any other types of errors
-        res.send({
-            code: "500",
-            message: "Internal Server Error"
+
+  let validatorObject = {email: email, username: username, password: password, firstName: firstName, lastName: lastName, DOB: DOB, notificationsOn: notificationsOn}
+  console.log(validatorObject)
+
+  const encryptedPassword = await bcrypt.hash(password, saltRounds)
+
+  console.log(validatorObject)
+  const validationResult = updateProfileSchema.validate(validatorObject);
+  if (validationResult.error) {
+    console.log(validationResult.error)
+    res.send({
+      code:"400",
+      message:"Error with "+validationResult.error.details[0].path
+    })
+  }
+  else{
+    const query = (
+    "UPDATE userTable "+
+    "SET userTable.email = ?, userTable.username = ?, userTable.password = ?, userTable.firstName = ?, userTable.lastName = ?, userTable.DOB = ?, userTable.notificationsOn = ? "+
+    "WHERE userTable.userTable_id = ?")
+    const values = [email, username, encryptedPassword, firstName, lastName, DOB, notificationsOn, userID]
+    pool.query(query, values, (error, results) =>{
+      if(error){
+        console.error(error)
+        if (error.code === 'ER_DUP_ENTRY') {
+          if (error.sqlMessage.includes('userTable.email_UNIQUE')) {
+              //Error for if email is already in use
+              res.send({
+                  code: "400",
+                  message: "Email already in use"
+              });
+          }
+          else if (error.sqlMessage.includes('userTable.username_UNIQUE')) {
+              //Error for if username is already in use
+              res.send({
+                  code: "400",
+                  message: "Username already in use"
+              });
+          }
+      }
+      else {
+          //Any other types of errors
+          res.send({
+              code: "500",
+              message: "Internal Server Error"
+          });
+      }
+      }
+      else{
+        console.log("data from query: ", results);
+        res.json({
+          code:"200",
+          message:"update profile successful"
         });
-    }
-    }
-    else{
-      console.log("data from query: ", results);
-      res.json({
-        code:"200",
-        message:"update profile successful"
-      });
-    }
-  })
+      }
+    })
+  }
 }
 const getProfileData = async function(req, res){
   const userID = req.user.id;
