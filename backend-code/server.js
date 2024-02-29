@@ -25,9 +25,9 @@ const DBPassword = process.env.DBPassword;
 const DBName = process.env.DBName;
 
 // Start the server
-const PORT = process.env.PORT || 5008;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+const BACKENDPORT = process.env.BACKENDPORT || 5008;
+app.listen(BACKENDPORT, () => {
+  console.log(`Server running on port ${BACKENDPORT}`);
 });
 
 //function to get the current time
@@ -133,6 +133,8 @@ app.get('/jwtVerify', upload.none(), jwtVerify);
 //Function to register the users
 //Need to add the user inputting their weight and selected goal to the registration process***
 const register = async function(req,res){
+  console.log("register called");
+  console.log(req.body)
   const validationResult = registerSchema.validate(req.body);
   if (validationResult.error) {
     res.send({
@@ -608,6 +610,7 @@ app.get('/getUserNutritionLog', jwtVerify, getUserNutritionLog);
 {/*
   * END OF SECTION: NUTRITION
 */}
+
 
 
 

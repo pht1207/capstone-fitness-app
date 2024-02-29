@@ -10,14 +10,10 @@ function LoginPage() {
     const body = {
       username:event.target[0].value,
       password:event.target[1].value,
-
     }
-    console.log(body)
+    const response = await axios.post("https://capstone.parkert.dev/backend/login", body, {})
+    console.log(response)
 
-    const response = await axios.post("http://192.168.1.127:5008/login", body, {
-  
-    })
-    
 
   }
 

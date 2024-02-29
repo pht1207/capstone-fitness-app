@@ -9,6 +9,7 @@ function RegisterPage() {
   async function handleSubmit(event){
     event.preventDefault();
     console.log("form submitted");
+
     const body = {
       email:event.target[0].value,
       username:event.target[1].value,
@@ -17,14 +18,15 @@ function RegisterPage() {
       lastName:event.target[4].value,
       DOB:event.target[5].value,
       weight:event.target[6].value,
-      fitnessGoal:event.target[7].value,
+      goal:event.target[7].value,
       notificationsOn:event.target[8].value
 
     }
 
-    const response = await axios.post("http://192.168.1.127:5008/register", body, {
+    const response = await axios.post("https://capstone.parkert.dev/backend/register", body, {
   
     })
+    console.log(response);
     
 
   }
@@ -45,9 +47,9 @@ function RegisterPage() {
           <label>Your weight: <input type='text'></input></label>
           <label>Fitness goal: 
             <select>
-              <option value="weight loss">Weight loss</option>
-              <option value="weight loss">Weight gain</option>
-              <option value="weight loss">Health</option>
+              <option value="1">Weight loss</option>
+              <option value="2">Weight gain</option>
+              <option value="3">Health</option>
             </select>
           </label>
           <label>Notifications on: <input type='text'></input></label>
