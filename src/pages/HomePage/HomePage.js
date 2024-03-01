@@ -13,6 +13,18 @@ function HomePage() {
           <h1 id="welcome_msg"><u>Welcome</u></h1>
           <img id="homepage_img" src={require('./background.png')} alt="Man resting after exercise"></img>
         </div>
+        <div class="weight_graph">
+          <h4>Weight Graph</h4>
+          <hr/>
+        </div>
+        <div class="tips">
+          <h4>Tips</h4>
+          <hr/>
+        </div>
+        <div class="workout_log">
+          <h4>Workout Log</h4>
+          <hr/>
+        </div>
     </div>
   );
 }
