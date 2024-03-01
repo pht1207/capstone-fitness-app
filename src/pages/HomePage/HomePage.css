@@ -1,9 +1,51 @@
-.HomePage #homepage_img{
+.HomePage {
+    position: relative;
+  }
+  
+  #homepage_img {
     align-items: center;
     justify-self: center;
     margin: 0 auto;
     width: 90%;
-    max-width: 1000px;
-    max-width: 500;
-    padding-top: 25px;
+    max-width: 900px;
+    padding-top: 10%;
+    position: relative;
+  }
+  
+  .HomePage .weight_graph, .tips {
+    position: absolute;
+  }
+  .HomePage .weight_graph, .tips, .workout_log{
+    background-color: rgba(185, 185, 185, 0.164);
+  }
+  
+  .HomePage .weight_graph {
+    border-style: solid;
+    left: 5%;
+    top: 10%;
+    width: 40%; 
+  }
+  
+  .HomePage .tips {
+    border-style: solid;
+    right: 5%;
+    top: 10%;
+    width: 40%;
+    padding-bottom: 8px;
+  }
+  
+  .HomePage .workout_log {
+    border-style: solid;
+    left: 10%;
+    margin-bottom: 10%;
+    width: 80%;
+    position: relative;
+    background-color: rgba(102, 102, 102, 0.192);
 }
+  .HomePage h4{
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  .HomePage #next_button:hover{
+    background-color: rgba(23, 251, 255, 0.411);
+  }
