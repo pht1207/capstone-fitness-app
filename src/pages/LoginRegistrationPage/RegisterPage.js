@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import './RegisterPage.css'
 import axios from 'axios';
 
@@ -6,9 +7,17 @@ function RegisterPage() {
 
   //Your code to make the site functional goes in this empty space. The 'return()' below is what renders on the page (the html)
   
+  const [checked, setChecked] = useState(false);
+  let checkValue;
   async function handleSubmit(event){
     event.preventDefault();
     console.log("form submitted");
+    if(checked === true){
+      checkValue = 1;
+    }
+    else{
+      checkValue = 0;
+    }
 
     const body = {
       email:event.target[0].value,
@@ -19,14 +28,17 @@ function RegisterPage() {
       DOB:event.target[5].value,
       weight:event.target[6].value,
       goal:event.target[7].value,
-      notificationsOn:event.target[8].value
-
+      notificationsOn:checkValue
     }
 
     const response = await axios.post("https://capstone.parkert.dev/backend/register", body, {})
       console.log("code: "+response.data.code+" Message: "+response.data.message) //log the response from the server
     
 
+  }
+
+  function handleCheckboxChange(){
+    setChecked(!checked)
   }
 
 
@@ -50,7 +62,7 @@ function RegisterPage() {
               <option value="3">Health</option>
             </select>
           </label>
-          <label>Notifications on: <input type='text'></input></label>
+          <label>Notifications on: <input type='checkbox' checked={checked} onChange={handleCheckboxChange}></input></label>
 
           <button type='submit'>Register</button>
         </form>
