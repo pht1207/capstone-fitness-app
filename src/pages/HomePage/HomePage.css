@@ -31,6 +31,7 @@
     right: 5%;
     top: 10%;
     width: 40%;
+    padding-bottom: 8px;
   }
   
   .HomePage .workout_log {
@@ -44,4 +45,7 @@
   .HomePage h4{
     margin-top: 10px;
     margin-bottom: 10px;
+  }
+  .HomePage #next_button:hover{
+    background-color: rgba(23, 251, 255, 0.411);
   }
