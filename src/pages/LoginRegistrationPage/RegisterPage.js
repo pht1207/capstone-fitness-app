@@ -53,7 +53,7 @@ function RegisterPage() {
           <label>Your password: <input type='text'></input></label>
           <label>Your first name: <input type='text'></input></label>
           <label>Your last name: <input type='text'></input></label>
-          <label>Your date of birth: <input type='text'></input></label>
+          <label>Your date of birth: <input type='date'></input></label>
           <label>Your weight: <input type='text'></input></label>
           <label>Fitness goal: 
             <select>
