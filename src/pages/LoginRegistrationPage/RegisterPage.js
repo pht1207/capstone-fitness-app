@@ -3,7 +3,7 @@ import './RegisterPage.css'
 import axios from 'axios';
 
 
-function RegisterPage() {
+function RegisterPage(props) {
 
   //Your code to make the site functional goes in this empty space. The 'return()' below is what renders on the page (the html)
   
@@ -33,7 +33,9 @@ function RegisterPage() {
 
     const response = await axios.post("https://capstone.parkert.dev/backend/register", body, {})
       console.log("code: "+response.data.code+" Message: "+response.data.message) //log the response from the server
-    
+      if(response.data.message === "Account creation successful"){
+        props.setLoginRegisterBoolean(!props.loginRegisterBoolean);
+      }
 
   }
 
