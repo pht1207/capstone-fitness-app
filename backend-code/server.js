@@ -239,18 +239,15 @@ const login = async function(req, res) {
 
   const validationResult = loginSchema.validate(validatorObject);
   if (validationResult.error) {
-    res.send({
-      code:"400",
-      message:"Error with "+validationResult.error.details[0].path
+    res.status(400).json({
+      "error":"Error with "+validationResult.error.details[0].path
     })
   }
   else{
     // Adjust the query to select from userTable
     pool.query('SELECT * FROM userTable WHERE email = ? OR username = ?', [email, username], async function (error, results, fields) {      
       if (error) {
-        res.send({
-          "code": 400,          
-          "failed": "error occurred",
+        res.status(400).json({
           "error": error
         });
       } else {
@@ -261,29 +258,20 @@ const login = async function(req, res) {
             //creates a jwt upon login
             const user = { id: results[0].userTable_id, username: results[0].username }; //user object is generated w/ username and userTable_id which is the primary key for each user
             const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '31d' }); //jwt is generated with user object inside of it
-        
-
-            res.send({
-              "code": 200,
+            res.status(200).json({
               "success": "login successful",
-              "userTable_id": results[0].userTable_id,
-              "username": results[0].username,
               "accessToken": accessToken
-
-            }
-            );
+            });
           }
           else {
             // Password does not match
-            res.send({
-              "code": 204,
+            res.status(400).json({
               "error": "Password does not match provided username/email"
             });
           }
         } else {
           // Email does not exist
-          res.send({
-            "code": 206,
+          res.status(400).json({
             "error": "Email/username does not exist"
           });
         }
@@ -336,8 +324,7 @@ const updateProfile = async function(req, res) {
   const validationResult = updateProfileSchema.validate(validatorObject);
   if (validationResult.error) {
     console.error(validationResult.error)
-    res.send({
-      code:"400",
+    res.status(400).json({
       message:"Error with "+validationResult.error.details[0].path
     })
   }
@@ -353,30 +340,26 @@ const updateProfile = async function(req, res) {
         if (error.code === 'ER_DUP_ENTRY') {
           if (error.sqlMessage.includes('userTable.email_UNIQUE')) {
               //Error for if email is already in use
-              res.send({
-                  code: "400",
+              res.status(400).json({
                   message: "Email already in use"
               });
           }
           else if (error.sqlMessage.includes('userTable.username_UNIQUE')) {
               //Error for if username is already in use
-              res.send({
-                  code: "400",
+              res.status(400).json({
                   message: "Username already in use"
               });
           }
       }
       else {
           //Any other types of errors
-          res.send({
-              code: "500",
+          res.status(500).json({
               message: "Internal Server Error"
           });
       }
       }
       else{
-        res.json({
-          code:"200",
+        res.status(200).json({
           message:"update profile successful"
         });
       }
@@ -400,7 +383,8 @@ const getProfileData = async function(req, res){
         res.status(500).send("Error fetching foods from database");
       }
       else{
-        res.json(results);
+        res.status(200).json(results);
+        
       }
     })
 }
@@ -426,7 +410,16 @@ const setUserGoal = async function(req, res){
   const userID = req.user.id;
   console.log(userID)
   //Make query to set userGoal in user_goalTable
-  pool.query()
+  pool.query(query, values, (results, error) =>{
+    if(error){
+      console.error(error);
+    }
+    else{
+      res.status(400).json({
+      
+      });
+    }
+  })
 }
 app.post('/setUserGoal', jwtVerify, setUserGoal);
 
@@ -461,8 +454,7 @@ const logNutrition = async function(req, res) {
       console.error(error);
     }
     else{
-      res.send({
-        "code": 200,
+      res.status(200).json({
         "success": "logNutrition successful",
       });      
     }
@@ -485,7 +477,8 @@ const getUserNutritionLog = async function(req, res) {
       res.status(500).send("Error fetching foods from database");
     }
     else{
-      res.json(results);
+      res.status(200).json(results);
+
     }
   })
 }
@@ -499,7 +492,7 @@ const getFoods = async function(req, res){
       res.status(500).send("Error fetching foods from database");
     }
     else{
-      res.json(results);
+      res.status(200).json(results);
     }
   })
 }
@@ -638,7 +631,7 @@ const getExercises = async function(req, res){
         } 
         else{
             // Process the results
-            res.json(results);
+            res.status(200).json(results)
           }
     });
   }
@@ -658,7 +651,7 @@ const getExercises = async function(req, res){
           res.status(500).send("Error fetching foods from database");
         }
         else{
-          res.json(results);
+          res.status(200).json(results)
         }
     });
   }
@@ -676,7 +669,9 @@ const createExercises = async function(req, res){
       res.status(500).send("Error creating exercise");
     }
     else{
-      res.status(200).send("Exercise created")
+      res.status(200).json({
+        "message":"exercise created"
+    })
     }
   })
 }
@@ -694,9 +689,8 @@ const logExercises = async function(req, res) {
       res.status(500).send("Error logging exercise to database");
     }
     else{
-      res.send({
-        "code": 200,
-        "success": "logWorkouts successful",
+      res.status(200).json({
+        "success": "workout log successful",
       });      
     }
   });
@@ -717,7 +711,7 @@ const getUserExerciseLog = async function(req, res) {
       res.status(500).send("Error fetching exercise log from database");
     }
     else{
-      res.json(results);
+      res.status(200).json(results)
     }
   })
 }
@@ -761,7 +755,7 @@ const getWorkouts = async function(req, res){
           res.status(500).send("Error fetching workouts from database");
         }
         else{
-          res.json(results);
+          res.status(200).json(results)        
         }
     });
   }
@@ -784,9 +778,8 @@ const logWorkouts = async function(req, res) {
 
     }
     else{
-      res.send({
-        "code": 200,
-        "success": "logWorkouts successful",
+      res.status(200).json({
+        "message": "logWorkouts successful",
       });      
     }
   });
@@ -807,7 +800,7 @@ const getUserWorkoutLog = async function(req, res) {
       res.status(500).send("Error fetching workout log from database");
     }
     else{
-      res.json(results);
+      res.status(200).json(results)
     }
   })
 }
@@ -841,9 +834,8 @@ const logWeight = async function(req, res) {
       console.error(error);
     }
     else{
-      res.send({
-        "code": 200,
-        "success": "logWeight successful",
+      res.status(200).json({
+        "message": "weight log successful",
       });      
     }
   });
