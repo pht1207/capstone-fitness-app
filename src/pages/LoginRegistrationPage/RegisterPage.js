@@ -7,7 +7,7 @@ import {HttpPopupContext} from '../../components/HttpPopupContext';
 function RegisterPage(props) {  
   const [checked, setChecked] = useState(false);
   //Used in the httpopup component
-  const {message, setMessage} = useContext(HttpPopupContext);
+  const {response, setResponse} = useContext(HttpPopupContext);
 
   async function handleSubmit(event){
     let checkValue;
@@ -32,19 +32,27 @@ function RegisterPage(props) {
       notificationsOn:checkValue
     }
 
-    const response = await axios.post("https://capstone.parkert.dev/backend/register", body, {})
-      console.log("code: "+response.data.code+" Message: "+response.data.message) //log the response from the server
-      setMessage(response.data.message)
-      if(response.data.message === "Account creation successful"){
-        props.setLoginRegisterBoolean(!props.loginRegisterBoolean);
-      }
+    try{
+      const axiosResponse = await axios.post("https://capstone.parkert.dev/backend/register", body, {})
+      console.log(axiosResponse)
 
+      setResponse(axiosResponse)
+      if(axiosResponse.data.message === "Account creation successful"){
+        props.setLoginRegisterBoolean(!props.loginRegisterBoolean); //sends the user to the login page
+      }
+    }
+    catch(error){
+      console.error("error: ", error.response)
+      setResponse(error.response)
+    }
   }
 
+
+
+  //Used for 'notifications on' box
   function handleCheckboxChange(){
     setChecked(!checked)
   }
-
 
 
   return (

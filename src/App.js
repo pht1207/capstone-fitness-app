@@ -26,7 +26,7 @@ function App() {
   const [loginEvent, setLoginEvent] = useState(0) //loginpage.js will increment this upon login effectively re-rendering the homepage upon login, showing profilepage.js in the navigation bar rather than loginregister.js
 
   //These are state's used in the context api
-  const [message, setMessage] = useState(false)
+  const [response, setResponse] = useState(false)
 
   //Checks if jwt is expired using the jwtDecode library
   function jwtExpiryCheck(jwt){
@@ -56,7 +56,7 @@ function App() {
   }, [])
 
   return (
-    <HttpPopupContext.Provider value={{message, setMessage}}>
+    <HttpPopupContext.Provider value={{response, setResponse}}>
     <div className="App">
       {/*Below this text is the navigation bar. The default is the 'home page'. This page shouldn't need to be editted except to change the navigation bar. Change the 'fitnesspage.js', the 'homepage.js', etc. to change each page. */}
       <Router>

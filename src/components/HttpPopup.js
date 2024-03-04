@@ -4,19 +4,27 @@ import { HttpPopupContext } from './HttpPopupContext';
 
 
 function HttpPopup() {
-  const {message, setMessage} = useContext(HttpPopupContext);
-
+  const {response, setResponse} = useContext(HttpPopupContext);
+  const [popupColor, setPopupColor] = useState("green")
   useEffect(()=>{
-    console.log("useeffect called")
-    setTimeout(() =>{
-      setMessage(false)
+    if(response.status === 200){
+      setPopupColor("green")
+    }
+    else{
+      setPopupColor("red")
+    }
+    setTimeout(() =>{ //Wait 10 seconds before hiding the response message
+      setResponse(false)
     },10000)
-  },[message])
+  },[response])
+
+  
   
   return (
-    <div className="HttpPopup">
-      {message ? 
-            <p>Message: {message}</p>
+    <div className="HttpPopup" style={{backgroundColor:popupColor}}>
+      {/* Below will show the message if one is set, or show nothing once message state has been set to empty */}
+      {response ? 
+            <p>Message: {response.data.message}</p>
             :
             <></>
       }

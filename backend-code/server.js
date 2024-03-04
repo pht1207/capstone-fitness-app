@@ -136,8 +136,8 @@ app.get('/jwtVerify', upload.none(), jwtVerify);
 const register = async function(req,res){
   const validationResult = registerSchema.validate(req.body);
   if (validationResult.error) {
-    res.send({
-      code:"400",
+    console.error(validationResult.error)
+    res.status(400).json({
       message:"Error with "+validationResult.error.details[0].path
     })
   }
