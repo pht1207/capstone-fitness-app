@@ -1,12 +1,18 @@
 import './HttpPopup.css'
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useContext, useEffect, useState } from 'react';
+import { HttpPopupContext } from './HttpPopupContext';
 
 
-function HttpPopup(props) {
+function HttpPopup() {
+  const {message, setMessage} = useContext(HttpPopupContext);
+
+  useEffect(()=>{
+    console.log("useeffect called")
+  },[message])
+  
   return (
     <div className="HttpPopup">
-      <p>test</p>
+      <p>Message: {message}</p>
     </div>
   );
 }

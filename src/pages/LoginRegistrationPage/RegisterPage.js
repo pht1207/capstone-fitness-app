@@ -1,18 +1,17 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import './RegisterPage.css'
 import axios from 'axios';
-import HttpPopup from '../../components/HttpPopup';
+import {HttpPopupContext} from '../../components/HttpPopupContext';
 
 
-function RegisterPage(props) {
-
-  //Your code to make the site functional goes in this empty space. The 'return()' below is what renders on the page (the html)
-  
+function RegisterPage(props) {  
   const [checked, setChecked] = useState(false);
-  let checkValue;
+  //Used in the httpopup component
+  const {message, setMessage, popupCalled, setPopupCalled} = useContext(HttpPopupContext);
+
   async function handleSubmit(event){
+    let checkValue;
     event.preventDefault();
-    console.log("form submitted");
     if(checked === true){
       checkValue = 1;
     }
@@ -71,7 +70,6 @@ function RegisterPage(props) {
 
           <button type='submit'>Register</button>
         </form>
-        <HttpPopup/>
     </div>
   );
 }
