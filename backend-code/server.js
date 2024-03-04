@@ -236,7 +236,7 @@ const login = async function(req, res) {
   const validationResult = loginSchema.validate(validatorObject);
   if (validationResult.error) {
     res.status(400).json({
-      "error":"Error with "+validationResult.error.details[0].path
+      "message":"Error with "+validationResult.error.details[0].path
     })
   }
   else{
@@ -244,7 +244,7 @@ const login = async function(req, res) {
     pool.query('SELECT * FROM userTable WHERE email = ? OR username = ?', [email, username], async function (error, results, fields) {      
       if (error) {
         res.status(400).json({
-          "error": error
+          "message": error
         });
       } else {
         if (results.length > 0) {
@@ -255,20 +255,20 @@ const login = async function(req, res) {
             const user = { id: results[0].userTable_id, username: results[0].username }; //user object is generated w/ username and userTable_id which is the primary key for each user
             const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '31d' }); //jwt is generated with user object inside of it
             res.status(200).json({
-              "success": "login successful",
+              "message": "login successful",
               "accessToken": accessToken
             });
           }
           else {
             // Password does not match
             res.status(400).json({
-              "error": "Password does not match provided username/email"
+              "message": "Password does not match provided username/email"
             });
           }
         } else {
           // Email does not exist
           res.status(400).json({
-            "error": "Email/username does not exist"
+            "message": "Email/username does not exist"
           });
         }
       }
