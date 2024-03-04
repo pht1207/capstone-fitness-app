@@ -236,7 +236,7 @@ const login = async function(req, res) {
   const validationResult = loginSchema.validate(validatorObject);
   if (validationResult.error) {
     res.status(400).json({
-      "message":"Error with "+validationResult.error.details[0].path
+      message:"Error with "+validationResult.error.details[0].path
     })
   }
   else{
@@ -244,7 +244,7 @@ const login = async function(req, res) {
     pool.query('SELECT * FROM userTable WHERE email = ? OR username = ?', [email, username], async function (error, results, fields) {      
       if (error) {
         res.status(400).json({
-          "message": error
+          message: error
         });
       } else {
         if (results.length > 0) {
@@ -255,20 +255,20 @@ const login = async function(req, res) {
             const user = { id: results[0].userTable_id, username: results[0].username }; //user object is generated w/ username and userTable_id which is the primary key for each user
             const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '31d' }); //jwt is generated with user object inside of it
             res.status(200).json({
-              "message": "login successful",
-              "accessToken": accessToken
+              message: "login successful",
+              accessToken: accessToken
             });
           }
           else {
             // Password does not match
             res.status(400).json({
-              "message": "Password does not match provided username/email"
+              message: "Password does not match provided username/email"
             });
           }
         } else {
           // Email does not exist
           res.status(400).json({
-            "message": "Email/username does not exist"
+            message: "Email/username does not exist"
           });
         }
       }
@@ -406,6 +406,8 @@ const setUserGoal = async function(req, res){
   const userID = req.user.id;
   console.log(userID)
   //Make query to set userGoal in user_goalTable
+  const query = ""
+  const values = [];
   pool.query(query, values, (results, error) =>{
     if(error){
       console.error(error);
@@ -451,7 +453,7 @@ const logNutrition = async function(req, res) {
     }
     else{
       res.status(200).json({
-        "success": "logNutrition successful",
+        message: "logNutrition successful",
       });      
     }
   });
@@ -666,7 +668,7 @@ const createExercises = async function(req, res){
     }
     else{
       res.status(200).json({
-        "message":"exercise created"
+        message:"exercise created"
     })
     }
   })
@@ -686,7 +688,7 @@ const logExercises = async function(req, res) {
     }
     else{
       res.status(200).json({
-        "success": "workout log successful",
+        message: "workout log successful",
       });      
     }
   });
@@ -775,7 +777,7 @@ const logWorkouts = async function(req, res) {
     }
     else{
       res.status(200).json({
-        "message": "logWorkouts successful",
+        message: "logWorkouts successful",
       });      
     }
   });
@@ -831,7 +833,7 @@ const logWeight = async function(req, res) {
     }
     else{
       res.status(200).json({
-        "message": "weight log successful",
+        message: "weight log successful",
       });      
     }
   });
