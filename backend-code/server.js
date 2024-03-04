@@ -179,8 +179,7 @@ const register = async function(req,res){
     const userWeightTableQueryValues = [user.weight, getCurrentTime()]
     const userWeightTableInsert = await executeQuery(userWeightTableQuery, userWeightTableQueryValues);
     
-    res.send({
-      code:"200",
+    res.status(200).json({
       message:"Account creation successful"
     })
   }
@@ -197,23 +196,20 @@ const register = async function(req,res){
             if (error.code === 'ER_DUP_ENTRY') {
               if (error.sqlMessage.includes('userTable.email_UNIQUE')) {
                   //Error for if email is already in use
-                  res.send({
-                      code: "400",
+                  res.status(400).json({
                       message: "Email already in use"
                   });
               }
               else if (error.sqlMessage.includes('userTable.username_UNIQUE')) {
                   //Error for if username is already in use
-                  res.send({
-                      code: "400",
+                  res.status(400).json({
                       message: "Username already in use"
                   });
               }
           }
           else {
               //Any other types of errors
-              res.send({
-                  code: "500",
+              res.status(400).json({
                   message: "Internal Server Error"
               });
           }
