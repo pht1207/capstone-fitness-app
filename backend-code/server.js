@@ -96,7 +96,6 @@ const updateProfileSchema = Joi.object({
 //This function will be used to verify the json web token from the user.
 //Acts as a middleware. When a method is called, it's HTTP headers are verified here first.
 const jwtVerify = (req, res, next) => {
-  console.log("jwtverify called")
   const authHeader = req.headers['authorization']; //extracts the token from the http header
   const token = authHeader && authHeader.split(' ')[1]; //object that contains the token
 
@@ -135,8 +134,6 @@ app.get('/jwtVerify', upload.none(), jwtVerify);
 //Function to register the users
 //Need to add the user inputting their weight and selected goal to the registration process***
 const register = async function(req,res){
-  console.log("register called");
-  console.log(req.body)
   const validationResult = registerSchema.validate(req.body);
   if (validationResult.error) {
     res.send({
@@ -222,7 +219,6 @@ const register = async function(req,res){
           }
           }
           else{
-            console.log(results);
             resolve(results);
           }
         })
@@ -241,7 +237,6 @@ const login = async function(req, res) {
   let password = req.body.password;
   let validatorObject = {email: email, username: username, password: password}
 
-  console.log(validatorObject)
   const validationResult = loginSchema.validate(validatorObject);
   if (validationResult.error) {
     res.send({
@@ -264,7 +259,6 @@ const login = async function(req, res) {
           const comparison = await bcrypt.compare(password, results[0].password);          
           if (comparison) {//if login successful
             //creates a jwt upon login
-            console.log(results)
             const user = { id: results[0].userTable_id, username: results[0].username }; //user object is generated w/ username and userTable_id which is the primary key for each user
             const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '31d' }); //jwt is generated with user object inside of it
         
@@ -336,14 +330,12 @@ const updateProfile = async function(req, res) {
   const notificationsOn = requestData.notificationsOn;
 
   let validatorObject = {email: email, username: username, password: password, firstName: firstName, lastName: lastName, DOB: DOB, height:height, notificationsOn: notificationsOn}
-  console.log(validatorObject)
 
   const encryptedPassword = await bcrypt.hash(password, saltRounds)
 
-  console.log(validatorObject)
   const validationResult = updateProfileSchema.validate(validatorObject);
   if (validationResult.error) {
-    console.log(validationResult.error)
+    console.error(validationResult.error)
     res.send({
       code:"400",
       message:"Error with "+validationResult.error.details[0].path
@@ -383,7 +375,6 @@ const updateProfile = async function(req, res) {
       }
       }
       else{
-        console.log("data from query: ", results);
         res.json({
           code:"200",
           message:"update profile successful"
@@ -394,8 +385,6 @@ const updateProfile = async function(req, res) {
 }
 const getProfileData = async function(req, res){
   const userID = req.user.id;
-  console.log(userID)
-  //Write a query that can get the userTable information, get the user's weight info, and also get the goal info while joining the correct tables to convert the id's to their acutal values
   pool.query(
     'SELECT userTable.email, userTable.username, userTable.firstName, userTable.lastName, userTable.height, goalTable.goalName, userWeightTable.userWeight, userWeightTable.dateTimeChanged ' + //specify each column that should be gathered throughout the query
     'FROM userTable ' + //get all rows from usertable and only show columns in select statement
@@ -411,7 +400,6 @@ const getProfileData = async function(req, res){
         res.status(500).send("Error fetching foods from database");
       }
       else{
-        console.log("data from query: ", results);
         res.json(results);
       }
     })
@@ -468,14 +456,11 @@ const logNutrition = async function(req, res) {
   const nutritionLog = req.body;
   const values = [userID, nutritionLog.caloriesConsumed || null, nutritionLog.carbsConsumed || null, nutritionLog.proteinConsumed || null, nutritionLog.fatConsumed || null, nutritionLog.dateTimeConsumed || null]
   const query = "INSERT INTO userConsumptionTable (userTable_id, caloriesConsumed, carbsConsumed, proteinConsumed, fatsConsumed, dateTimeConsumed)  VALUES (?, ?, ?, ?, ?, ?)"
-  console.log("logNutrition Called");
   pool.query(query, values, (error, results) =>{
     if(error){
-      console.log(error);
+      console.error(error);
     }
     else{
-      console.log("logged nutrition");
-      console.log(results);
       res.send({
         "code": 200,
         "success": "logNutrition successful",
@@ -500,7 +485,6 @@ const getUserNutritionLog = async function(req, res) {
       res.status(500).send("Error fetching foods from database");
     }
     else{
-      console.log("data from foods: ", results);
       res.json(results);
     }
   })
@@ -508,7 +492,6 @@ const getUserNutritionLog = async function(req, res) {
 
 
 const getFoods = async function(req, res){
-  console.log("getfoods called")
   //return all foods as json, let frontend sort through it as there's not going to be much to it
   pool.query('SELECT * FROM foodsTable', (error, results, fields) =>{
     if(error){
@@ -516,7 +499,6 @@ const getFoods = async function(req, res){
       res.status(500).send("Error fetching foods from database");
     }
     else{
-      console.log("data from foods: ", results);
       res.json(results);
     }
   })
@@ -525,7 +507,7 @@ const getFoods = async function(req, res){
 //runs the function everyday at 12am
 const cron = require('node-cron');
 cron.schedule('0 0 * * *', function() {
-  console.log('Running daily user nutrition calculator every day at 12 AM');
+  console.log('Running daily user nutrition calculator every day at 12 AM for each user');
   dailyNutritionTableCalculator()
 });
 //Calculates a daily nutrition recommendation for each user in the DB based around their weight and goal as a user.
@@ -556,10 +538,10 @@ function dailyNutritionTableCalculator(){
           let values = [currentUser.userTable_id, calculatedNutrition.dailyCalories || null, calculatedNutrition.gramsCarbs || null, calculatedNutrition.gramsProtein || null, calculatedNutrition.gramsFat || null, mysqlDateTime || null]
           pool.query(query, values, (error, results) =>{
             if(error){
-              console.log(error);        
+              console.error(error);        
             }
             else{
-              console.log("dailyUserNutrition successfully logged");
+              //continue loop as normal
             }
           }) 
         }
@@ -649,7 +631,6 @@ const getExercises = async function(req, res){
       'OR (exerciseTable.createdBy IS NULL AND exerciseTable.muscleGroup = ?)', //Also gets every exercise that shows a NULL value in createdBy column & only if they match muscleGroup filter
       [userID, req.query.muscleGroup, req.query.muscleGroup], 
       (error, results, fields) => { 
-        console.log("filtered by muscle group")
         if(error){
           // Handle the error
           console.error("db query error", error);
@@ -657,12 +638,10 @@ const getExercises = async function(req, res){
         } 
         else{
             // Process the results
-            console.log("data from exercises: ", results);
             res.json(results);
           }
     });
   }
-
   else{
     //Will return every exercise, including ones created by the user
     pool.query(
@@ -679,7 +658,6 @@ const getExercises = async function(req, res){
           res.status(500).send("Error fetching foods from database");
         }
         else{
-          console.log("data from exercises: ", results);
           res.json(results);
         }
     });
@@ -690,7 +668,6 @@ const createExercises = async function(req, res){
   const userID = req.user.id;
   {/* Write a checker to see if the information inserted is appropriate for the DB columns */}
   let exercise = req.body;
-  console.log(exercise)
   const query = "INSERT INTO exerciseTable (exerciseName, muscleGroup, setCount, repCount, timeAmountInMins, createdBy) VALUES (?, ?, ?, ?, ?, ?)"
   const values = [exercise.exerciseName || null, exercise.muscleGroup || null, exercise.setCount || null, exercise.repCount || null, exercise.timeAmountInMins || null, userID ]
   pool.query(query, values, (error, results) =>{
@@ -699,7 +676,6 @@ const createExercises = async function(req, res){
       res.status(500).send("Error creating exercise");
     }
     else{
-      console.log("exercise created");
       res.status(200).send("Exercise created")
     }
   })
@@ -708,20 +684,16 @@ const createExercises = async function(req, res){
 //allows the use of the exercises page to log exercises for the user
 const logExercises = async function(req, res) {    
   //write insert statements for the user
-  console.log(req.body)
   const userID = req.user.id;
   const exerciseLog = req.body;
   const query = "INSERT INTO user_exerciseTable (userTable_id, exerciseTable_id, timeStarted, timeCompleted)  VALUES (?, ?, ?, ?)"
   const values = [userID, exerciseLog.exerciseTable_id || null, exerciseLog.timeStarted || null, exerciseLog.timeCompleted || null]
-  console.log("exerciseLog Called");
   pool.query(query, values, (error, results) =>{
     if(error){
-      console.log(error);
+      console.error(error);
       res.status(500).send("Error logging exercise to database");
     }
     else{
-      console.log("logged exercise");
-      console.log(results);
       res.send({
         "code": 200,
         "success": "logWorkouts successful",
@@ -745,7 +717,6 @@ const getUserExerciseLog = async function(req, res) {
       res.status(500).send("Error fetching exercise log from database");
     }
     else{
-      console.log("data from foods: ", results);
       res.json(results);
     }
   })
@@ -790,7 +761,6 @@ const getWorkouts = async function(req, res){
           res.status(500).send("Error fetching workouts from database");
         }
         else{
-          console.log("data from workoutTable: ", results);
           res.json(results);
         }
     });
@@ -803,21 +773,17 @@ const createWorkouts = async function(req, res){
 //allows the use of the exercises page to log exercises for the user
 const logWorkouts = async function(req, res) {    
   //write insert statements for the user
-  console.log(req.body)
   const userID = req.user.id;
   const workoutLog = req.body;
   const query = "INSERT INTO user_workoutTable (userTable_id, workoutTable_id, timeStarted, timeCompleted)  VALUES (?, ?, ?, ?)"
   const values = [userID, workoutLog.workoutTable_id || null, workoutLog.timeStarted || null, workoutLog.timeCompleted || null]
-  console.log("logWorkouts Called");
   pool.query(query, values, (error, results) =>{
     if(error){
-      console.log(error);
+      console.error(error);
       res.status(500).send("Error logging workout to database");
 
     }
     else{
-      console.log("logged workout");
-      console.log(results);
       res.send({
         "code": 200,
         "success": "logWorkouts successful",
@@ -841,7 +807,6 @@ const getUserWorkoutLog = async function(req, res) {
       res.status(500).send("Error fetching workout log from database");
     }
     else{
-      console.log("data from foods: ", results);
       res.json(results);
     }
   })
@@ -867,19 +832,15 @@ app.post('/logWorkouts', jwtVerify, logWorkouts);
 */}
 const logWeight = async function(req, res) {    
   //write insert statements for the user
-  console.log(req.body)
   const userID = req.user.id;
   const weightLog = req.body;
   const values = [userID, weightLog.userWeight, weightLog.dateTimeChanged]
   const query = "INSERT INTO userWeightTable (userTable_id, userWeight, dateTimeChanged)  VALUES (?, ?, ?)"
-  console.log("logWeight Called");
   pool.query(query, values, (error, results) =>{
     if(error){
-      console.log(error);
+      console.error(error);
     }
     else{
-      console.log("logged weight");
-      console.log(results);
       res.send({
         "code": 200,
         "success": "logWeight successful",
