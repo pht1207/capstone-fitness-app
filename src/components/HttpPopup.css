@@ -4,9 +4,10 @@
     justify-content: center;
     position: absolute;
     background: red;
-    width: 100%;
+    width: 50%;
     justify-self: center;
     align-self: center;
     opacity: 85%;
     border-radius: 10em;
+    margin-top: 5em;
 }
