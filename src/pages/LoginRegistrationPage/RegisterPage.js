@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import './RegisterPage.css'
 import axios from 'axios';
+import HttpPopup from '../../components/HttpPopup';
 
 
 function RegisterPage(props) {
@@ -70,6 +71,7 @@ function RegisterPage(props) {
 
           <button type='submit'>Register</button>
         </form>
+        <HttpPopup/>
     </div>
   );
 }
