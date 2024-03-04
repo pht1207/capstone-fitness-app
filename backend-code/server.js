@@ -60,6 +60,7 @@ const registerSchema = Joi.object({
   lastName: Joi.string().alphanum().max(45).required(),
   DOB: Joi.date().iso().required(), // Checks for 'YYYY-MM-DD' format
   notificationsOn: Joi.number().integer().valid(0, 1).required(),
+  height:Joi.number().integer().required(),
   goal: Joi.number().integer().valid(1, 2, 3).required(),
   weight: Joi.number().positive().required()
 });
@@ -76,6 +77,7 @@ const updateProfileSchema = Joi.object({
   firstName: Joi.string().alphanum().max(45).required(),
   lastName: Joi.string().alphanum().max(45).required(),
   DOB: Joi.date().iso().required(), // Checks for 'YYYY-MM-DD' format
+  height:Joi.number().integer().required(),
   notificationsOn: Joi.number().integer().valid(0, 1).required(),
 });
 {/* End of form validation */}
@@ -153,6 +155,7 @@ const register = async function(req,res){
     "lastName":req.body.lastName,
     "DOB":req.body.DOB,
     "notificationsOn":req.body.notificationsOn,
+    "height":req.body.height,
 
     "goal":req.body.goal,
 
@@ -161,8 +164,8 @@ const register = async function(req,res){
 
     try{
     //Creates a new user row in the userTable table
-    const userTableQuery = "INSERT INTO userTable (email, username, password, firstname, lastname, DOB, notificationsOn)  VALUES (?, ?, ?, ?, ?, ?, ?); ";
-    const userTableQueryValues = [user.email, user.username, encryptedPassword, user.firstName, user.lastName, user.DOB, user.notificationsOn];
+    const userTableQuery = "INSERT INTO userTable (email, username, password, firstname, lastname, DOB, height, notificationsOn)  VALUES (?, ?, ?, ?, ?, ?, ?, ?); ";
+    const userTableQueryValues = [user.email, user.username, encryptedPassword, user.firstName, user.lastName, user.DOB, user.height, user.notificationsOn];
     const userTableInsert = await executeQuery(userTableQuery, userTableQueryValues);
 
     //Gets and sets the userID made from the previous query
@@ -329,9 +332,10 @@ const updateProfile = async function(req, res) {
   const firstName = requestData.firstName;
   const lastName = requestData.lastName;
   const DOB = requestData.DOB;
+  const height = requestData.height;
   const notificationsOn = requestData.notificationsOn;
 
-  let validatorObject = {email: email, username: username, password: password, firstName: firstName, lastName: lastName, DOB: DOB, notificationsOn: notificationsOn}
+  let validatorObject = {email: email, username: username, password: password, firstName: firstName, lastName: lastName, DOB: DOB, height:height, notificationsOn: notificationsOn}
   console.log(validatorObject)
 
   const encryptedPassword = await bcrypt.hash(password, saltRounds)
@@ -348,9 +352,9 @@ const updateProfile = async function(req, res) {
   else{
     const query = (
     "UPDATE userTable "+
-    "SET userTable.email = ?, userTable.username = ?, userTable.password = ?, userTable.firstName = ?, userTable.lastName = ?, userTable.DOB = ?, userTable.notificationsOn = ? "+
+    "SET userTable.email = ?, userTable.username = ?, userTable.password = ?, userTable.firstName = ?, userTable.lastName = ?, userTable.DOB = ?, userTable.height = ?, userTable.notificationsOn = ? "+
     "WHERE userTable.userTable_id = ?")
-    const values = [email, username, encryptedPassword, firstName, lastName, DOB, notificationsOn, userID]
+    const values = [email, username, encryptedPassword, firstName, lastName, DOB, height, notificationsOn, userID]
     pool.query(query, values, (error, results) =>{
       if(error){
         console.error(error)
@@ -393,7 +397,7 @@ const getProfileData = async function(req, res){
   console.log(userID)
   //Write a query that can get the userTable information, get the user's weight info, and also get the goal info while joining the correct tables to convert the id's to their acutal values
   pool.query(
-    'SELECT userTable.email, userTable.username, userTable.firstName, userTable.lastName, goalTable.goalName, userWeightTable.userWeight, userWeightTable.dateTimeChanged ' + //specify each column that should be gathered throughout the query
+    'SELECT userTable.email, userTable.username, userTable.firstName, userTable.lastName, userTable.height, goalTable.goalName, userWeightTable.userWeight, userWeightTable.dateTimeChanged ' + //specify each column that should be gathered throughout the query
     'FROM userTable ' + //get all rows from usertable and only show columns in select statement
     'LEFT JOIN user_goalTable ON userTable.userTable_id = user_goalTable.userTable_id '+ //get all rows from user_goalTable that match the userTable_id in userTable
     'INNER JOIN goalTable ON user_goalTable.goalTable_id = goalTable.goalTable_id '+ //Gets the rows from goalTable where goalTable_id matches both tables
