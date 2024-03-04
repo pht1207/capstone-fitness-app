@@ -8,11 +8,18 @@ function HttpPopup() {
 
   useEffect(()=>{
     console.log("useeffect called")
+    setTimeout(() =>{
+      setMessage(false)
+    },10000)
   },[message])
   
   return (
     <div className="HttpPopup">
-      <p>Message: {message}</p>
+      {message ? 
+            <p>Message: {message}</p>
+            :
+            <></>
+      }
     </div>
   );
 }
