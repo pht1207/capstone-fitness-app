@@ -27,7 +27,8 @@ function RegisterPage(props) {
       lastName:event.target[4].value,
       DOB:event.target[5].value,
       weight:event.target[6].value,
-      goal:event.target[7].value,
+      height:event.target[7].value,
+      goal:event.target[8].value,
       notificationsOn:checkValue
     }
 
@@ -57,6 +58,7 @@ function RegisterPage(props) {
           <label>Your last name: <input type='text'></input></label>
           <label>Your date of birth: <input type='date'></input></label>
           <label>Your weight: <input type='text'></input></label>
+          <label>Your height: <input type='text'></input></label>
           <label>Fitness goal: 
             <select>
               <option value="1">Weight loss</option>
