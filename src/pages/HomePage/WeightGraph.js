@@ -102,7 +102,7 @@ function WeightGraph() {
           <YAxis />
           <Tooltip />
           <Legend />
-          <Line type="monotone" dataKey="userWeight" stroke="#8884d8" />
+          <Line type="monotone" dataKey="weight" stroke="#8884d8" />
         </LineChart>
       </ResponsiveContainer>
 

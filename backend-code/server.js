@@ -854,7 +854,7 @@ const getUserWeightLog = async function(req, res) {
   const userID = req.user.id;
 
   pool.query(
-  'SELECT userWeightTable.userWeight, userWeightTable.dateTimeChanged ' +
+  'SELECT userWeightTable.userWeight AS weight, userWeightTable.dateTimeChanged ' +
   'FROM userWeightTable ' +
   'WHERE userTable_id = ? '+
   'ORDER BY dateTimeChanged ASC',
@@ -865,6 +865,12 @@ const getUserWeightLog = async function(req, res) {
       res.status(500).send("Error fetching weight log from database");
     }
     else{
+
+      for(let i = 0; i < results.length; i++){
+        results[i].dateTimeChanged = results[i].dateTimeChanged.toISOString().split('T')[0];
+      }
+
+      console.log(results)
       res.status(200).json({
         results,
         message:"Successfully fetched user's weight log"
