@@ -849,7 +849,28 @@ const logWeight = async function(req, res) {
     }
   });
 }
+const getUserWeightLog = async function(req, res) {
+  //const page = (parseInt(req.query.page)*5)-5;
+  const userID = req.user.id;
+
+  pool.query(
+  'SELECT userWeightTable.userWeight, userWeightTable.dateTimeChanged ' +
+  'FROM userWeightTable ' +
+  'WHERE userTable_id = ? '+
+  'ORDER BY dateTimeChanged DESC',
+  [userID],
+  (error, results, fields) =>{
+    if(error){
+      console.error("db query error", error);
+      res.status(500).send("Error fetching weight log from database");
+    }
+    else{
+      res.status(200).json(results)
+    }
+  })
+}
 app.post('/logWeight', jwtVerify, logWeight);
+app.get('/getUserWeightLog', jwtVerify, getUserWeightLog);
 {/*
   * END OF SECTION: WEIGHT
 */}
