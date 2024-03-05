@@ -461,14 +461,17 @@ const logNutrition = async function(req, res) {
 
 
 const getUserNutritionLog = async function(req, res) {
-  const dateAccessed = req.query.dateAccessed;
+  const page = (parseInt(req.query.page)*5)-5;
   const userID = req.user.id;
 
+  //Need to do a left join on workoutsTable so names for the workouts can be attatched
   pool.query(
   'SELECT * ' +
   'FROM userConsumptionTable ' +
-  'WHERE(userTable_id = ? AND DATE(dateTimeConsumed) = ?)', //DATE(dateTimeConsumed) extracts only the date from dateTimeConsumed column
-  [userID, dateAccessed],
+  'WHERE userTable_id = ? '+
+  'ORDER BY dateTimeConsumed DESC '+
+  'LIMIT ?, 5', //DATE(dateTimeConsumed) extracts only the date from dateTimeConsumed column
+  [userID, page],
   (error, results, fields) =>{
     if(error){
       console.error("db query error", error);
