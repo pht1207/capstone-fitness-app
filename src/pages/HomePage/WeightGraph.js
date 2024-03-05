@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { LineChart, XAxis, YAxis, Line, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import axios from 'axios';
+import {HttpPopupContext} from '../../components/HttpPopupContext';
+
 
 
 function WeightGraph() {
@@ -47,6 +50,30 @@ function WeightGraph() {
       "amt": 2100
     }
   ]
+  const [axiosData, setAxiosData] = useState();
+  const {response, setResponse} = useContext(HttpPopupContext);
+
+  async function getUserWeightLog(){
+    try{
+      const axiosResponse = await axios.get("https://capstone.parkert.dev/backend/getUserWeightLog", {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("jwt")
+        }
+      });
+      console.log(axiosResponse)
+      setResponse(axiosResponse) //used in httpopup.js
+      setAxiosData(axiosResponse.data.results.results)
+      console.log(axiosData)
+    }
+    catch(error){
+      console.error("error: ", error.response)
+      setResponse(error.response)
+    }
+  }
+
+  useEffect(()=>{
+    getUserWeightLog();
+  },[])
   
   return (
     <div class="weight_graph">

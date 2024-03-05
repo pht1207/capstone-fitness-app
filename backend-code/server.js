@@ -628,7 +628,7 @@ const getExercises = async function(req, res){
         if(error){
           // Handle the error
           console.error("db query error", error);
-          res.status(500).send("Error fetching foods from database");
+          res.status(500).send("Error fetching exercises from database");
         } 
         else{
             // Process the results
@@ -852,6 +852,7 @@ const logWeight = async function(req, res) {
 const getUserWeightLog = async function(req, res) {
   //const page = (parseInt(req.query.page)*5)-5;
   const userID = req.user.id;
+  console.log("getuserweightlog called")
 
   pool.query(
   'SELECT userWeightTable.userWeight, userWeightTable.dateTimeChanged ' +
@@ -865,7 +866,10 @@ const getUserWeightLog = async function(req, res) {
       res.status(500).send("Error fetching weight log from database");
     }
     else{
-      res.status(200).json(results)
+      res.status(200).json({
+        results,
+        message:"Successfully fetched user's weight log"
+      })
     }
   })
 }
