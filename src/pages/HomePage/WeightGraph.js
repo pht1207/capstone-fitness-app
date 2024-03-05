@@ -5,6 +5,8 @@ import {HttpPopupContext} from '../../components/HttpPopupContext';
 
 
 
+
+
 function WeightGraph() {
   const data = [
     {
@@ -50,9 +52,16 @@ function WeightGraph() {
       "amt": 2100
     }
   ]
-  const [axiosData, setAxiosData] = useState();
+  const [axiosData, setAxiosData] = useState(data);
+  const [dataObject, setDataObject] = useState()
   const {response, setResponse} = useContext(HttpPopupContext);
 
+
+  useEffect(()=>{
+    //Runs when the component is rendered
+    getUserWeightLog();
+  },[])
+  
   async function getUserWeightLog(){
     try{
       const axiosResponse = await axios.get("https://capstone.parkert.dev/backend/getUserWeightLog", {
@@ -60,10 +69,8 @@ function WeightGraph() {
           Authorization: "Bearer " + localStorage.getItem("jwt")
         }
       });
-      console.log(axiosResponse)
       setResponse(axiosResponse) //used in httpopup.js
-      setAxiosData(axiosResponse.data.results.results)
-      console.log(axiosData)
+      setAxiosData(axiosResponse.data.results)
     }
     catch(error){
       console.error("error: ", error.response)
@@ -71,24 +78,31 @@ function WeightGraph() {
     }
   }
 
+
+
   useEffect(()=>{
-    getUserWeightLog();
-  },[])
+    //Called when axiosData is changed, sorts through it and puts it in a data object usable by <LineChart>
+    axiosDataFormatter();
+  },[axiosData])
+
+  function axiosDataFormatter(){
+    console.log(axiosData)
+    setDataObject(axiosData)
+  }
   
   return (
     <div class="weight_graph">
       <h4>Weight Graph</h4>
       <hr/>
-      <ResponsiveContainer width={700} height="80%">
-        <LineChart data={data}
+      <ResponsiveContainer width="100%" height="80%">
+        <LineChart data={dataObject}
           margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
+          <XAxis dataKey="dateTimeChanged" />
           <YAxis />
           <Tooltip />
           <Legend />
-          <Line type="monotone" dataKey="pv" stroke="#8884d8" />
-          <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
+          <Line type="monotone" dataKey="userWeight" stroke="#8884d8" />
         </LineChart>
       </ResponsiveContainer>
 

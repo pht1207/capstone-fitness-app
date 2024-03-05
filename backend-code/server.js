@@ -852,13 +852,12 @@ const logWeight = async function(req, res) {
 const getUserWeightLog = async function(req, res) {
   //const page = (parseInt(req.query.page)*5)-5;
   const userID = req.user.id;
-  console.log("getuserweightlog called")
 
   pool.query(
   'SELECT userWeightTable.userWeight, userWeightTable.dateTimeChanged ' +
   'FROM userWeightTable ' +
   'WHERE userTable_id = ? '+
-  'ORDER BY dateTimeChanged DESC',
+  'ORDER BY dateTimeChanged ASC',
   [userID],
   (error, results, fields) =>{
     if(error){
