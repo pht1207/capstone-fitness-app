@@ -18,8 +18,8 @@ function LoginPage(props) {
       password:event.target[1].value,
     }
     try{
-      const axiosResponse = await axios.post("https://capstone.parkert.dev/backend/login", body, {})
-      setResponse(axiosResponse)
+        const axiosResponse = await axios.post("https://capstone.parkert.dev/backend/login", body, {})
+        setResponse(axiosResponse)
         localStorage.setItem('jwt', axiosResponse.data.accessToken);
         console.log("This is new token " + axiosResponse.data.accessToken);
         props.setLoginEvent(props.loginEvent+1) //This will re-render the homepage.js file, showing profilepage.js instead of loginregister.js

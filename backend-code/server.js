@@ -784,14 +784,17 @@ const logWorkouts = async function(req, res) {
 }
 
 const getUserWorkoutLog = async function(req, res) {
-  const dateAccessed = req.query.dateAccessed;
+  const page = parseInt(req.query.page)*5;
   const userID = req.user.id;
+  console.log(page)
 
   pool.query(
   'SELECT * ' +
   'FROM user_workoutTable ' +
-  'WHERE(userTable_id = ? AND DATE(timeCompleted) = ?)', //DATE(dateTimeConsumed) extracts only the date from dateTimeConsumed column
-  [userID, dateAccessed],
+  'WHERE userTable_id = ? '+
+  'ORDER BY timeCompleted DESC '+
+  'LIMIT ?, 5', //DATE(dateTimeConsumed) extracts only the date from dateTimeConsumed column
+  [userID, page],
   (error, results, fields) =>{
     if(error){
       console.error("db query error", error);
