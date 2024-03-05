@@ -30,7 +30,7 @@ function FitnessPage() {
         <h1>Workout Log</h1>
         <div class="workout-log"></div>
       </div>
-      
+
       </div>
     </div>
   );
