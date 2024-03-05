@@ -43,7 +43,6 @@ function WeightGraph() {
   },[axiosData])
 
   function axiosDataFormatter(){
-    console.log(axiosData)
     setDataObject(axiosData)
   }
   
