@@ -793,7 +793,6 @@ const logWorkouts = async function(req, res) {
 const getUserWorkoutLog = async function(req, res) {
   const page = (parseInt(req.query.page)*5)-5;
   const userID = req.user.id;
-  console.log(page)
 
   //Need to do a left join on workoutsTable so names for the workouts can be attatched
   pool.query(
