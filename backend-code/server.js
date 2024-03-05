@@ -784,7 +784,7 @@ const logWorkouts = async function(req, res) {
 }
 
 const getUserWorkoutLog = async function(req, res) {
-  const page = parseInt(req.query.page)*5;
+  const page = (parseInt(req.query.page)*5)-5;
   const userID = req.user.id;
   console.log(page)
 
