@@ -80,6 +80,9 @@ const updateProfileSchema = Joi.object({
   height:Joi.number().integer().required(),
   notificationsOn: Joi.number().integer().valid(0, 1).required(),
 });
+const setUserGoalSchema = Joi.object({
+  goal: Joi.number().integer().valid(1, 2, 3).required(),
+});
 {/* End of form validation */}
 
 
@@ -404,20 +407,32 @@ app.get('/getProfileData', jwtVerify, getProfileData);
 
 const setUserGoal = async function(req, res){
   const userID = req.user.id;
-  console.log(userID)
-  //Make query to set userGoal in user_goalTable
-  const query = ""
-  const values = [];
-  pool.query(query, values, (results, error) =>{
-    if(error){
-      console.error(error);
-    }
-    else{
-      res.status(400).json({
-      
-      });
-    }
-  })
+  const goal = req.body.goal
+  const validationResult = setUserGoalSchema.validate(req.body);
+  if (validationResult.error) {
+    console.error(validationResult.error)
+    res.status(400).json({
+      message:"Error with "+validationResult.error.details[0].path
+    })
+  }
+  else{
+    //Make query to set userGoal in user_goalTable
+    const query = "INSERT INTO user_goalTable "+
+    "(goalTable_id, userTable_id, dateTimeChanged) VALUES (?, ?, ?)"
+    const values = [goal, userID, getCurrentTime()];
+    console.log(values)
+    pool.query(query, values, (error, results) =>{
+      if(error){
+        console.error(error);
+        res.status(500).send("Error setting goal in database");
+      }
+      else{
+        res.status(200).json({
+          message:"new goal set"
+        });
+      }
+    })
+  }
 }
 app.post('/setUserGoal', jwtVerify, setUserGoal);
 
