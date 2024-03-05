@@ -11,7 +11,7 @@ function WeightGraph() {
 
   const [axiosData, setAxiosData] = useState();
   const [dataObject, setDataObject] = useState()
-  const {response, setResponse} = useContext(HttpPopupContext);
+  const {setResponse} = useContext(HttpPopupContext);
 
 
   useEffect(()=>{
