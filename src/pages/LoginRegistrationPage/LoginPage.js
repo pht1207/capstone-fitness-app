@@ -35,14 +35,12 @@ function LoginPage(props) {
 
   return (
     <div className="LoginPage">
-        <h1>This is the login page</h1>
         <form className='LoginForm' onSubmit={handleSubmit}>
           <h3>Login Here</h3>
           <label>Your username: <input type='text'></input></label>
           <label>Your password: <input type='text'></input></label>
           <button type='submit'>Login</button>
         </form>
-
     </div>
   );
 }
