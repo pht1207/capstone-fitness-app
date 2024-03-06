@@ -8,6 +8,7 @@ function RightContainer() {
   return (
     <div className="RightContainer">
         <Tips/>
+        <br/>
         <LogWeight/>
 
     </div>

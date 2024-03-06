@@ -7,7 +7,7 @@ function LogWeight() {
 
   return (
     <div className="LogWeight">
-        <h4>Log Weight</h4>
+        <h3>Log Weight</h3>
         <form>
           <input className='WeightInput'/>
           <input type='date'/>

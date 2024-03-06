@@ -15,7 +15,7 @@
 
 
 }
-.HomePage .WeightGraph, .RightContainer, .workout_log{
+.HomePage .WeightGraph, .workout_log{
   background-color: rgba(185, 185, 185, 0.164);
   border-style: solid;
 }

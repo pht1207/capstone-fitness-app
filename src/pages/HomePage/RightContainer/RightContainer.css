@@ -1,23 +1,51 @@
 .RightContainer{
     display: flex;
     flex-direction: column;
-    border-style: solid;
     height: 100%;
     width: 100%;
     justify-content: space-between;
     align-items: center;
 }
-.RightContainer .Tips, .LogWeight{
-    height: 100%;
+.RightContainer .Tips, .RightContainer .LogWeight{
+    height: 40%;
     width: 100%;
+    border-style: solid;
+    background-color: rgba(185, 185, 185, 0.164);
 }
+
+
+
+
 
 .RightContainer .Tips{
     display: flex;
     flex-direction: column;
-    justify-content:space-between;
-    width: 40%;
+    align-items: center;
+    width: 100%;
 }
+.RightContainer .Tips *{
+    padding:0;
+    margin:0;
+    width: 100%;
+}
+.RightContainer .Tips h3{
+    margin:.2em;
+    border-bottom-style: solid;
+    border-width: .1em;
+    width: 100%;
+}
+.RightContainer .Tips p{
+    margin:.1em;
+    width: 50%;
+}
+.RightContainer .Tips label{
+    margin-bottom:1em;
+    width: 30%;
+}
+
+
+
+
 
 .RightContainer .LogWeight{
     display: flex;
@@ -28,4 +56,11 @@
 }
 .RightContainer .LogWeight .WeightInput{
     display: block;
+}
+
+.RightContainer .LogWeight h3{
+    margin:.2em;
+    border-bottom-style: solid;
+    border-width: .1em;
+    width: 100%;
 }
