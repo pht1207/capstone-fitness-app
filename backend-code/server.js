@@ -914,16 +914,21 @@ const logWeight = async function(req, res) {
   //write insert statements for the user
   const userID = req.user.id;
   const weightLog = req.body;
-  const values = [userID, weightLog.userWeight, weightLog.dateTimeChanged]
+  console.log(weightLog)
+  const values = [userID, weightLog.userWeight, weightLog.dateTimeChanged];
+  console.log(values);
   const query = "INSERT INTO userWeightTable (userTable_id, userWeight, dateTimeChanged)  VALUES (?, ?, ?)"
   pool.query(query, values, (error, results) =>{
     if(error){
       console.error(error);
+      res.status(500).json({
+        message: "error logging weight",
+      });
     }
     else{
       res.status(200).json({
         message: "weight log successful",
-      });      
+      });
     }
   });
 }
