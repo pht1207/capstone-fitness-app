@@ -1,22 +1,19 @@
 import React, { useState } from 'react';
-import WorkoutLogRow from './WorkoutLogRow';
 import './HomePage.css'
 import WorkoutLog from './WorkoutLog';
 import WeightGraph from './WeightGraph';
-import Tips from './Tips';
 import RightContainer from './RightContainer/RightContainer';
 
 function HomePage() {
-
-//        <Tips/>
+  const [weightLogged, setWeightLogged] = useState(0)
 
   return (
     <div className="HomePage">
 
       <div className='HorizontalFlexBox'>
-        <WeightGraph/>
+        <WeightGraph weightLogged={weightLogged} setWeightLogged={setWeightLogged}/>
         <div className='SpacerDiv'/>
-        <RightContainer/>
+        <RightContainer weightLogged={weightLogged} setWeightLogged={setWeightLogged}/>
       </div>
       <WorkoutLog/>
 

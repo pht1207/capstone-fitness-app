@@ -7,7 +7,7 @@ import {HttpPopupContext} from '../../components/HttpPopupContext';
 
 
 
-function WeightGraph() {
+function WeightGraph(props) {
 
   const [axiosData, setAxiosData] = useState();
   const [dataObject, setDataObject] = useState()
@@ -17,7 +17,7 @@ function WeightGraph() {
   useEffect(()=>{
     //Runs when the component is rendered
     getUserWeightLog();
-  },[])
+  },[props.weightLogged])
   
   async function getUserWeightLog(){
     try{
@@ -47,7 +47,7 @@ function WeightGraph() {
   }
   
   return (
-    <div class="WeightGraph">
+    <div className="WeightGraph">
       <h4>Weight Graph</h4>
       <hr/>
       <ResponsiveContainer width="100%" height="80%">
