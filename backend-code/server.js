@@ -633,7 +633,7 @@ const getExercises = async function(req, res){
   //Will return every exercise, including ones made by the user, with a filter for what muscle group they are search for (if one exists)
   if(req.query.muscleGroup){
     pool.query(
-      'SELECT exerciseTable.* ' +
+      'SELECT exerciseTable.exerciseTable_id, exerciseTable.exerciseName, exerciseTable.muscleGroup, exerciseTable.setCount, exerciseTable.repCount, exerciseTable.timeAmountInMins ' +
       'FROM exerciseTable ' +
       'LEFT JOIN userTable ON exerciseTable.createdBy = userTable.userTable_id ' + //Joins all values from exerciseTable and when there is a match between the userTable_id and the createdBy columns & only if they match muscleGroup filter
       'WHERE (userTable.userTable_id = ? AND exerciseTable.muscleGroup = ?) ' +
@@ -654,7 +654,7 @@ const getExercises = async function(req, res){
   else{
     //Will return every exercise, including ones created by the user
     pool.query(
-      'SELECT exerciseTable.* ' +
+      'SELECT exerciseTable.exerciseTable_id, exerciseTable.exerciseName, exerciseTable.muscleGroup, exerciseTable.setCount, exerciseTable.repCount, exerciseTable.timeAmountInMins ' +
       'FROM exerciseTable ' +
       'LEFT JOIN userTable ON exerciseTable.createdBy = userTable.userTable_id ' + //Joins all values from exerciseTable and when there is a match between the userTable_id and the createdBy columns
       'WHERE userTable.userTable_id = ? '+
@@ -760,29 +760,85 @@ app.get('/getUserExerciseLog', jwtVerify, getUserExerciseLog);
 */}
 const getWorkouts = async function(req, res){
   const userID = req.user.id;
-    //Will return every workout, including ones created by the user
-    pool.query(
-      'SELECT workoutTable.* ' +
-      'FROM workoutTable ' +
-      'LEFT JOIN userTable ON workoutTable.createdBy = userTable.userTable_id ' + //Joins all values from workoutTable and when there is a match between the userTable_id and the createdBy columns
-      'WHERE userTable.userTable_id = ? '+
-      'OR workoutTable.createdBy IS NULL', //Also gets every workout that shows a NULL value in createdBy column (created by server)
-      [userID], 
-      (error, results, fields) => {      
-        if(error){
-          // Handle the error
-          console.error("db query error", error);
-          res.status(500).send("Error fetching workouts from database");
-        }
-        else{
-          res.status(200).json(results)        
-        }
-    });
-  }
+  
+  {/* This query returns every workout from the workoutTable as well as every iteration of where it appears within workout_exerciseTable. 
+  It also shows every exercise that the workoutTable_id is associated with.
+  This data is used in the else statement to create the object that will be sent to the frontend*/}
+  pool.query( 
+    `SELECT workoutTable.workoutTable_id, workoutTable.workoutName, workoutTable.workoutDescription, workoutTable.createdAt, workoutTable.createdBy, 
+            exerciseTable.exerciseTable_id, exerciseTable.exerciseName, exerciseTable.muscleGroup, exerciseTable.setCount, exerciseTable.repCount, exerciseTable.timeAmountInMins 
+     FROM workoutTable
+     LEFT JOIN workout_exerciseTable ON workoutTable.workoutTable_id = workout_exerciseTable.workoutTable_id
+     LEFT JOIN exerciseTable ON workout_exerciseTable.exerciseTable_id = exerciseTable.exerciseTable_id
+     WHERE workoutTable.createdBy = ? OR workoutTable.createdBy IS NULL`,
+    [userID], 
+    (error, results, fields) => {   
+      if(error){
+        console.error("db query error", error);
+        res.status(500).send("Error fetching workouts from database");
+      }
+      else{
+        // Process the results to group exercises by workout
+        const workouts = results.reduce((accumulator, current) => {
+          // If the workout hasn't been added to the accumulator, add it
+          if (!accumulator[current.workoutTable_id]) {
+            accumulator[current.workoutTable_id] = {
+              workoutTable_id: current.workoutTable_id,
+              workoutName: current.workoutName,
+              workoutDescription: current.workoutDescription,
+              createdAt: current.createdAt,
+              createdBy: current.createdBy,
+              exercises: []
+            };
+          }
+          
+          // Add exercise to the workout's exercises array
+          if (current.exerciseTable_id) { // check if there's an exercise ID to avoid null entries
+            accumulator[current.workoutTable_id].exercises.push({
+              exerciseTable_id: current.exerciseTable_id,
+              exerciseName: current.exerciseName,
+              muscleGroup: current.muscleGroup,
+              setCount: current.setCount,
+              repCount: current.repCount,
+              timeAmountInMins: current.timeAmountInMins
+            });
+          }
+          
+          return accumulator;
+        });
 
-const createWorkouts = async function(req, res){
-  const userID = req.user.id;
+        // Send the grouped data to the frontend
+        res.status(200).json(workouts);
+      }
+  });
 }
+  /*'SELECT userTable.email, userTable.username, userTable.firstName, userTable.lastName, userTable.height, goalTable.goalName, userWeightTable.userWeight, userWeightTable.dateTimeChanged ' + //specify each column that should be gathered throughout the query
+  'FROM userTable ' + //get all rows from usertable and only show columns in select statement
+  'LEFT JOIN user_goalTable ON userTable.userTable_id = user_goalTable.userTable_id '+ //get all rows from user_goalTable that match the userTable_id in userTable
+  'INNER JOIN goalTable ON user_goalTable.goalTable_id = goalTable.goalTable_id '+ //Gets the rows from goalTable where goalTable_id matches both tables
+  'LEFT JOIN userWeightTable  ON userTable.userTable_id = userWeightTable.userTable_id ' +
+  'WHERE userTable.userTable_id = ? ' + //filter all results to only show if they match the usertable_id in the request
+  'ORDER BY userWeightTable.dateTimeChanged DESC LIMIT 1',*/
+
+
+  const createWorkouts = async function(req, res){
+    const userID = req.user.id;
+    {/* Write a checker to see if the information inserted is appropriate for the DB columns */}
+    let workout = req.body;
+    const query = "INSERT INTO workoutTable (workoutName, workoutDescription, createdAt, createdBy) VALUES (?, ?, ?, ?)"
+    const values = [workout.workoutName || null, workout.workoutDescription || null, getCurrentTime(), userID ]
+    pool.query(query, values, (error, results) =>{
+      if(error){
+        console.error(error);
+        res.status(500).send("Error creating workout");
+      }
+      else{
+        res.status(200).json({
+          message:"workout created"
+      })
+      }
+    })
+  }
 
 //allows the use of the exercises page to log exercises for the user
 const logWorkouts = async function(req, res) {    
@@ -827,10 +883,29 @@ const getUserWorkoutLog = async function(req, res) {
     }
   })
 }
+//Allows users to insert exercises into a workout assuming it has been made by them
+const insertExerciseIntoWorkout = async function(req, res){
+  {/* Write a checker to see if the information inserted is appropriate for the DB columns */}
+  let parameters = req.body;
+  const query = "INSERT INTO workout_exerciseTable (workoutTable_id, exerciseTable_id, dateTimeChanged) VALUES (?, ?, ?)"
+  const values = [parameters.workoutTable_id, parameters.exerciseTable_id, getCurrentTime()]
+  pool.query(query, values, (error, results) =>{
+    if(error){
+      console.error(error);
+      res.status(500).send("Error inserting into workout");
+    }
+    else{
+      res.status(200).json({
+        message:"workout insert created"
+    })
+    }
+  })
+}
 app.get('/getWorkouts', jwtVerify, getWorkouts);
 app.post('/createWorkouts', jwtVerify, createWorkouts);
 app.get('/getUserWorkoutLog', jwtVerify, getUserWorkoutLog);
 app.post('/logWorkouts', jwtVerify, logWorkouts);
+app.post('/insertExerciseIntoWorkout', jwtVerify, insertExerciseIntoWorkout)
 {/*
   * END OF SECTION: WORKOUTS
 */}
