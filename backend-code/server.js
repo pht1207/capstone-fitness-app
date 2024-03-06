@@ -778,11 +778,11 @@ const getWorkouts = async function(req, res){
         res.status(500).send("Error fetching workouts from database");
       }
       else{
-        // Process the results to group exercises by workout
+        //Processes the results object creating an array of workout objects
         const workouts = results.reduce((accumulator, current) => {
-          // If the workout hasn't been added to the accumulator, add it
-          if (!accumulator[current.workoutTable_id]) {
-            accumulator[current.workoutTable_id] = {
+          //If the workout hasn't been added to the accumulator object (what will be sent to the frontend), add it
+          if (!accumulator[current.workoutTable_id]) {//Creates a workout object if one does not exist
+            accumulator[current.workoutTable_id] = {//The key is the workoutTable_id
               workoutTable_id: current.workoutTable_id,
               workoutName: current.workoutName,
               workoutDescription: current.workoutDescription,
@@ -791,9 +791,8 @@ const getWorkouts = async function(req, res){
               exercises: []
             };
           }
-          
-          // Add exercise to the workout's exercises array
-          if (current.exerciseTable_id) { // check if there's an exercise ID to avoid null entries
+          //This block adds exercises to the parent workout object if they exist
+          if (current.exerciseTable_id) { //check if there's an exercise ID available
             accumulator[current.workoutTable_id].exercises.push({
               exerciseTable_id: current.exerciseTable_id,
               exerciseName: current.exerciseName,
@@ -803,23 +802,13 @@ const getWorkouts = async function(req, res){
               timeAmountInMins: current.timeAmountInMins
             });
           }
-          
           return accumulator;
         });
-
-        // Send the grouped data to the frontend
+        //sends the array of workouts to the frontend
         res.status(200).json(workouts);
       }
   });
 }
-  /*'SELECT userTable.email, userTable.username, userTable.firstName, userTable.lastName, userTable.height, goalTable.goalName, userWeightTable.userWeight, userWeightTable.dateTimeChanged ' + //specify each column that should be gathered throughout the query
-  'FROM userTable ' + //get all rows from usertable and only show columns in select statement
-  'LEFT JOIN user_goalTable ON userTable.userTable_id = user_goalTable.userTable_id '+ //get all rows from user_goalTable that match the userTable_id in userTable
-  'INNER JOIN goalTable ON user_goalTable.goalTable_id = goalTable.goalTable_id '+ //Gets the rows from goalTable where goalTable_id matches both tables
-  'LEFT JOIN userWeightTable  ON userTable.userTable_id = userWeightTable.userTable_id ' +
-  'WHERE userTable.userTable_id = ? ' + //filter all results to only show if they match the usertable_id in the request
-  'ORDER BY userWeightTable.dateTimeChanged DESC LIMIT 1',*/
-
 
   const createWorkouts = async function(req, res){
     const userID = req.user.id;
