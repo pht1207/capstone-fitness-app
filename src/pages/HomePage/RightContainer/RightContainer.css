@@ -1,0 +1,31 @@
+.RightContainer{
+    display: flex;
+    flex-direction: column;
+    border-style: solid;
+    height: 100%;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+.RightContainer .Tips, .LogWeight{
+    height: 100%;
+    width: 100%;
+}
+
+.RightContainer .Tips{
+    display: flex;
+    flex-direction: column;
+    justify-content:space-between;
+    width: 40%;
+}
+
+.RightContainer .LogWeight{
+    display: flex;
+    flex-direction: column;
+    justify-content: baseline;
+    align-items: center;
+    width: 100%;
+}
+.RightContainer .LogWeight .WeightInput{
+    display: block;
+}

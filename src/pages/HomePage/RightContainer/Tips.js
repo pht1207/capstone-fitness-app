@@ -32,11 +32,10 @@ function Tips() {
     };
 
   return (
-    <div className="tips">
+    <div className="Tips">
         <h4>Tips</h4>
         <p id="tipText">{tip}</p>
         <button id="next_button" onClick={nextTip}>Next</button>
-        <hr/>
 
   </div>
   );
