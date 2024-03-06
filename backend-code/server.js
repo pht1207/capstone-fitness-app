@@ -911,7 +911,7 @@ app.post('/insertExerciseIntoWorkout', jwtVerify, insertExerciseIntoWorkout)
 *  -/logWeight
 */}
 const logWeight = async function(req, res) {    
-  //write insert statements for the user
+  //Write a validation schema later for this function
   const userID = req.user.id;
   const weightLog = req.body;
   console.log(weightLog)
