@@ -50,17 +50,32 @@
 .RightContainer .LogWeight{
     display: flex;
     flex-direction: column;
-    justify-content: baseline;
     align-items: center;
     width: 100%;
 }
-.RightContainer .LogWeight .WeightInput{
-    display: block;
-}
-
 .RightContainer .LogWeight h3{
     margin:.2em;
     border-bottom-style: solid;
     border-width: .1em;
     width: 100%;
+}
+.RightContainer .LogWeight .LogWeightForm{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 80%;
+    height: 100%;
+}
+.RightContainer .LogWeight .LogWeightForm label{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.RightContainer .LogWeight .LogWeightForm label input{
+    width: 40%;
+    padding:0;
+}
+.RightContainer .LogWeight .LogWeightForm label button{
+    width: 25%;
+    height: 1em;
 }
