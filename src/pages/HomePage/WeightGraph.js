@@ -47,7 +47,7 @@ function WeightGraph() {
   }
   
   return (
-    <div class="weight_graph">
+    <div class="WeightGraph">
       <h4>Weight Graph</h4>
       <hr/>
       <ResponsiveContainer width="100%" height="80%">

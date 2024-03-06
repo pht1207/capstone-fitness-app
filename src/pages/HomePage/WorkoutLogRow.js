@@ -12,7 +12,7 @@ function WorkoutLogRow() {
     and we'll put the real values in later (That will be done in WorkoutLog.js, more on that later)
     */}
     return (
-    <div className="HomePage">
+    <div className="WorkoutLogRow">
         <p>This is a WorkoutLogRow component</p>
 
     </div>
