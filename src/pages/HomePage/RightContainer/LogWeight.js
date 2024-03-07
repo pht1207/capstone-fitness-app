@@ -1,7 +1,6 @@
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import {HttpPopupContext} from '../../../components/HttpPopupContext';
-import { useNavigate } from 'react-router';
 
 function LogWeight(props) {
   const [weightInput, setWeightInput] = useState();

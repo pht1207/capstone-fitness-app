@@ -8,7 +8,45 @@ function ProfilePage() {
 
   const [userData, setData] = useState(null);
   const token = localStorage.getItem("jwt")
+  //Write a state element and setstate method for each input element in your form here
 
+  {/*
+    Using updateProfile
+    It follows the same premise as getProfileData, except you use axios.post(), do not use axios.get()
+    You're going to have an 'onSubmit={updateProfileFormSubmit}' attribute in your form element, I've added it already.
+      -This will call profileSubmitFunction whenever your form is submitted
+      -You are not submitting the form, onSubmit will just be a queue to submit a object you are going to dynamically create. This is explained further below
+    You will need to create a body element to send to the backend, this will be included in your axios.post(https://.....), body, {headers}
+      -The body element will be a javascript object named body that will contain data formatted like this:
+            - {
+                "email": "ts@gmail.com",
+                "username": "test321",
+                "password": "t",
+                "firstName": "changed",
+                "lastName": "changed",
+                "DOB": "2000-12-07",
+                "height": "72",
+                "notificationsOn": "1"
+              }
+                  -You can test if the data is formatted correctly by console logging your body object before sending it
+    Your form was having issues, I removed the 'editClicked' function from the submit button, it was disabling the submit function of the button
+      -Include the 'editClicked' upon successful return code of axios updateProfile
+
+    The proper way to do forms in react is to have an 'onChange' attribute on each of your <input> and other form elements. (This is done in LogWeight.js in the homepage folder if you need an example)
+      -Each onChange should update a state variable you've made for each input element
+        -Finally, when you submit, you are combining all those State's into an object named body so it can be sent when you use the axios.post method.
+
+    Goals are updated using a different method, so ignore updating the goals right now. Only the values listed in the example object above can be sent
+    
+    notificationsOn can only be a 0 or 1, 0 meaning off and 1 meaning on
+
+
+        
+  */}
+  function updateProfileFormSubmit(event){
+    event.preventDefault();//This prevents the page from reloading right when you submit
+    //Combine all the state values that were updated from your form into a body element and send it via axios.post
+  }
 
   useEffect(() => {
     const fetchData = async () => { 
@@ -39,6 +77,9 @@ const [passwordShow, setpasswordShow] = useState(true)
 function passwordShowClickled(){
   setpasswordShow(!passwordShow);
 }
+
+
+
 
 
   return (
@@ -78,8 +119,9 @@ function passwordShowClickled(){
         </div>
       </div>
       ):(
-        <form>
         <div className="ProfilePage">
+
+        <form onSubmit={updateProfileFormSubmit}>
         <h1>UPDATE PROFILE</h1>
           <div className="UserI">
             <div><p>First Name:</p><input type='text' name='firstName'  placeholder={userData ? (userData.firstName):('')}/></div>
@@ -109,13 +151,15 @@ function passwordShowClickled(){
           </div>
           <div className="UserI">
             <div>
-              <button className="button2" type='submit' onClick={editClicked}>Save</button>
+              <button className="button2" type='submit'>Save</button>
               <button className="button3" type='button' onClick={editClicked}>Cancel</button></div>
           </div>
+          </form>
+
         </div>
-        </form>
       )
   );
+  
 }
 
 export default ProfilePage;
