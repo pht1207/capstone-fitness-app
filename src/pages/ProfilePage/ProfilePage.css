@@ -1,11 +1,3 @@
-.ProfilePage {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: left;
-    height: fit-content;
-}
-
 /*Profile data background box*/
 .ProfilePage div{
     max-height: fit-content;
@@ -21,19 +13,25 @@
     position: relative;
     flex-direction: row;
     justify-content:space-evenly;
-    margin: auto 15%;
+    margin: 0 15%;
     padding: 0 5% 0 5%;
     height: 75px;
 }
-
+.ProfilePage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: soid;
+    text-align: left;
+}
 .ProfilePage .UserI div p {
-    margin:0;
-    min-width: 87px;
+    margin-right: 5px;
+    min-width: 0;
     border: sold;
 }
 
 .ProfilePage .UserI div p:nth-child(2){
-    color: rgba(0, 0, 0, 0.4);
+    color: rgba(255, 0, 0, 0.5);
 }
 
 .ProfilePage .UserI div {
