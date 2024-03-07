@@ -476,28 +476,48 @@ const logNutrition = async function(req, res) {
 
 
 const getUserNutritionLog = async function(req, res) {
-  const page = (parseInt(req.query.page)*5)-5;
+  const dateAccessed = req.query.dateAccessed;
+  console.log(dateAccessed)
   const userID = req.user.id;
 
-  //Need to do a left join on workoutsTable so names for the workouts can be attatched
   pool.query(
-  'SELECT * ' +
+  'SELECT userConsumptionTable_id caloriesConsumed, carbsConsumed, proteinConsumed, fatsConsumed, dateTimeConsumed ' +
   'FROM userConsumptionTable ' +
-  'WHERE userTable_id = ? '+
-  'ORDER BY dateTimeConsumed DESC '+
-  'LIMIT ?, 5', //DATE(dateTimeConsumed) extracts only the date from dateTimeConsumed column
-  [userID, page],
+  'WHERE userTable_id = ? AND DATE(dateTimeConsumed) = ? ',
+  [userID, dateAccessed],
   (error, results, fields) =>{
     if(error){
       console.error("db query error", error);
       res.status(500).send("Error fetching foods from database");
     }
     else{
-      res.status(200).json(results);
-
+      try{
+      //This will combine the logs from the day retrieved into one object
+      if(results.length > 0){//only execute this if rows were retrieved
+        let nutritionLog = {
+          caloriesConsumed: 0,
+          carbsConsumed: 0,
+          proteinConsumed: 0,
+          fatsConsumed: 0,
+          dateTimeConsumed: results[0].dateTimeConsumed
+        }
+        for(let i = 0; i < results.length; i++){
+          nutritionLog.caloriesConsumed += results[i].caloriesConsumed;
+          nutritionLog.carbsConsumed += results[i].carbsConsumed;
+          nutritionLog.proteinConsumed += results[i].proteinConsumed;
+          nutritionLog.fatsConsumed += results[i].fatsConsumed;
+        }
+        res.status(200).json(nutritionLog);
+      }
+    }
+    catch(error){
+      console.error("db query error", error);
+      res.status(500).send("Error fetching nutrition log from database");
+    }
     }
   })
 }
+
 
 
 const getFoods = async function(req, res){
@@ -599,9 +619,37 @@ function dailyNutritionTableCalculator(){
   }
   console.log("dailyNutritionTable values for all users logged");
 }
+const getDailyRecommendedNutrition = async function(req, res){
+  console.log("called getdailyrecommended")
+
+
+  const dateAccessed = req.query.dateAccessed;
+  console.log(dateAccessed)
+  const userID = req.user.id;
+  //Need to do a left join on workoutsTable so names for the workouts can be attatched
+  pool.query(
+  'SELECT caloriesGoal, carbsGoal, proteinGoal, fatsGoal, dateCalculated ' +
+  'FROM dailyNutritionTable ' +
+  'WHERE userTable_id = ? '+
+  'AND DATE(dateCalculated) = ? '+
+  'ORDER BY DATE(dateCalculated) DESC '+
+  'LIMIT 1', //DATE(dateTimeConsumed) extracts only the date from dateTimeConsumed column
+  [userID, dateAccessed],
+  (error, results, fields) =>{
+    if(error){
+      console.error("db query error", error);
+      res.status(500).send("Error fetching foods from database");
+    }
+    else{
+      res.status(200).json(results);
+
+    }
+  })
+}
 app.post('/logNutrition', jwtVerify, logNutrition);
 app.get('/getFoods', jwtVerify, getFoods);
 app.get('/getUserNutritionLog', jwtVerify, getUserNutritionLog);
+app.get('/getDailyRecommendedNutrition', jwtVerify, getDailyRecommendedNutrition)
 {/*
   * END OF SECTION: NUTRITION
 */}
