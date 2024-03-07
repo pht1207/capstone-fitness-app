@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import './NutritionPage.css'
 import axios from 'axios';
-import validator from 'validator';
 
 function NutritionPage() {
 

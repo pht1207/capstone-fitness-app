@@ -3,8 +3,13 @@ import axios from 'axios';
 import {HttpPopupContext} from '../../../components/HttpPopupContext';
 
 function LogWeight(props) {
+
+  let curr = new Date();
+  curr.setDate(curr.getDate() + 3);
+  let currentDate = curr.toISOString().substring(0,10);
+
   const [weightInput, setWeightInput] = useState();
-  const [dateLogged, setDateLogged] = useState();
+  const [dateLogged, setDateLogged] = useState(currentDate);
   const {setResponse} = useContext(HttpPopupContext);
   
   async function weightLogSubmit(event){
@@ -42,7 +47,7 @@ function LogWeight(props) {
         <h3>Log Weight</h3>
         <form onSubmit={weightLogSubmit} className='LogWeightForm'>
           <label>Weight: <input className='WeightInput' type='number' onChange={weightChange}/></label>
-          <label>Date Logged: <input type='date' onChange={dateChange} defaultValue={Date}></input></label>
+          <label>Date Logged: <input type='date' onChange={dateChange} defaultValue={dateLogged}></input></label>
           <button type='submit'>Submit</button>
         </form>
 

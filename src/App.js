@@ -62,11 +62,10 @@ function App() {
       <Router>
       <HttpPopup/>
             <nav className="NavigationFlexBox">
-                <h1>Logo</h1>
-                <Link to="/">HomePage</Link>
-                <Link to="/FitnessPage">FitnessPage</Link>
-                <Link to="/NutritionPage">NutritionPage</Link>
-                {isJWTExpired ? <Link to="/LoginRegisterPage" >Login/Register</Link> : <Link to="/ProfilePage">ProfilePage</Link>}
+                <Link to="/">Home</Link>
+                <Link to="/FitnessPage">Fitness </Link>
+                <Link to="/NutritionPage">Nutrition</Link>
+                {isJWTExpired ? <Link to="/LoginRegisterPage" >Login/Register</Link> : <Link to="/ProfilePage">Profile</Link>}
             </nav>
 
             <Routes>
