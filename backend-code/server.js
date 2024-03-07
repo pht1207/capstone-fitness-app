@@ -492,23 +492,25 @@ const getUserNutritionLog = async function(req, res) {
     }
     else{
       try{
-      //This will combine the logs from the day retrieved into one object
-      if(results.length > 0){//only execute this if rows were retrieved
         let nutritionLog = {
           caloriesConsumed: 0,
           carbsConsumed: 0,
           proteinConsumed: 0,
           fatsConsumed: 0,
-          dateTimeConsumed: results[0].dateTimeConsumed
+          dateTimeConsumed: dateAccessed
         }
-        for(let i = 0; i < results.length; i++){
-          nutritionLog.caloriesConsumed += results[i].caloriesConsumed;
-          nutritionLog.carbsConsumed += results[i].carbsConsumed;
-          nutritionLog.proteinConsumed += results[i].proteinConsumed;
-          nutritionLog.fatsConsumed += results[i].fatsConsumed;
+        //This will combine the logs from the day retrieved into one object
+        if(results.length > 0){//if any rows are retrieved, add their values to the nutritionLog object
+          for(let i = 0; i < results.length; i++){
+            nutritionLog.caloriesConsumed += results[i].caloriesConsumed;
+            nutritionLog.carbsConsumed += results[i].carbsConsumed;
+            nutritionLog.proteinConsumed += results[i].proteinConsumed;
+            nutritionLog.fatsConsumed += results[i].fatsConsumed;
+          }
         }
-        res.status(200).json(nutritionLog);
-      }
+        else{
+          res.status(200).json(nutritionLog);
+        }
     }
     catch(error){
       console.error("db query error", error);

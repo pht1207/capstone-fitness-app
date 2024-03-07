@@ -1,36 +1,43 @@
 import { useEffect, useState } from 'react';
 import './NutritionPage.css'
 import axios from 'axios';
+import validator from 'validator';
 
 function NutritionPage() {
-  const [userData, setData] = useState(null);
+  const [nutritionLog, setNutritionLog] = useState(null);
   const token = localStorage.getItem("jwt")
+  
+  let curr = new Date();
+  curr.setDate(curr.getDate() + 3);
+  let currentDate = curr.toISOString().substring(0,10);
+  const [date, setDate] = useState(currentDate)
 
-  //Your code to make the site functional goes in this empty space. The 'return()' below is what renders on the page (the html)
-  //Inserted by parker: https://capstone.parkert.dev/backend/getFoods
-  //https://capstone.parkert.dev/backend/getFoods/getNutrition?dateAccessed=2024-02-20 {change date to whatever you need it to be}
-  //https://capstone.parkert.dev/backend/getFoods/logNutrition {log via json post}
-  useEffect(() => {
-    const fetchData = async () => { 
+  useEffect(() => {//This useEffect gets the user's nutrition log when the date is changed to a valid date value
+    const fetchData = async () => {
       try {
-        const response = await axios.get("https://capstone.parkert.dev/backend/getProfileData", {
+        let endpoint = "https://capstone.parkert.dev/backend/getUserNutritionLog?dateAccessed="+date
+        const response = await axios.get(endpoint, {
           headers: {
             'Authorization': 'Bearer ' + token
           }
         });
-        setData(response.data[0]);
-        console.log(response.data)
+        setNutritionLog(response.data[0]);
+        console.log(response)
       }
         catch (error) {
         console.error('Error fetching data: ', error);
       }
-    };
+    }
     fetchData();
-  }, []);
+
+  }, [date]);
+
+  
 
   return (
     <div className="FitnessPage">
         <h1>This is the nutrition page</h1>
+        <input type='date' onChange={((event)=>setDate(event.target.value))} defaultValue={date}></input>
     </div>
   );
 }
