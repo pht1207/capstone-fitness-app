@@ -20,7 +20,12 @@
   border-style: solid;
 }
 
-
+.HomePage .WeightGraph{
+  padding-bottom: 20px;
+}
+.HomePage .RightContainer .Tips{
+  padding-bottom: 10px;
+}
 
 
 .HorizontalFlexBox{
@@ -44,6 +49,9 @@
   flex-direction: column;
   height:40%;
   width: 80%;
+  padding-left: 10px;
+  padding-right: 10px;
+  background-color: rgba(0, 0, 0, 0.123);
 }
 .workout_log .WorkoutLogRow{
   height:20%;

@@ -13,8 +13,9 @@ function WorkoutLogRow() {
     */}
     return (
     <div className="WorkoutLogRow">
-        <p>This is a WorkoutLogRow component</p>
-
+        <form>
+        <p>WorkoutName: <input type="text" name="workout"></input> DayCompleted: <input type="date" name="date"></input> TimeTaken: <input type="number" name="time" min="0" max="500"></input> minutes</p>
+        </form>
     </div>
     );
 }
