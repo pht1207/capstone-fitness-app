@@ -4,7 +4,8 @@ import axios from 'axios';
 import validator from 'validator';
 
 function NutritionPage() {
-  const [nutritionLog, setNutritionLog] = useState(null);
+
+  const [nutritionLog, setNutritionLog] = useState("");
   const token = localStorage.getItem("jwt")
   
   let curr = new Date();
@@ -21,17 +22,22 @@ function NutritionPage() {
             'Authorization': 'Bearer ' + token
           }
         });
-        setNutritionLog(response.data[0]);
-        console.log(response)
+        setNutritionLog(response.data);
+        console.log(response.data)
       }
         catch (error) {
         console.error('Error fetching data: ', error);
       }
     }
     fetchData();
-
   }, [date]);
 
+  {/*This is HTML for showcasing the values from the backend
+            <p>calories consumed: {nutritionLog.caloriesConsumed || 0}</p>
+            <p>carbs consumed: {nutritionLog.carbsConsumed || 0}</p>
+            <p>proteins consumed: {nutritionLog.proteinConsumed || 0}</p>
+            <p>fats consumed: {nutritionLog.fatsConsumed || 0}</p>
+ */}
   
 
   return (
