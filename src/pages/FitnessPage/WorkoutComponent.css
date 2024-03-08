@@ -1,0 +1,68 @@
+ .myworkout-table {
+    margin: 50px;
+}
+
+ table {
+    width: 300px;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid hsl(246, 82%, 42%);
+    text-align: left;
+    padding: 8px;
+}
+
+ button {
+    margin-top: 10px;
+    margin: 5px;
+    align-content: center;
+    float: left;
+}
+
+
+
+@media screen and (max-width: 768px) {
+    /* Styles for screens up to 768px wide */
+    .container {
+        flex-direction: column;
+    }
+}
+
+ .create-workout-box, .select-workout-box {
+    width: 250px;
+    height: 50px;
+    background-color: #f0f0f0;
+    border: 2px dashed #aaa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 18px;
+    color: #333;
+}
+
+.create-workout-box, .select-workout-box:hover {
+    background-color: #e0e0e0;
+}
+
+.prebuilt-workout-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .prebuilt-workout-item {
+    background-color: #f0f0f0;
+    padding: 10px;
+    margin: 5px 0;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+   .prebuilt-workout-item:hover {
+    background-color: #e0e0e0;
+  }
+
+
+
+
