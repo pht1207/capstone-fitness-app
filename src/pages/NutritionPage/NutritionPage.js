@@ -11,33 +11,47 @@ function NutritionPage() {
 
   return (
     <div className="FitnessPage">
-        <h1>This is the nutrition page</h1>
-        <h1>Nutrition</h1>
-    <p>
-        <input type="date" id="start" name="todaysdate" value="2024-02-20"/>
-    </p>
+      <h1>This is the nutrition page</h1>
+      <h1>Nutrition</h1>
+      <p>
+        <input type="date" id="start" name="todaysdate" value="2024-02-20" />
+      </p>
 
-<div class="container">
-    <div class="a">Your Goal GOAL TYPE Calories Needed GOAL CALORIES</div>
+      <div className="macroBoxes">
+        <div className="macroBox">
+        <h4>Your Goal GOAL TYPE Calories Needed GOAL CALORIES</h4>
+        </div>
 
-    <div class="b">LOG NUTRITION</div>
+        <div className="macroBox">
+        <h4>LOG NUTRITION</h4>
+        </div>
 
-    <div class="c">Latest weight, DATE, Weight lbs Goal Weight: GOAL lbs</div>
+        <div className="macroBox">
+        <h4>Latest weight DATE, Weight lbs Goal Weight: GOAL lbs</h4>
+        </div>
+        </div>
 
-    <div class="d">Protein </div>
+        
+      <div className="macroContainer">
+        <div className="macroNutrientStatBox">
+          <h3>Carbs</h3>
+          <p>Goal <input type='text' /></p>
+          <p>Remaining #</p>
+        </div>
+        <div className="macroNutrientStatBox">
+          <h3>Protein</h3>
+          <p>Goal <input type='text' /></p>
+          <p>Remaining #</p>
+        </div>
 
-    <div class="e">Carbs</div>
-
-    <div class="f">Fat</div>
-
-    <div class="g">Goal # Remaining # </div>
-
-    <div class="h">Goal # Remaining # </div>
-
-    <div class="i">Goal # Remaining # </div>
+        <div className="macroNutrientStatBox">
+          <h3>Fats</h3>
+          <p>Goal #</p>
+          <p>Remaining #</p>
+        </div>
+      </div>
     </div>
-
-    </div>
+  
   );
 }
 
