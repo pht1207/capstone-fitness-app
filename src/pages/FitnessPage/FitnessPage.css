@@ -1,4 +1,7 @@
- .FitnessPage.Baner{
+.FitnessPage{
+    height: fit-content;
+}
+.FitnessPage.Baner{
     width: 100%;
     float: left;
 }

@@ -42,3 +42,7 @@
 .macroNutrientStatBox input{
     width: 20%;
 }
+
+.NutritionPage{
+    height: fit-content;
+}

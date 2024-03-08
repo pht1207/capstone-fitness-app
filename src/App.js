@@ -9,14 +9,14 @@ import {
 } from "react-router-dom";
 import FitnessPage from './pages/FitnessPage/FitnessPage';
 import HomePage from './pages/HomePage/HomePage';
-import LoginPage from './pages/LoginRegistrationPage/LoginPage';
-import RegisterPage from './pages/LoginRegistrationPage/RegisterPage';
 
 import NutritionPage from './pages/NutritionPage/NutritionPage';
 import ProfilePage from './pages/ProfilePage/ProfilePage';
 import LoginRegisterPage from './pages/LoginRegistrationPage/LoginRegister';
 import { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
+import HttpPopup from './components/HttpPopup';
+import { HttpPopupContext } from './components/HttpPopupContext';
 
 
 function App() {
@@ -24,6 +24,9 @@ function App() {
 
   const [isJWTExpired, setJWTExpired] = useState(true);
   const [loginEvent, setLoginEvent] = useState(0) //loginpage.js will increment this upon login effectively re-rendering the homepage upon login, showing profilepage.js in the navigation bar rather than loginregister.js
+
+  //These are state's used in the context api
+  const [response, setResponse] = useState(false)
 
   //Checks if jwt is expired using the jwtDecode library
   function jwtExpiryCheck(jwt){
@@ -53,17 +56,18 @@ function App() {
   }, [])
 
   return (
+    <HttpPopupContext.Provider value={{response, setResponse}}>
     <div className="App">
       {/*Below this text is the navigation bar. The default is the 'home page'. This page shouldn't need to be editted except to change the navigation bar. Change the 'fitnesspage.js', the 'homepage.js', etc. to change each page. */}
       <Router>
+      <HttpPopup/>
             <nav className="NavigationFlexBox">
-                <h1>Logo</h1>
-                <Link to="/">HomePage</Link>
-                <Link to="/FitnessPage">FitnessPage</Link>
-                <Link to="/NutritionPage">NutritionPage</Link>
-                {isJWTExpired ? <Link to="/LoginRegisterPage" >Login/Register</Link> : <Link to="/ProfilePage">ProfilePage</Link>}
+                <Link to="/">Home</Link>
+                <Link to="/FitnessPage">Fitness </Link>
+                <Link to="/NutritionPage">Nutrition</Link>
+                {isJWTExpired ? <Link to="/LoginRegisterPage" >Login/Register</Link> : <Link to="/ProfilePage">Profile</Link>}
             </nav>
-            
+
             <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/FitnessPage" element={<FitnessPage />} />
@@ -73,6 +77,7 @@ function App() {
             </Routes>
         </Router>
     </div>
+    </HttpPopupContext.Provider>
   );
 }
 

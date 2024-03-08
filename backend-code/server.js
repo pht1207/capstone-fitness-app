@@ -60,6 +60,7 @@ const registerSchema = Joi.object({
   lastName: Joi.string().alphanum().max(45).required(),
   DOB: Joi.date().iso().required(), // Checks for 'YYYY-MM-DD' format
   notificationsOn: Joi.number().integer().valid(0, 1).required(),
+  height:Joi.number().integer().required(),
   goal: Joi.number().integer().valid(1, 2, 3).required(),
   weight: Joi.number().positive().required()
 });
@@ -76,7 +77,11 @@ const updateProfileSchema = Joi.object({
   firstName: Joi.string().alphanum().max(45).required(),
   lastName: Joi.string().alphanum().max(45).required(),
   DOB: Joi.date().iso().required(), // Checks for 'YYYY-MM-DD' format
+  height:Joi.number().integer().required(),
   notificationsOn: Joi.number().integer().valid(0, 1).required(),
+});
+const setUserGoalSchema = Joi.object({
+  goal: Joi.number().integer().valid(1, 2, 3).required(),
 });
 {/* End of form validation */}
 
@@ -94,7 +99,6 @@ const updateProfileSchema = Joi.object({
 //This function will be used to verify the json web token from the user.
 //Acts as a middleware. When a method is called, it's HTTP headers are verified here first.
 const jwtVerify = (req, res, next) => {
-  console.log("jwtverify called")
   const authHeader = req.headers['authorization']; //extracts the token from the http header
   const token = authHeader && authHeader.split(' ')[1]; //object that contains the token
 
@@ -133,12 +137,10 @@ app.get('/jwtVerify', upload.none(), jwtVerify);
 //Function to register the users
 //Need to add the user inputting their weight and selected goal to the registration process***
 const register = async function(req,res){
-  console.log("register called");
-  console.log(req.body)
   const validationResult = registerSchema.validate(req.body);
   if (validationResult.error) {
-    res.send({
-      code:"400",
+    console.error(validationResult.error)
+    res.status(400).json({
       message:"Error with "+validationResult.error.details[0].path
     })
   }
@@ -153,6 +155,7 @@ const register = async function(req,res){
     "lastName":req.body.lastName,
     "DOB":req.body.DOB,
     "notificationsOn":req.body.notificationsOn,
+    "height":req.body.height,
 
     "goal":req.body.goal,
 
@@ -161,8 +164,8 @@ const register = async function(req,res){
 
     try{
     //Creates a new user row in the userTable table
-    const userTableQuery = "INSERT INTO userTable (email, username, password, firstname, lastname, DOB, notificationsOn)  VALUES (?, ?, ?, ?, ?, ?, ?); ";
-    const userTableQueryValues = [user.email, user.username, encryptedPassword, user.firstName, user.lastName, user.DOB, user.notificationsOn];
+    const userTableQuery = "INSERT INTO userTable (email, username, password, firstname, lastname, DOB, height, notificationsOn)  VALUES (?, ?, ?, ?, ?, ?, ?, ?); ";
+    const userTableQueryValues = [user.email, user.username, encryptedPassword, user.firstName, user.lastName, user.DOB, user.height, user.notificationsOn];
     const userTableInsert = await executeQuery(userTableQuery, userTableQueryValues);
 
     //Gets and sets the userID made from the previous query
@@ -179,8 +182,7 @@ const register = async function(req,res){
     const userWeightTableQueryValues = [user.weight, getCurrentTime()]
     const userWeightTableInsert = await executeQuery(userWeightTableQuery, userWeightTableQueryValues);
     
-    res.send({
-      code:"200",
+    res.status(200).json({
       message:"Account creation successful"
     })
   }
@@ -197,29 +199,25 @@ const register = async function(req,res){
             if (error.code === 'ER_DUP_ENTRY') {
               if (error.sqlMessage.includes('userTable.email_UNIQUE')) {
                   //Error for if email is already in use
-                  res.send({
-                      code: "400",
+                  res.status(400).json({
                       message: "Email already in use"
                   });
               }
               else if (error.sqlMessage.includes('userTable.username_UNIQUE')) {
                   //Error for if username is already in use
-                  res.send({
-                      code: "400",
+                  res.status(400).json({
                       message: "Username already in use"
                   });
               }
           }
           else {
               //Any other types of errors
-              res.send({
-                  code: "500",
+              res.status(400).json({
                   message: "Internal Server Error"
               });
           }
           }
           else{
-            console.log(results);
             resolve(results);
           }
         })
@@ -238,11 +236,9 @@ const login = async function(req, res) {
   let password = req.body.password;
   let validatorObject = {email: email, username: username, password: password}
 
-  console.log(validatorObject)
   const validationResult = loginSchema.validate(validatorObject);
   if (validationResult.error) {
-    res.send({
-      code:"400",
+    res.status(400).json({
       message:"Error with "+validationResult.error.details[0].path
     })
   }
@@ -250,10 +246,8 @@ const login = async function(req, res) {
     // Adjust the query to select from userTable
     pool.query('SELECT * FROM userTable WHERE email = ? OR username = ?', [email, username], async function (error, results, fields) {      
       if (error) {
-        res.send({
-          "code": 400,          
-          "failed": "error occurred",
-          "error": error
+        res.status(400).json({
+          message: error
         });
       } else {
         if (results.length > 0) {
@@ -261,33 +255,23 @@ const login = async function(req, res) {
           const comparison = await bcrypt.compare(password, results[0].password);          
           if (comparison) {//if login successful
             //creates a jwt upon login
-            console.log(results)
             const user = { id: results[0].userTable_id, username: results[0].username }; //user object is generated w/ username and userTable_id which is the primary key for each user
             const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '31d' }); //jwt is generated with user object inside of it
-        
-
-            res.send({
-              "code": 200,
-              "success": "login successful",
-              "userTable_id": results[0].userTable_id,
-              "username": results[0].username,
-              "accessToken": accessToken
-
-            }
-            );
+            res.status(200).json({
+              message: "login successful",
+              accessToken: accessToken
+            });
           }
           else {
             // Password does not match
-            res.send({
-              "code": 204,
-              "error": "Password does not match provided username/email"
+            res.status(400).json({
+              message: "Password does not match provided username/email"
             });
           }
         } else {
           // Email does not exist
-          res.send({
-            "code": 206,
-            "error": "Email/username does not exist"
+          res.status(400).json({
+            message: "Email/username does not exist"
           });
         }
       }
@@ -329,59 +313,52 @@ const updateProfile = async function(req, res) {
   const firstName = requestData.firstName;
   const lastName = requestData.lastName;
   const DOB = requestData.DOB;
+  const height = requestData.height;
   const notificationsOn = requestData.notificationsOn;
 
-  let validatorObject = {email: email, username: username, password: password, firstName: firstName, lastName: lastName, DOB: DOB, notificationsOn: notificationsOn}
-  console.log(validatorObject)
+  let validatorObject = {email: email, username: username, password: password, firstName: firstName, lastName: lastName, DOB: DOB, height:height, notificationsOn: notificationsOn}
 
   const encryptedPassword = await bcrypt.hash(password, saltRounds)
 
-  console.log(validatorObject)
   const validationResult = updateProfileSchema.validate(validatorObject);
   if (validationResult.error) {
-    console.log(validationResult.error)
-    res.send({
-      code:"400",
+    console.error(validationResult.error)
+    res.status(400).json({
       message:"Error with "+validationResult.error.details[0].path
     })
   }
   else{
     const query = (
     "UPDATE userTable "+
-    "SET userTable.email = ?, userTable.username = ?, userTable.password = ?, userTable.firstName = ?, userTable.lastName = ?, userTable.DOB = ?, userTable.notificationsOn = ? "+
+    "SET userTable.email = ?, userTable.username = ?, userTable.password = ?, userTable.firstName = ?, userTable.lastName = ?, userTable.DOB = ?, userTable.height = ?, userTable.notificationsOn = ? "+
     "WHERE userTable.userTable_id = ?")
-    const values = [email, username, encryptedPassword, firstName, lastName, DOB, notificationsOn, userID]
+    const values = [email, username, encryptedPassword, firstName, lastName, DOB, height, notificationsOn, userID]
     pool.query(query, values, (error, results) =>{
       if(error){
         console.error(error)
         if (error.code === 'ER_DUP_ENTRY') {
           if (error.sqlMessage.includes('userTable.email_UNIQUE')) {
               //Error for if email is already in use
-              res.send({
-                  code: "400",
+              res.status(400).json({
                   message: "Email already in use"
               });
           }
           else if (error.sqlMessage.includes('userTable.username_UNIQUE')) {
               //Error for if username is already in use
-              res.send({
-                  code: "400",
+              res.status(400).json({
                   message: "Username already in use"
               });
           }
       }
       else {
           //Any other types of errors
-          res.send({
-              code: "500",
+          res.status(500).json({
               message: "Internal Server Error"
           });
       }
       }
       else{
-        console.log("data from query: ", results);
-        res.json({
-          code:"200",
+        res.status(200).json({
           message:"update profile successful"
         });
       }
@@ -390,10 +367,8 @@ const updateProfile = async function(req, res) {
 }
 const getProfileData = async function(req, res){
   const userID = req.user.id;
-  console.log(userID)
-  //Write a query that can get the userTable information, get the user's weight info, and also get the goal info while joining the correct tables to convert the id's to their acutal values
   pool.query(
-    'SELECT userTable.email, userTable.username, userTable.firstName, userTable.lastName, goalTable.goalName, userWeightTable.userWeight, userWeightTable.dateTimeChanged ' + //specify each column that should be gathered throughout the query
+    'SELECT userTable.email, userTable.username, userTable.firstName, userTable.lastName, userTable.height, goalTable.goalName, userWeightTable.userWeight, userWeightTable.dateTimeChanged ' + //specify each column that should be gathered throughout the query
     'FROM userTable ' + //get all rows from usertable and only show columns in select statement
     'LEFT JOIN user_goalTable ON userTable.userTable_id = user_goalTable.userTable_id '+ //get all rows from user_goalTable that match the userTable_id in userTable
     'INNER JOIN goalTable ON user_goalTable.goalTable_id = goalTable.goalTable_id '+ //Gets the rows from goalTable where goalTable_id matches both tables
@@ -407,8 +382,8 @@ const getProfileData = async function(req, res){
         res.status(500).send("Error fetching foods from database");
       }
       else{
-        console.log("data from query: ", results);
-        res.json(results);
+        res.status(200).json(results);
+        
       }
     })
 }
@@ -432,9 +407,32 @@ app.get('/getProfileData', jwtVerify, getProfileData);
 
 const setUserGoal = async function(req, res){
   const userID = req.user.id;
-  console.log(userID)
-  //Make query to set userGoal in user_goalTable
-  pool.query()
+  const goal = req.body.goal
+  const validationResult = setUserGoalSchema.validate(req.body);
+  if (validationResult.error) {
+    console.error(validationResult.error)
+    res.status(400).json({
+      message:"Error with "+validationResult.error.details[0].path
+    })
+  }
+  else{
+    //Make query to set userGoal in user_goalTable
+    const query = "INSERT INTO user_goalTable "+
+    "(goalTable_id, userTable_id, dateTimeChanged) VALUES (?, ?, ?)"
+    const values = [goal, userID, getCurrentTime()];
+    console.log(values)
+    pool.query(query, values, (error, results) =>{
+      if(error){
+        console.error(error);
+        res.status(500).send("Error setting goal in database");
+      }
+      else{
+        res.status(200).json({
+          message:"new goal set"
+        });
+      }
+    })
+  }
 }
 app.post('/setUserGoal', jwtVerify, setUserGoal);
 
@@ -464,17 +462,13 @@ const logNutrition = async function(req, res) {
   const nutritionLog = req.body;
   const values = [userID, nutritionLog.caloriesConsumed || null, nutritionLog.carbsConsumed || null, nutritionLog.proteinConsumed || null, nutritionLog.fatConsumed || null, nutritionLog.dateTimeConsumed || null]
   const query = "INSERT INTO userConsumptionTable (userTable_id, caloriesConsumed, carbsConsumed, proteinConsumed, fatsConsumed, dateTimeConsumed)  VALUES (?, ?, ?, ?, ?, ?)"
-  console.log("logNutrition Called");
   pool.query(query, values, (error, results) =>{
     if(error){
-      console.log(error);
+      console.error(error);
     }
     else{
-      console.log("logged nutrition");
-      console.log(results);
-      res.send({
-        "code": 200,
-        "success": "logNutrition successful",
+      res.status(200).json({
+        message: "logNutrition successful",
       });      
     }
   });
@@ -483,12 +477,13 @@ const logNutrition = async function(req, res) {
 
 const getUserNutritionLog = async function(req, res) {
   const dateAccessed = req.query.dateAccessed;
+  console.log(dateAccessed)
   const userID = req.user.id;
 
   pool.query(
-  'SELECT * ' +
+  'SELECT userConsumptionTable_id caloriesConsumed, carbsConsumed, proteinConsumed, fatsConsumed, dateTimeConsumed ' +
   'FROM userConsumptionTable ' +
-  'WHERE(userTable_id = ? AND DATE(dateTimeConsumed) = ?)', //DATE(dateTimeConsumed) extracts only the date from dateTimeConsumed column
+  'WHERE userTable_id = ? AND DATE(dateTimeConsumed) = ? ',
   [userID, dateAccessed],
   (error, results, fields) =>{
     if(error){
@@ -496,15 +491,38 @@ const getUserNutritionLog = async function(req, res) {
       res.status(500).send("Error fetching foods from database");
     }
     else{
-      console.log("data from foods: ", results);
-      res.json(results);
+      try{
+        let nutritionLog = {
+          caloriesConsumed: 0,
+          carbsConsumed: 0,
+          proteinConsumed: 0,
+          fatsConsumed: 0,
+          dateTimeConsumed: dateAccessed
+        }
+        //This will combine the logs from the day retrieved into one object
+        if(results.length > 0){//if any rows are retrieved, add their values to the nutritionLog object
+          for(let i = 0; i < results.length; i++){
+            nutritionLog.caloriesConsumed += results[i].caloriesConsumed;
+            nutritionLog.carbsConsumed += results[i].carbsConsumed;
+            nutritionLog.proteinConsumed += results[i].proteinConsumed;
+            nutritionLog.fatsConsumed += results[i].fatsConsumed;
+          }
+        }
+        else{
+          res.status(200).json(nutritionLog);
+        }
+    }
+    catch(error){
+      console.error("db query error", error);
+      res.status(500).send("Error fetching nutrition log from database");
+    }
     }
   })
 }
 
 
+
 const getFoods = async function(req, res){
-  console.log("getfoods called")
   //return all foods as json, let frontend sort through it as there's not going to be much to it
   pool.query('SELECT * FROM foodsTable', (error, results, fields) =>{
     if(error){
@@ -512,8 +530,7 @@ const getFoods = async function(req, res){
       res.status(500).send("Error fetching foods from database");
     }
     else{
-      console.log("data from foods: ", results);
-      res.json(results);
+      res.status(200).json(results);
     }
   })
 }
@@ -521,7 +538,7 @@ const getFoods = async function(req, res){
 //runs the function everyday at 12am
 const cron = require('node-cron');
 cron.schedule('0 0 * * *', function() {
-  console.log('Running daily user nutrition calculator every day at 12 AM');
+  console.log('Running daily user nutrition calculator every day at 12 AM for each user');
   dailyNutritionTableCalculator()
 });
 //Calculates a daily nutrition recommendation for each user in the DB based around their weight and goal as a user.
@@ -552,10 +569,10 @@ function dailyNutritionTableCalculator(){
           let values = [currentUser.userTable_id, calculatedNutrition.dailyCalories || null, calculatedNutrition.gramsCarbs || null, calculatedNutrition.gramsProtein || null, calculatedNutrition.gramsFat || null, mysqlDateTime || null]
           pool.query(query, values, (error, results) =>{
             if(error){
-              console.log(error);        
+              console.error(error);        
             }
             else{
-              console.log("dailyUserNutrition successfully logged");
+              //continue loop as normal
             }
           }) 
         }
@@ -604,9 +621,37 @@ function dailyNutritionTableCalculator(){
   }
   console.log("dailyNutritionTable values for all users logged");
 }
+const getDailyRecommendedNutrition = async function(req, res){
+  console.log("called getdailyrecommended")
+
+
+  const dateAccessed = req.query.dateAccessed;
+  console.log(dateAccessed)
+  const userID = req.user.id;
+  //Need to do a left join on workoutsTable so names for the workouts can be attatched
+  pool.query(
+  'SELECT caloriesGoal, carbsGoal, proteinGoal, fatsGoal, dateCalculated ' +
+  'FROM dailyNutritionTable ' +
+  'WHERE userTable_id = ? '+
+  'AND DATE(dateCalculated) = ? '+
+  'ORDER BY DATE(dateCalculated) DESC '+
+  'LIMIT 1', //DATE(dateTimeConsumed) extracts only the date from dateTimeConsumed column
+  [userID, dateAccessed],
+  (error, results, fields) =>{
+    if(error){
+      console.error("db query error", error);
+      res.status(500).send("Error fetching foods from database");
+    }
+    else{
+      res.status(200).json(results);
+
+    }
+  })
+}
 app.post('/logNutrition', jwtVerify, logNutrition);
 app.get('/getFoods', jwtVerify, getFoods);
 app.get('/getUserNutritionLog', jwtVerify, getUserNutritionLog);
+app.get('/getDailyRecommendedNutrition', jwtVerify, getDailyRecommendedNutrition)
 {/*
   * END OF SECTION: NUTRITION
 */}
@@ -638,31 +683,28 @@ const getExercises = async function(req, res){
   //Will return every exercise, including ones made by the user, with a filter for what muscle group they are search for (if one exists)
   if(req.query.muscleGroup){
     pool.query(
-      'SELECT exerciseTable.* ' +
+      'SELECT exerciseTable.exerciseTable_id, exerciseTable.exerciseName, exerciseTable.muscleGroup, exerciseTable.setCount, exerciseTable.repCount, exerciseTable.timeAmountInMins ' +
       'FROM exerciseTable ' +
       'LEFT JOIN userTable ON exerciseTable.createdBy = userTable.userTable_id ' + //Joins all values from exerciseTable and when there is a match between the userTable_id and the createdBy columns & only if they match muscleGroup filter
       'WHERE (userTable.userTable_id = ? AND exerciseTable.muscleGroup = ?) ' +
       'OR (exerciseTable.createdBy IS NULL AND exerciseTable.muscleGroup = ?)', //Also gets every exercise that shows a NULL value in createdBy column & only if they match muscleGroup filter
       [userID, req.query.muscleGroup, req.query.muscleGroup], 
       (error, results, fields) => { 
-        console.log("filtered by muscle group")
         if(error){
           // Handle the error
           console.error("db query error", error);
-          res.status(500).send("Error fetching foods from database");
+          res.status(500).send("Error fetching exercises from database");
         } 
         else{
             // Process the results
-            console.log("data from exercises: ", results);
-            res.json(results);
+            res.status(200).json(results)
           }
     });
   }
-
   else{
     //Will return every exercise, including ones created by the user
     pool.query(
-      'SELECT exerciseTable.* ' +
+      'SELECT exerciseTable.exerciseTable_id, exerciseTable.exerciseName, exerciseTable.muscleGroup, exerciseTable.setCount, exerciseTable.repCount, exerciseTable.timeAmountInMins ' +
       'FROM exerciseTable ' +
       'LEFT JOIN userTable ON exerciseTable.createdBy = userTable.userTable_id ' + //Joins all values from exerciseTable and when there is a match between the userTable_id and the createdBy columns
       'WHERE userTable.userTable_id = ? '+
@@ -675,8 +717,7 @@ const getExercises = async function(req, res){
           res.status(500).send("Error fetching foods from database");
         }
         else{
-          console.log("data from exercises: ", results);
-          res.json(results);
+          res.status(200).json(results)
         }
     });
   }
@@ -686,7 +727,6 @@ const createExercises = async function(req, res){
   const userID = req.user.id;
   {/* Write a checker to see if the information inserted is appropriate for the DB columns */}
   let exercise = req.body;
-  console.log(exercise)
   const query = "INSERT INTO exerciseTable (exerciseName, muscleGroup, setCount, repCount, timeAmountInMins, createdBy) VALUES (?, ?, ?, ?, ?, ?)"
   const values = [exercise.exerciseName || null, exercise.muscleGroup || null, exercise.setCount || null, exercise.repCount || null, exercise.timeAmountInMins || null, userID ]
   pool.query(query, values, (error, results) =>{
@@ -695,8 +735,9 @@ const createExercises = async function(req, res){
       res.status(500).send("Error creating exercise");
     }
     else{
-      console.log("exercise created");
-      res.status(200).send("Exercise created")
+      res.status(200).json({
+        message:"exercise created"
+    })
     }
   })
 }
@@ -704,45 +745,43 @@ const createExercises = async function(req, res){
 //allows the use of the exercises page to log exercises for the user
 const logExercises = async function(req, res) {    
   //write insert statements for the user
-  console.log(req.body)
   const userID = req.user.id;
   const exerciseLog = req.body;
   const query = "INSERT INTO user_exerciseTable (userTable_id, exerciseTable_id, timeStarted, timeCompleted)  VALUES (?, ?, ?, ?)"
   const values = [userID, exerciseLog.exerciseTable_id || null, exerciseLog.timeStarted || null, exerciseLog.timeCompleted || null]
-  console.log("exerciseLog Called");
   pool.query(query, values, (error, results) =>{
     if(error){
-      console.log(error);
+      console.error(error);
       res.status(500).send("Error logging exercise to database");
     }
     else{
-      console.log("logged exercise");
-      console.log(results);
-      res.send({
-        "code": 200,
-        "success": "logWorkouts successful",
+      res.status(200).json({
+        message: "workout log successful",
       });      
     }
   });
 }
 
 const getUserExerciseLog = async function(req, res) {
-  const dateAccessed = req.query.dateAccessed;
+  const page = (parseInt(req.query.page)*5)-5;
   const userID = req.user.id;
+  console.log(page)
 
+  //Need to do a left join on workoutsTable so names for the workouts can be attatched
   pool.query(
   'SELECT * ' +
   'FROM user_exerciseTable ' +
-  'WHERE(userTable_id = ? AND DATE(timeCompleted) = ?)', //DATE(dateTimeConsumed) extracts only the date from dateTimeConsumed column
-  [userID, dateAccessed],
+  'WHERE userTable_id = ? '+
+  'ORDER BY timeCompleted DESC '+
+  'LIMIT ?, 5', //DATE(dateTimeConsumed) extracts only the date from dateTimeConsumed column
+  [userID, page],
   (error, results, fields) =>{
     if(error){
       console.error("db query error", error);
       res.status(500).send("Error fetching exercise log from database");
     }
     else{
-      console.log("data from foods: ", results);
-      res.json(results);
+      res.status(200).json(results)
     }
   })
 }
@@ -771,74 +810,133 @@ app.get('/getUserExerciseLog', jwtVerify, getUserExerciseLog);
 */}
 const getWorkouts = async function(req, res){
   const userID = req.user.id;
-    //Will return every workout, including ones created by the user
-    pool.query(
-      'SELECT workoutTable.* ' +
-      'FROM workoutTable ' +
-      'LEFT JOIN userTable ON workoutTable.createdBy = userTable.userTable_id ' + //Joins all values from workoutTable and when there is a match between the userTable_id and the createdBy columns
-      'WHERE userTable.userTable_id = ? '+
-      'OR workoutTable.createdBy IS NULL', //Also gets every workout that shows a NULL value in createdBy column (created by server)
-      [userID], 
-      (error, results, fields) => {      
-        if(error){
-          // Handle the error
-          console.error("db query error", error);
-          res.status(500).send("Error fetching workouts from database");
-        }
-        else{
-          console.log("data from workoutTable: ", results);
-          res.json(results);
-        }
-    });
-  }
-
-const createWorkouts = async function(req, res){
-  const userID = req.user.id;
+  
+  {/* This query returns every workout from the workoutTable as well as every iteration of where it appears within workout_exerciseTable. 
+  It also shows every exercise that the workoutTable_id is associated with.
+  This data is used in the else statement to create the object that will be sent to the frontend*/}
+  pool.query( 
+    `SELECT workoutTable.workoutTable_id, workoutTable.workoutName, workoutTable.workoutDescription, workoutTable.createdAt, workoutTable.createdBy, 
+            exerciseTable.exerciseTable_id, exerciseTable.exerciseName, exerciseTable.muscleGroup, exerciseTable.setCount, exerciseTable.repCount, exerciseTable.timeAmountInMins 
+     FROM workoutTable
+     LEFT JOIN workout_exerciseTable ON workoutTable.workoutTable_id = workout_exerciseTable.workoutTable_id
+     LEFT JOIN exerciseTable ON workout_exerciseTable.exerciseTable_id = exerciseTable.exerciseTable_id
+     WHERE workoutTable.createdBy = ? OR workoutTable.createdBy IS NULL`,
+    [userID], 
+    (error, results, fields) => {   
+      if(error){
+        console.error("db query error", error);
+        res.status(500).send("Error fetching workouts from database");
+      }
+      else{
+        //Processes the results object creating an array of workout objects
+        const workouts = results.reduce((accumulator, current) => {
+          //If the workout hasn't been added to the accumulator object (what will be sent to the frontend), add it
+          if (!accumulator[current.workoutTable_id]) {//Creates a workout object if one does not exist
+            accumulator[current.workoutTable_id] = {//The key is the workoutTable_id
+              workoutTable_id: current.workoutTable_id,
+              workoutName: current.workoutName,
+              workoutDescription: current.workoutDescription,
+              createdAt: current.createdAt,
+              createdBy: current.createdBy,
+              exercises: []
+            };
+          }
+          //This block adds exercises to the parent workout object if they exist
+          if (current.exerciseTable_id) { //check if there's an exercise ID available
+            accumulator[current.workoutTable_id].exercises.push({
+              exerciseTable_id: current.exerciseTable_id,
+              exerciseName: current.exerciseName,
+              muscleGroup: current.muscleGroup,
+              setCount: current.setCount,
+              repCount: current.repCount,
+              timeAmountInMins: current.timeAmountInMins
+            });
+          }
+          return accumulator;
+        });
+        //sends the array of workouts to the frontend
+        res.status(200).json(workouts);
+      }
+  });
 }
+
+  const createWorkouts = async function(req, res){
+    const userID = req.user.id;
+    {/* Write a checker to see if the information inserted is appropriate for the DB columns */}
+    let workout = req.body;
+    const query = "INSERT INTO workoutTable (workoutName, workoutDescription, createdAt, createdBy) VALUES (?, ?, ?, ?)"
+    const values = [workout.workoutName || null, workout.workoutDescription || null, getCurrentTime(), userID ]
+    pool.query(query, values, (error, results) =>{
+      if(error){
+        console.error(error);
+        res.status(500).send("Error creating workout");
+      }
+      else{
+        res.status(200).json({
+          message:"workout created"
+      })
+      }
+    })
+  }
 
 //allows the use of the exercises page to log exercises for the user
 const logWorkouts = async function(req, res) {    
   //write insert statements for the user
-  console.log(req.body)
   const userID = req.user.id;
   const workoutLog = req.body;
   const query = "INSERT INTO user_workoutTable (userTable_id, workoutTable_id, timeStarted, timeCompleted)  VALUES (?, ?, ?, ?)"
   const values = [userID, workoutLog.workoutTable_id || null, workoutLog.timeStarted || null, workoutLog.timeCompleted || null]
-  console.log("logWorkouts Called");
   pool.query(query, values, (error, results) =>{
     if(error){
-      console.log(error);
+      console.error(error);
       res.status(500).send("Error logging workout to database");
 
     }
     else{
-      console.log("logged workout");
-      console.log(results);
-      res.send({
-        "code": 200,
-        "success": "logWorkouts successful",
+      res.status(200).json({
+        message: "logWorkouts successful",
       });      
     }
   });
 }
 
 const getUserWorkoutLog = async function(req, res) {
-  const dateAccessed = req.query.dateAccessed;
+  const page = (parseInt(req.query.page)*5)-5;
   const userID = req.user.id;
 
+  //Need to do a left join on workoutsTable so names for the workouts can be attatched
   pool.query(
   'SELECT * ' +
   'FROM user_workoutTable ' +
-  'WHERE(userTable_id = ? AND DATE(timeCompleted) = ?)', //DATE(dateTimeConsumed) extracts only the date from dateTimeConsumed column
-  [userID, dateAccessed],
+  'WHERE userTable_id = ? '+
+  'ORDER BY timeCompleted DESC '+
+  'LIMIT ?, 5', //DATE(dateTimeConsumed) extracts only the date from dateTimeConsumed column
+  [userID, page],
   (error, results, fields) =>{
     if(error){
       console.error("db query error", error);
       res.status(500).send("Error fetching workout log from database");
     }
     else{
-      console.log("data from foods: ", results);
-      res.json(results);
+      res.status(200).json(results)
+    }
+  })
+}
+//Allows users to insert exercises into a workout assuming it has been made by them
+const insertExerciseIntoWorkout = async function(req, res){
+  {/* Write a checker to see if the information inserted is appropriate for the DB columns */}
+  let parameters = req.body;
+  const query = "INSERT INTO workout_exerciseTable (workoutTable_id, exerciseTable_id, dateTimeChanged) VALUES (?, ?, ?)"
+  const values = [parameters.workoutTable_id, parameters.exerciseTable_id, getCurrentTime()]
+  pool.query(query, values, (error, results) =>{
+    if(error){
+      console.error(error);
+      res.status(500).send("Error inserting into workout");
+    }
+    else{
+      res.status(200).json({
+        message:"workout insert created"
+    })
     }
   })
 }
@@ -846,6 +944,7 @@ app.get('/getWorkouts', jwtVerify, getWorkouts);
 app.post('/createWorkouts', jwtVerify, createWorkouts);
 app.get('/getUserWorkoutLog', jwtVerify, getUserWorkoutLog);
 app.post('/logWorkouts', jwtVerify, logWorkouts);
+app.post('/insertExerciseIntoWorkout', jwtVerify, insertExerciseIntoWorkout)
 {/*
   * END OF SECTION: WORKOUTS
 */}
@@ -862,28 +961,58 @@ app.post('/logWorkouts', jwtVerify, logWorkouts);
 *  -/logWeight
 */}
 const logWeight = async function(req, res) {    
-  //write insert statements for the user
-  console.log(req.body)
+  //Write a validation schema later for this function
   const userID = req.user.id;
   const weightLog = req.body;
-  const values = [userID, weightLog.userWeight, weightLog.dateTimeChanged]
+  console.log(weightLog)
+  const values = [userID, weightLog.userWeight, weightLog.dateTimeChanged];
+  console.log(values);
   const query = "INSERT INTO userWeightTable (userTable_id, userWeight, dateTimeChanged)  VALUES (?, ?, ?)"
-  console.log("logWeight Called");
   pool.query(query, values, (error, results) =>{
     if(error){
-      console.log(error);
+      console.error(error);
+      res.status(500).json({
+        message: "error logging weight",
+      });
     }
     else{
-      console.log("logged weight");
-      console.log(results);
-      res.send({
-        "code": 200,
-        "success": "logWeight successful",
-      });      
+      res.status(200).json({
+        message: "weight log successful",
+      });
     }
   });
 }
+const getUserWeightLog = async function(req, res) {
+  //const page = (parseInt(req.query.page)*5)-5;
+  const userID = req.user.id;
+
+  pool.query(
+  'SELECT userWeightTable.userWeight AS weight, userWeightTable.dateTimeChanged ' +
+  'FROM userWeightTable ' +
+  'WHERE userTable_id = ? '+
+  'ORDER BY dateTimeChanged ASC',
+  [userID],
+  (error, results, fields) =>{
+    if(error){
+      console.error("db query error", error);
+      res.status(500).send("Error fetching weight log from database");
+    }
+    else{
+
+      for(let i = 0; i < results.length; i++){
+        results[i].dateTimeChanged = results[i].dateTimeChanged.toISOString().split('T')[0];
+      }
+
+      console.log(results)
+      res.status(200).json({
+        results,
+        message:"Successfully fetched user's weight log"
+      })
+    }
+  })
+}
 app.post('/logWeight', jwtVerify, logWeight);
+app.get('/getUserWeightLog', jwtVerify, getUserWeightLog);
 {/*
   * END OF SECTION: WEIGHT
 */}

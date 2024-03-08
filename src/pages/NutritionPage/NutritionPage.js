@@ -20,31 +20,32 @@ function NutritionPage() {
             <input type="date" id="start" name="todaysdate" value="2024-02-20" />
           </p>
 
+
           <div className="macroNutrient">
             <h4>Your Goal GOAL TYPE Calories Needed GOAL CALORIES</h4>
             <lb></lb>
             <h4>LOG NUTRITION</h4>
             <lb></lb>
-            <h4>Latest weight, DATE, Weight lbs Goal Weight: GOAL lbs</h4>
+            <h4>Nutrition Goals</h4>
           </div>
 
           <div className="macroContainer">
             <div className="macroNutrientStatBox">
               <h3>Carbs</h3>
-              <p>Goal <input type='text' /></p>
-              <p>Remaining #</p>
+              <img src="Carbs.jpeg"></img>
+              <p>How much <b>Carbs</b> to take:</p>
             </div>
 
             <div className="macroNutrientStatBox">
               <h3>Protein</h3>
-              <p>Goal <input type='text' /></p>
-              <p>Remaining #</p>
+              <img src="Protein.jpeg"></img>
+              <p>How much <b>Proteins</b> to take:</p>
             </div>
 
             <div className="macroNutrientStatBox">
               <h3>Fats</h3>
-              <p>Goal <input type='text' /></p>
-              <p>Remaining #</p>
+              <img src="Fats.jpeg"></img>
+              <p>How much <b>fats</b> to take:</p>
             </div>
           </div>
         </div>
