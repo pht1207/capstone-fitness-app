@@ -1,0 +1,44 @@
+.macroNutrient{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    
+    
+
+}
+.macroNutrient h4{
+    display: flex;
+    flex-direction: row;
+    border-style: solid;
+    justify-content: space-between;
+    width: 20%;
+    text-align: center;
+
+}
+
+.macroContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 80%;
+    align-items: center;
+    padding-bottom: 50px;
+    position: relative;
+    overflow: hidden;
+}
+
+.macroNutrientStatBox {
+    margin: 0 0px;
+    display:flex;
+    flex-direction: column;
+    border-style: solid;
+    justify-content:space-between;
+    width: 20%;
+    length: 50%;
+    height: auto;
+    text-align: center;
+}
+
+.macroNutrientStatBox input{
+    width: 20%;
+}
