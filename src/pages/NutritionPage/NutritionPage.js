@@ -27,8 +27,6 @@ function NutritionPage() {
           }
         });
         setNutritionLog(response.data  || { proteinConsumed:"0", carbsConsumed:"0", fatsGoal:"0"});
-        console.log("logged values: ");
-        console.log(response.data);
       }
         catch (error) {
         console.error('Error fetching data: ', error);
@@ -49,7 +47,6 @@ function NutritionPage() {
           }
         });
         setNutritionGoal(response.data[0] || { proteinGoal:"0", carbsGoal:"0", fatsGoal:"0"});
-        console.log("recommended: "+response.data)
       }
         catch (error) {
         console.error('Error fetching data: ', error);
