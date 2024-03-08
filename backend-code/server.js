@@ -500,7 +500,7 @@ const getUserNutritionLog = async function(req, res) {
           dateTimeConsumed: dateAccessed
         }
         //This will combine the logs from the day retrieved into one object
-        if(results.length > 0){//if any rows are retrieved, add their values to the nutritionLog object
+        if(results.length != 0){//if any rows are retrieved, add their values to the nutritionLog object
           for(let i = 0; i < results.length; i++){
             nutritionLog.caloriesConsumed += results[i].caloriesConsumed;
             nutritionLog.carbsConsumed += results[i].carbsConsumed;
@@ -508,9 +508,7 @@ const getUserNutritionLog = async function(req, res) {
             nutritionLog.fatsConsumed += results[i].fatsConsumed;
           }
         }
-        else{
           res.status(200).json(nutritionLog);
-        }
     }
     catch(error){
       console.error("db query error", error);
@@ -643,6 +641,7 @@ const getDailyRecommendedNutrition = async function(req, res){
       res.status(500).send("Error fetching foods from database");
     }
     else{
+      console.log("sent daily recommended nutrition")
       res.status(200).json(results);
 
     }
