@@ -8,7 +8,6 @@ function NutrientContainer(props) {
     setRemainingValue(props.goalValue-props.loggedCount);
   },[props.goalValue, props.loggedCount])
 
-console.log(props.remainingValue)
   return (
     <div className="MacroNutrientContainer" style={{backgroundColor:props.backgroundColor}}>
         <h3>{props.containerName}</h3>

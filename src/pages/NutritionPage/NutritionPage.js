@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import './NutritionPage.css'
 import axios from 'axios';
 import NutrientContainer from './NutrientContainer';
+import LogNutritionForm from './LogNutritionForm'
 
 function NutritionPage() {
 
@@ -57,23 +58,16 @@ function NutritionPage() {
     fetchData();
   }, [date]);
 
-  {/*This is HTML for showcasing the values from the backend
-            <p>calories consumed: {nutritionLog.caloriesConsumed || 0}</p>
-            <p>carbs consumed: {nutritionLog.carbsConsumed || 0}</p>
-            <p>proteins consumed: {nutritionLog.proteinConsumed || 0}</p>
-            <p>fats consumed: {nutritionLog.fatsConsumed || 0}</p>
- */}
-  //Your code to make the site functional goes in this empty space. The 'return()' below is what renders on the page (the html)
-  //Inserted by parker: https://capstone.parkert.dev/backend/getFoods
-  //https://capstone.parkert.dev/backend/getFoods/getNutrition?dateAccessed=2024-02-20 {change date to whatever you need it to be}
-  //https://capstone.parkert.dev/backend/getFoods/logNutrition {log via json post}
+
+  const [showlogNutritionForm, setShowLogNutritionForm] = useState(false);
 
 
 
   return (
         <div className="NutritionPage">
           <input type='date' onChange={((event)=>setDate(event.target.value))} defaultValue={date}></input>
-          <button>Log Nutrition</button>
+          <button onClick={(()=> setShowLogNutritionForm(!showlogNutritionForm))}>Log Nutrition</button>
+          {showlogNutritionForm ? <LogNutritionForm date={date}/> : <></>}
 
           <div className='NutrientContainerRow'>
             <NutrientContainer containerName="Protein" goalValue={nutritionGoal.proteinGoal} remainingValue={1} loggedCount={nutritionLog.proteinConsumed} backgroundColor={"rgb(255,204,204)"}/>

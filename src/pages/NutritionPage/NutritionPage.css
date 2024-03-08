@@ -28,3 +28,36 @@
 .MacroNutrientContainer div p{
     margin: 2em;
 }
+
+
+
+
+.LogNutritionForm{
+    display: flex;
+    width:25%;
+    flex-direction: column;
+    border-style: solid;
+    border-radius: 1em;
+    border-width: .1em;
+    border-color: lightgray;
+    background-color: rgb(248, 248, 248);
+    align-items: center;
+}
+.LogNutritionForm label{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin:1em;
+}
+.LogNutritionForm input{
+    width: 30%;
+    padding:0;
+}
+.LogNutritionForm form{
+    display: flex;
+    flex-direction: column;
+}
+.LogNutritionForm form button{
+    width: 50%;
+    align-self: center;
+}
