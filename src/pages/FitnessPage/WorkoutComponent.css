@@ -1,8 +1,8 @@
-.FitnessPage .myworkout-table {
+ .myworkout-table {
     margin: 50px;
 }
 
-.FitnessPage table {
+ table {
     width: 300px;
     border-collapse: collapse;
 }
@@ -13,9 +13,11 @@ th, td {
     padding: 8px;
 }
 
- .FitnessPage button {
+ button {
     margin-top: 10px;
+    margin: 5px;
     align-content: center;
+    float: left;
 }
 
 
@@ -27,8 +29,7 @@ th, td {
     }
 }
 
-
-.FitnessPage .create-workout-box, .FitnessPage .select-workout-box {
+ .create-workout-box, .select-workout-box {
     width: 250px;
     height: 50px;
     background-color: #f0f0f0;
@@ -58,7 +59,7 @@ th, td {
     border-radius: 5px;
   }
   
-  .FitnessPage .prebuilt-workout-item:hover {
+   .prebuilt-workout-item:hover {
     background-color: #e0e0e0;
   }
 

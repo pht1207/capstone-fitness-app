@@ -12,9 +12,10 @@ function WorkoutLogRow() {
     and we'll put the real values in later (That will be done in WorkoutLog.js, more on that later)
     */}
     return (
-    <div className="HomePage">
-        <p>This is a WorkoutLogRow component</p>
-
+    <div className="WorkoutLogRow">
+        <form>
+        <p>WorkoutName: <input type="text" name="workout"></input> DayCompleted: <input type="date" name="date"></input> TimeTaken: <input type="number" name="time" min="0" max="500"></input> minutes</p>
+        </form>
     </div>
     );
 }

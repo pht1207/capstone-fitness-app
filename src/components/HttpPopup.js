@@ -5,13 +5,13 @@ import { HttpPopupContext } from './HttpPopupContext';
 
 function HttpPopup() {
   const {response, setResponse} = useContext(HttpPopupContext);
-  const [popupColor, setPopupColor] = useState("green")
+  const [popupColor, setPopupColor] = useState("LightGreen")
   useEffect(()=>{
     if(response.status === 200){
-      setPopupColor("green")
+      setPopupColor("LightGreen")
     }
     else{
-      setPopupColor("red")
+      setPopupColor("LightPink")
     }
     setTimeout(() =>{ //Wait 10 seconds before hiding the response message
       setResponse(false)

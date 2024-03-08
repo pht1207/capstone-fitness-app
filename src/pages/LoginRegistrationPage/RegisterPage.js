@@ -57,7 +57,6 @@ function RegisterPage(props) {
 
   return (
     <div className="RegisterPage">
-        <h1>This is the registration page</h1>
         <form className='RegisterForm' onSubmit={handleSubmit}>
           <h3>Register Here</h3>
           <label>Email: <input type='text'></input></label>

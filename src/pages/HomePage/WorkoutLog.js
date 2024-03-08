@@ -3,7 +3,9 @@ import WorkoutLogRow from './WorkoutLogRow';
 function WorkoutLog() {
     
 
-  return (
+    //There will be 5 WorkoutLogRowComponents returned from the backend when it is called
+    //Don't worry about how that happens yet, but it will be done here
+    return (
     <div class="workout_log">
         <h4>Workout Log</h4>
         <hr/>
@@ -13,8 +15,8 @@ function WorkoutLog() {
         <WorkoutLogRow/>
         <WorkoutLogRow/>
 
-  </div>
-  );
+    </div>
+    );
 }
 
 export default WorkoutLog;

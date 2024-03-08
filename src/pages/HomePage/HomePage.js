@@ -1,24 +1,20 @@
 import React, { useState } from 'react';
-import WorkoutLogRow from './WorkoutLogRow';
 import './HomePage.css'
 import WorkoutLog from './WorkoutLog';
 import WeightGraph from './WeightGraph';
-import Tips from './Tips';
+import RightContainer from './RightContainer/RightContainer';
 
 function HomePage() {
-
+  const [weightLogged, setWeightLogged] = useState(0)
 
   return (
     <div className="HomePage">
-        <div class="hp_img">
-          <h1 id="welcome_msg"><u>Welcome</u></h1>
-          <img id="homepage_img" src={require('./background.png')} alt="Man resting after exercise"></img>
-        </div>
 
-      <WeightGraph/>
-
-      <Tips/>
-
+      <div className='HorizontalFlexBox'>
+        <WeightGraph weightLogged={weightLogged} setWeightLogged={setWeightLogged}/>
+        <div className='SpacerDiv'/>
+        <RightContainer weightLogged={weightLogged} setWeightLogged={setWeightLogged}/>
+      </div>
       <WorkoutLog/>
 
     </div>

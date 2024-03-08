@@ -3,7 +3,9 @@
     flex-direction: column;
     width: 100%;
     height: 100%;
+    justify-content: start;
 }
+
 .LoginForm{
     display: flex;
     flex-direction: column;
@@ -13,6 +15,8 @@
     width: 30%;
     border-radius: 1em;
     background-color: rgba(245, 245, 245, 0.719);
+    margin-top:1em
+
 }
 
 .LoginForm label{
