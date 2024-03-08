@@ -1,16 +1,13 @@
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState } from 'react';
 import './NutritionPage.css'
-import { HttpPopupContext } from '../../components/HttpPopupContext';
 
 function NutrientContainer(props) {
   
   const [remainingValue, setRemainingValue] = useState(0);
-  const {response} = useContext(HttpPopupContext);
 
-  useEffect(()=>{ //Sets the remaining value if goalvalue or loggedcount are changed or if the lognutrition form is submitted
+  useEffect(()=>{ //Sets the remaining value if goalvalue or loggedcount are changed
     setRemainingValue(props.goalValue-props.loggedCount);
-    console.log("Effect triggered", props.goalValue, props.loggedCount, response);
-  },[props.goalValue, props.loggedCount, response])
+  },[props.goalValue, props.loggedCount])
 
   return (
     <div className="MacroNutrientContainer" style={{backgroundColor:props.backgroundColor}}>
