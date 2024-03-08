@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import './NutritionPage.css'
 import axios from 'axios';
 import NutrientContainer from './NutrientContainer';
 import LogNutritionForm from './LogNutritionForm'
+import { HttpPopupContext } from '../../components/HttpPopupContext';
 
 function NutritionPage() {
 
@@ -10,6 +11,9 @@ function NutritionPage() {
   const [nutritionGoal, setNutritionGoal] = useState({ proteinGoal:"0", carbsGoal:"0", fatsGoal:"0"});
   const token = localStorage.getItem("jwt")
   
+  const {response} = useContext(HttpPopupContext);
+
+
   let curr = new Date();
   curr.setDate(curr.getDate() + 3);
   let currentDate = curr.toISOString().substring(0,10);
@@ -33,7 +37,7 @@ function NutritionPage() {
       }
     }
     fetchData();
-  }, [date]);
+  }, [date, response]); //Called if date is called or if form is submitted (response changes)
 
 
 
@@ -53,11 +57,10 @@ function NutritionPage() {
       }
     }
     fetchData();
-  }, [date]);
+  }, [date, response]); //Called if date is called or if form is submitted (response changes)
 
 
-  const [showlogNutritionForm, setShowLogNutritionForm] = useState(false);
-
+  const [showlogNutritionForm, setShowLogNutritionForm] = useState(false); //Used to hide the nutrition form
 
 
   return (
