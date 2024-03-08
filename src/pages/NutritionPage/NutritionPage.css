@@ -25,6 +25,12 @@
     padding-bottom: 50px;
     position: relative;
     overflow: hidden;
+    padding: 10%;
+}
+
+.macroNutrientName {
+    border-style: solid;
+    width: 99%;
 }
 
 .macroNutrientStatBox {
