@@ -22,11 +22,9 @@ function NutritionPage() {
 
 
           <div className="macroNutrient">
-            <h4>Your Goal GOAL TYPE Calories Needed GOAL CALORIES</h4>
-            <lb></lb>
-            <h4>LOG NUTRITION</h4>
             <lb></lb>
             <h4>Nutrition Goals</h4>
+            <lb></lb>
           </div>
 
           <div className="macroContainer">
