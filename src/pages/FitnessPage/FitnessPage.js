@@ -1,5 +1,7 @@
-import "./FitnessPage.css";
-
+import './FitnessPage.css';
+import React,{useState} from 'react';
+import WorkoutComponent from './WorkoutComponent';
+import WorkoutLogComponent from './WorkoutLogComponent';
 function FitnessPage() {
   //Your code to make the site functional goes in this empty space. The 'return()' below is what renders on the page (the html)
   //Inserted by parker: https://capstone.parkert.dev/backend/getExercises?muscleGroup=biceps
@@ -7,28 +9,39 @@ function FitnessPage() {
   //https://capstone.parkert.dev/backend/getWorkouts
   //https://capstone.parkert.dev/backend/createWorkouts
 
+  const [completedWorkout, setCompletedWorkout] = useState([]);
+  
+
+  const handleCompletedWorkout = (workoutData) => {
+    setCompletedWorkout([...completedWorkout, workoutData]);
+  };
+
+
+
   return (
-    <div className="FitnessPage">
-      <div class="Banner">
-        <div class="mworkout">
-          <h1>My Workout</h1>
+    <div className= "FitnessPage"> {/*This div will contain every component for the fitness page. */}
+
+      <div className= "Banner"> {/* Used to hold and seperate the 3 sections of the page. */}
+
+        <div className= "mworkout"> {/* User made or templates will fall in this section */}
+
+          <h1>My Workouts</h1>
+          <h2>Workout</h2>
+          <WorkoutComponent onWorkoutComplete={handleCompletedWorkout}/> {/* The wokrout prop will pass through to this section */}
+
         </div>
-        <div class="recommend">
-          <h1>Recommended</h1>
-        </div>
-        <div class="workoutl">
-          <h1>Workout Log</h1>
-          <table id="workoutTable">
-            <thead>
-              <tr>
-                <th>Workout</th>
-                <th>Time</th>
-                <th>Date</th>
-                <th>Rating</th>
-              </tr>
-            </thead>
-          </table>
-        </div>
+      
+
+      <div className="recommend"> {/* Recommended workouts will go here */}
+        <h1>Recommended</h1>
+      </div>
+
+      <div className="workoutl"> {/* The workout log will track certain info from the user's workout */}
+        <h1>Workout Log</h1>
+        <h2>History</h2>
+        <WorkoutLogComponent workoutData={completedWorkout} />
+      </div>
+
       </div>
     </div>
   );
