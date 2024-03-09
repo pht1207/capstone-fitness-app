@@ -16,7 +16,8 @@ function WorkoutComponent({onWorkoutComplete}) {
   const [workoutDuration, setWorkoutDuration] = useState(0);
   const [workoutRating, setWorkoutRating] = useState(null);
   
-  
+  const token = localStorage.getItem("jwt"); //Token for backend operations
+
   const initiateCreateWorkout = () => {
     setCreateWorkout(true);
   }
@@ -108,6 +109,7 @@ function WorkoutComponent({onWorkoutComplete}) {
       
   */}
 
+  //Write your code here
 
   {/* SECTION END: getWorkouts */}
 
