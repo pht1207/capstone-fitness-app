@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 
 function WorkoutComponent({onWorkoutComplete}) {
   //Your code to make the site functional goes in this empty space. The 'return()' below is what renders on the page (the html)
-  //Inserted by parker: https://capstone.parkert.dev/backend/getFoods
   
   const [createWorkout, setCreateWorkout] = useState(false);
   const [selectWorkout,setSelectWorkout] = useState(false);
@@ -69,6 +68,48 @@ function WorkoutComponent({onWorkoutComplete}) {
       ]
     }
   ]
+
+
+  {/* SECTION START: getWorkouts 
+    This section is based around creating a state object from the getWorkouts method results.
+    This method will get workouts created by the user as well as standard ones included in the system already.
+    Problems with this are that the user may be able to create workouts that have the same name or a slightly different name.
+      -This means the list could get flooded by the user. Look into later.
+
+      Guide for what you need to do:
+      You need to call the getWorkouts method from the backend. This will return every workout in the DB that is standard or created by the specified user.
+        -This should be done inside a useEffect(), with an empty dependency.
+          -This means that the [] should be empty (like below there is useeffect with useeffect(()=>{},[timer]).
+            -This makes it to where it is only ran once, when the page is rendered.
+      
+      Console.log is your friend, it will make it easy to see what the results are from the backend method.
+      
+      This is a useEffect that is mostly copied and pasted from the profilepage.js file. It should at least be close to what you need:
+
+            useEffect(() => {
+
+              const fetchData = async () => { 
+                try {
+                  const response = await axios.get("https://capstone.parkert.dev/backend/getWorkouts", {
+                    headers: {
+                      'Authorization': 'Bearer ' + token
+                    }
+                  });
+                  console.log(response.data) //Response.data is the return data from the backend request. You will make a state variable to store this in (like setWorkoutArray(response.data))
+                }
+                  catch (error) {
+                  console.error('Error fetching data: ', error);
+                }
+              };
+
+              fetchData(); //This calls the function above
+            }, []);
+
+      
+  */}
+
+
+  {/* SECTION END: getWorkouts */}
 
   const addPrebuiltWorkout = (workout) => {
     setWorkoutName(workout.workoutName);
