@@ -15,7 +15,7 @@
 
 
 }
-.HomePage .WeightGraph, .workout_log{
+.HomePage .WeightGraph, .WorkoutLog{
   background-color: rgba(185, 185, 185, 0.164);
   border-style: solid;
 }
@@ -44,7 +44,7 @@
 
 
 
-.workout_log{
+.WorkoutLog{
   display: flex;
   flex-direction: column;
   height:40%;
@@ -53,8 +53,11 @@
   padding-right: 10px;
   background-color: rgba(0, 0, 0, 0.123);
 }
-.workout_log .WorkoutLogRow{
+.WorkoutLog .WorkoutLogRow{
   height:20%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 
