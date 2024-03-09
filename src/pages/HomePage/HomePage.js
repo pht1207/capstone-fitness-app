@@ -5,7 +5,7 @@ import WeightGraph from './WeightGraph';
 import RightContainer from './RightContainer/RightContainer';
 
 function HomePage() {
-  const [weightLogged, setWeightLogged] = useState(0)
+  const [weightLogged, setWeightLogged] = useState(0);
 
   return (
     <div className="HomePage">

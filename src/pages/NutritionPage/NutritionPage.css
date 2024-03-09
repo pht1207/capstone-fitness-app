@@ -1,3 +1,112 @@
 .NutritionPage{
+    width: 100%;
     height: fit-content;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.NutritionContainerRow{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 100%;
+    height: fit-content;
+}
+.MacroNutrientContainer{
+    display: flex;
+    flex-direction: column;
+    border-style: solid;
+    border-radius: 1em;
+    border-width: .1em;
+    border-color: lightgray;
+    width: 20%;
+}
+.MacroNutrientContainer div{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.MacroNutrientContainer div p{
+    margin: 2em;
+}
+
+
+
+
+.LogNutritionForm{
+    display: flex;
+    width:25%;
+    flex-direction: column;
+    border-style: solid;
+    border-radius: 1em;
+    border-width: .1em;
+    border-color: lightgray;
+    background-color: rgb(248, 248, 248);
+    align-items: center;
+}
+.LogNutritionForm label{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin:1em;
+}
+.LogNutritionForm input{
+    width: 30%;
+    padding:0;
+}
+.LogNutritionForm form{
+    display: flex;
+    flex-direction: column;
+}
+.LogNutritionForm form button{
+    width: 50%;
+    align-self: center;
+}
+
+
+
+.NutritionPageTopRow{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-around;
+    margin: 1em;
+}
+
+.NutritionPageTopRow .NutritionPageTopRowGoal, .NutritionPageTopRow .NutritionPageTopRowWeight{
+    display: flex;
+    flex-direction: column;
+    border-style: solid;
+    border-radius: 1em;
+    border-width: .1em;
+    border-color: lightgray;
+    width: 20%;
+}
+.NutritionPageTopRow .NutritionPageTopRowGoal div, .NutritionPageTopRow .NutritionPageTopRowWeight div{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-self: center;
+    width: 80%;
+}
+.NutritionPageTopRow .NutritionPageTopRowMiddle div{
+    display: flex;
+    flex-direction: column;
+    border-radius: 1em;
+    border-width: .1em;
+    width: 25%;
+    align-items: center;
+    justify-content: center;
+}
+.NutritionPageTopRow .NutritionPageTopRowMiddle{
+    display: flex;
+    flex-direction: column;
+    border-radius: 1em;
+    border-width: .1em;
+    width: 20%;
+    align-items: center;
+    justify-content: space-around;
+}
+.NutritionPageTopRow .NutritionPageTopRowMiddle button, .NutritionPageTopRow .NutritionPageTopRowMiddle input{
+    width: 50%;
 }

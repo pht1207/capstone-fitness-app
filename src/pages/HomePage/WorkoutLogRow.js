@@ -1,21 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-function WorkoutLogRow() {
+function WorkoutLogRow(props) {
+    const [workoutTable_id, setWorkoutTable_id] = useState(props.workoutLog.workoutTable_id);
+    const [timeCompleted, setTimeCompeleted] = useState(props.workoutLog.timeCompleted.substring(0,4));
+    const [timeTaken, setTimeTaken] = useState("example");
+    useEffect(()=>{
+        setWorkoutTable_id(props.workoutLog.workoutTable_id);
+        setTimeCompeleted(props.workoutLog.timeCompleted.substring(0,10));
+        setTimeTaken("example");
+        
+    },[props.workoutLog])
 
-    {/* 
-    This is the WorkoutLogRow component, which is a row in the WorkoutLog component.
-    It should have room for 3 data values:
-        -WorkoutName - Name of the workout
-        -DayCompleted - What day it was performed
-        -TimeTaken - How much time it took for the workout from start to finish
-    Don't worry about having the actual values yet, just get a basis for the HTML set up
-    and we'll put the real values in later (That will be done in WorkoutLog.js, more on that later)
-    */}
     return (
     <div className="WorkoutLogRow">
-        <form>
-        <p>WorkoutName: <input type="text" name="workout"></input> DayCompleted: <input type="date" name="date"></input> TimeTaken: <input type="number" name="time" min="0" max="500"></input> minutes</p>
-        </form>
+        <p>Workout Name: {workoutTable_id}</p>
+        <p>Day Completed: {timeCompleted}</p>
+        <p>Time Taken: {timeTaken}</p>
     </div>
     );
 }

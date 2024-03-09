@@ -460,7 +460,7 @@ const logNutrition = async function(req, res) {
   //write insert statements for the user
   const userID = req.user.id;
   const nutritionLog = req.body;
-  const values = [userID, nutritionLog.caloriesConsumed || null, nutritionLog.carbsConsumed || null, nutritionLog.proteinConsumed || null, nutritionLog.fatConsumed || null, nutritionLog.dateTimeConsumed || null]
+  const values = [userID, nutritionLog.caloriesConsumed || null, nutritionLog.carbsConsumed || null, nutritionLog.proteinConsumed || null, nutritionLog.fatsConsumed || null, nutritionLog.dateTimeConsumed || null]
   const query = "INSERT INTO userConsumptionTable (userTable_id, caloriesConsumed, carbsConsumed, proteinConsumed, fatsConsumed, dateTimeConsumed)  VALUES (?, ?, ?, ?, ?, ?)"
   pool.query(query, values, (error, results) =>{
     if(error){
@@ -500,7 +500,7 @@ const getUserNutritionLog = async function(req, res) {
           dateTimeConsumed: dateAccessed
         }
         //This will combine the logs from the day retrieved into one object
-        if(results.length > 0){//if any rows are retrieved, add their values to the nutritionLog object
+        if(results.length != 0){//if any rows are retrieved, add their values to the nutritionLog object
           for(let i = 0; i < results.length; i++){
             nutritionLog.caloriesConsumed += results[i].caloriesConsumed;
             nutritionLog.carbsConsumed += results[i].carbsConsumed;
@@ -508,9 +508,7 @@ const getUserNutritionLog = async function(req, res) {
             nutritionLog.fatsConsumed += results[i].fatsConsumed;
           }
         }
-        else{
           res.status(200).json(nutritionLog);
-        }
     }
     catch(error){
       console.error("db query error", error);
@@ -643,6 +641,7 @@ const getDailyRecommendedNutrition = async function(req, res){
       res.status(500).send("Error fetching foods from database");
     }
     else{
+      console.log("sent daily recommended nutrition")
       res.status(200).json(results);
 
     }
