@@ -477,7 +477,6 @@ const logNutrition = async function(req, res) {
 
 const getUserNutritionLog = async function(req, res) {
   const dateAccessed = req.query.dateAccessed;
-  console.log(dateAccessed)
   const userID = req.user.id;
 
   pool.query(
@@ -620,11 +619,8 @@ function dailyNutritionTableCalculator(){
   console.log("dailyNutritionTable values for all users logged");
 }
 const getDailyRecommendedNutrition = async function(req, res){
-  console.log("called getdailyrecommended")
-
 
   const dateAccessed = req.query.dateAccessed;
-  console.log(dateAccessed)
   const userID = req.user.id;
   //Need to do a left join on workoutsTable so names for the workouts can be attatched
   pool.query(
@@ -641,7 +637,6 @@ const getDailyRecommendedNutrition = async function(req, res){
       res.status(500).send("Error fetching foods from database");
     }
     else{
-      console.log("sent daily recommended nutrition")
       res.status(200).json(results);
 
     }
@@ -764,7 +759,6 @@ const logExercises = async function(req, res) {
 const getUserExerciseLog = async function(req, res) {
   const page = (parseInt(req.query.page)*5)-5;
   const userID = req.user.id;
-  console.log(page)
 
   //Need to do a left join on workoutsTable so names for the workouts can be attatched
   pool.query(
@@ -963,9 +957,7 @@ const logWeight = async function(req, res) {
   //Write a validation schema later for this function
   const userID = req.user.id;
   const weightLog = req.body;
-  console.log(weightLog)
   const values = [userID, weightLog.userWeight, weightLog.dateTimeChanged];
-  console.log(values);
   const query = "INSERT INTO userWeightTable (userTable_id, userWeight, dateTimeChanged)  VALUES (?, ?, ?)"
   pool.query(query, values, (error, results) =>{
     if(error){
@@ -1002,7 +994,6 @@ const getUserWeightLog = async function(req, res) {
         results[i].dateTimeChanged = results[i].dateTimeChanged.toISOString().split('T')[0];
       }
 
-      console.log(results)
       res.status(200).json({
         results,
         message:"Successfully fetched user's weight log"
