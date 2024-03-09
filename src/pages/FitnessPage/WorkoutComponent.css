@@ -1,21 +1,21 @@
  .myworkout-table {
-    margin: 50px;
+    margin: 70px;
 }
 
- table {
+ .WorkoutComponent table {
     width: 300px;
     border-collapse: collapse;
 }
 
-th, td {
+.FitnessPage th, .FitnessPage td {
     border: 1px solid hsl(246, 82%, 42%);
     text-align: left;
     padding: 8px;
 }
 
- button {
-    margin-top: 10px;
-    margin: 5px;
+ .FitnessPage button {
+    margin-top: 20px;
+    margin: 2.5px;
     align-content: center;
     float: left;
 }

@@ -1,16 +1,16 @@
-<<<<<<< HEAD
+
 /* BANNER STYLING -DONE */
 .FitnessPage.Baner {
   width: 100%;
   float: left;
-=======
-.FitnessPage{
+}
+.FitnessPage {
     height: fit-content;
 }
 .FitnessPage.Baner{
     width: 100%;
     float: left;
->>>>>>> ed4271cbc29947023c950a23ba8899542ab9283b
+
 }
 .FitnessPage .mworkout,
 .FitnessPage .recommend,
@@ -20,4 +20,3 @@
   height: 300px;
   padding-top: 50px;
 }
-
