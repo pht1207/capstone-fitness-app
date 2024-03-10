@@ -93,7 +93,23 @@ function NutritionPage() {
  const [weight, setWeight] = useState(0);
 
  //write your useeffects here
-
+ useEffect(() => {
+  console.log(response)
+  const fetchData = async () => { 
+    try {
+      const response = await axios.get("https://capstone.parkert.dev/backend/getProfileData", {
+        headers: {
+          'Authorization': 'Bearer ' + token
+        }
+      });
+      setGoal(response.data[0].goalName);
+    }
+      catch (error) {
+      console.error('Error fetching data: ', error);
+    }
+  };
+  fetchData();
+}, []);
 
 
 
@@ -111,8 +127,8 @@ function NutritionPage() {
       <div className='NutritionPageTopRow'>
 
         <div className='NutritionPageTopRowGoal'>
-          <div><p>Calories Needed:</p> <p>{1}</p></div> {/* Replace 1 with nutritionGoal.caloriesGoal*/}
-          <div><p>Calories Consumed:</p> <p>{1}</p></div> {/* Replace 1 with nutritionLog.caloriesConsumed */}
+          <div><p>Calories Needed:</p> <p>{nutritionGoal.caloriesGoal}</p></div> {/* Replace 1 with nutritionGoal.caloriesGoal*/}
+          <div><p>Calories Consumed:</p> <p>{nutritionLog.caloriesConsumed}</p></div> {/* Replace 1 with nutritionLog.caloriesConsumed */}
         </div>
 
         <div className='NutritionPageTopRowMiddle'>
