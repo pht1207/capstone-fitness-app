@@ -1001,8 +1001,34 @@ const getUserWeightLog = async function(req, res) {
     }
   })
 }
+const getUserWeightLogByDate = async function(req, res) {
+  //const page = (parseInt(req.query.page)*5)-5;
+  const userID = req.user.id;;
+  const dateAccessed = req.query.dateAccessed
+
+  pool.query(
+  'SELECT userWeightTable.userWeight AS weight, userWeightTable.dateTimeChanged ' +
+  'FROM userWeightTable ' +
+  'WHERE userTable_id = ? '+
+  'AND DATE(dateTimeChanged) = ? '+
+  'LIMIT 1',
+  [userID, dateAccessed],
+  (error, results, fields) =>{
+    if(error){
+      console.error("db query error", error);
+      res.status(500).send("Error fetching weight log from database");
+    }
+    else{
+      res.status(200).json({
+        results,
+        message:"Successfully fetched user's weight log"
+      })
+    }
+  })
+}
 app.post('/logWeight', jwtVerify, logWeight);
 app.get('/getUserWeightLog', jwtVerify, getUserWeightLog);
+app.get('/getUserWeightLogByDate', jwtVerify, getUserWeightLogByDate)
 {/*
   * END OF SECTION: WEIGHT
 */}
