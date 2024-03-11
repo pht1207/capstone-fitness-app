@@ -94,7 +94,6 @@ function NutritionPage() {
 
  //write your useeffects here
  useEffect(() => {
-  console.log(response)
   const fetchData = async () => { 
     try {
       const response = await axios.get("https://capstone.parkert.dev/backend/getProfileData", {
@@ -113,16 +112,16 @@ function NutritionPage() {
 
 //log weight useEffect - Josiah
 useEffect(() => {
-  console.log(response)
   const fetchData = async () => { 
     try {
-      const response = await axios.get("https://capstone.parkert.dev/backend/getUserWeightLog", {
+      const response = await axios.get("https://capstone.parkert.dev/backend/getUserWeightLogByDate?dateAccessed="+date, {
         headers: {
           'Authorization': 'Bearer ' + token
         }
       });
       //setWeight(response.data[0].weightName);
-      console.log(response.data)
+      console.log("Below is the response data for getUserWeightLogByDate: ")
+      console.log(response.data.results[0])
     }
       catch (error) {
       console.error('Error fetching data: ', error);
