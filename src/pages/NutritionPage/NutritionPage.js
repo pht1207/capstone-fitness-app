@@ -111,15 +111,25 @@ function NutritionPage() {
   fetchData();
 }, []);
 
-
-
-
-
-
-
-
-
-
+//log weight useEffect - Josiah
+useEffect(() => {
+  console.log(response)
+  const fetchData = async () => { 
+    try {
+      const response = await axios.get("https://capstone.parkert.dev/backend/getUserWeightLog", {
+        headers: {
+          'Authorization': 'Bearer ' + token
+        }
+      });
+      //setWeight(response.data[0].weightName);
+      console.log(response.data)
+    }
+      catch (error) {
+      console.error('Error fetching data: ', error);
+    }
+  };
+  fetchData();
+}, []);
 
   return (
     <div className="NutritionPage">
@@ -142,10 +152,6 @@ function NutritionPage() {
         </div>
 
       </div>
-
-
-
-
 
         {/*This block of code below hides or shows information on the page depending on if the button coded above has been clicked */}
         {
