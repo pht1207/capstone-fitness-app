@@ -2,6 +2,7 @@ import "./WorkoutComponent.css";
 import ExerciseComponent from "./ExerciseComponent";
 import WorkoutLogComponent from "./WorkoutLogComponent";
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 function WorkoutComponent({onWorkoutComplete}) {
   //Your code to make the site functional goes in this empty space. The 'return()' below is what renders on the page (the html)
@@ -110,6 +111,24 @@ function WorkoutComponent({onWorkoutComplete}) {
   */}
 
   //Write your code here
+
+  useEffect(() => {
+    const getWorkouts = async () => {
+      try {
+        const response = await axios.get("https://capstone.parkert.dev/backend/getWorkouts", {
+          headers: {
+            'Authorization': 'Bearer ' + token
+          }
+        });
+        
+        console.log(response.data);
+        
+      } catch (error) {
+        console.error('Error - Cannot get workouts: ', error);
+      }
+    };
+    getWorkouts();
+  }, []);
 
   {/* SECTION END: getWorkouts */}
 
