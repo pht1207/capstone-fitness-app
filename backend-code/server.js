@@ -799,6 +799,7 @@ app.get('/getUserExerciseLog', jwtVerify, getUserExerciseLog);
 *  -/getWorkouts
 *  -/logWorkotus
 *  -/getUserWorkoutLog
+*  -/getUserWorkoutLogByDate
 *  -/createWorkouts
 */}
 const getWorkouts = async function(req, res){
@@ -901,6 +902,7 @@ const getUserWorkoutLog = async function(req, res) {
   pool.query(
   'SELECT * ' +
   'FROM user_workoutTable ' +
+  'LEFT JOIN workoutTable ON user_workoutTable.workoutTable_id = workoutTable.workoutTable_id ' +
   'WHERE userTable_id = ? '+
   'ORDER BY timeCompleted DESC '+
   'LIMIT ?, 5', //DATE(dateTimeConsumed) extracts only the date from dateTimeConsumed column
