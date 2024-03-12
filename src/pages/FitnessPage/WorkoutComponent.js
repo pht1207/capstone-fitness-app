@@ -16,6 +16,7 @@ function WorkoutComponent({onWorkoutComplete}) {
   const [timer, setTimer] = useState(null);
   const [workoutDuration, setWorkoutDuration] = useState(0);
   const [workoutRating, setWorkoutRating] = useState(null);
+  const [savedWorkouts, setSavedWorkouts] = useState([]);
   
   const token = localStorage.getItem("jwt"); //Token for backend operations
 
@@ -27,6 +28,10 @@ function WorkoutComponent({onWorkoutComplete}) {
   }
 
   const cancelWorkoutCreation =() => {
+    resetWorkoutState();
+  };
+
+  const resetWorkoutState = () => {
     setCreateWorkout(false);
     setWorkoutName('');
     setExercises([]);
@@ -35,6 +40,15 @@ function WorkoutComponent({onWorkoutComplete}) {
     setTimer(null);
     setWorkoutDuration(0);
     setWorkoutRating(null);
+  };
+  
+  const saveWorkout = () => {
+    const newWorkout = {
+      workoutName: workoutName,
+      exercises: exercises
+    };
+    setSavedWorkouts([...savedWorkouts, newWorkout]);
+    cancelWorkoutCreation();
   };
 
 
@@ -137,12 +151,19 @@ function WorkoutComponent({onWorkoutComplete}) {
     setExercises(workout.exercises);
     setCreateWorkout(true);
   };
+  
 
   const handleWorkoutNameChange = (e) => {
     setWorkoutName(e.target.value);
   }
 	const createExercise = () => {
     setExercises([...exercises, { name: '', sets: '', reps: '' }]);
+  };
+
+  const handlecreateExercise = (index, updatedExercise) => {
+    const updatedExercises = [...exercises];
+    updatedExercises[index] = updatedExercise;
+    setExercises(updatedExercises);
   };
 
   const startWorkout = () => {
@@ -184,6 +205,7 @@ function WorkoutComponent({onWorkoutComplete}) {
   }, [timer]);
 
 
+
   return (
     <div className="myworkout-table">
       {createWorkout ? (
@@ -206,12 +228,11 @@ function WorkoutComponent({onWorkoutComplete}) {
               {exercises.map((exercise, index) => (
                 <tr key={index}>
                   <td>
-                    <ExerciseComponent 
-                      key={index}
-                      exerciseName={exercise.name}
-                      sets={exercise.sets}
-                      reps={exercise.reps}
-                    />
+                  <ExerciseComponent
+                    key={index}
+                    exercise = {exercise}
+                    onChange={(updatedExercise) => handlecreateExercise(index, updatedExercise)}
+                  />
                   </td>
                 </tr>     
               ))}
@@ -225,6 +246,7 @@ function WorkoutComponent({onWorkoutComplete}) {
           </button>
           {continueWorkout && (<p>Workout Duration: {workoutDuration} seconds</p>)}
           <button onClick={cancelWorkoutCreation}>Cancel</button>
+          <button onClick={saveWorkout}>Save Workout</button>
         </div>
       ) : (
         <div>
@@ -240,9 +262,19 @@ function WorkoutComponent({onWorkoutComplete}) {
                   </li>
                 ))}
               </ul>
+              <h2>Saved Workouts</h2>
+            <ul className="saved-workout-list">
+            {savedWorkouts.map((workout, index) => (
+              <li key={index} className="saved-workout-item" onClick={() => addPrebuiltWorkout(workout)}>
+                {workout.workoutName}
+              </li>
+            ))}
+            </ul>
             </div>
           )}
+          
         </div>
+        
       )}
       {createWorkout && (<button onClick={createExercise}>Add Exercise</button>)}
      
