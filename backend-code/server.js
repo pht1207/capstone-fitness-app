@@ -923,6 +923,7 @@ const getUserWorkoutLogByDate = async function(req, res) {
   pool.query(
   'SELECT * ' +
   'FROM user_workoutTable ' +
+  'LEFT JOIN workoutTable ON user_workoutTable.workoutTable_id = workoutTable.workoutTable_id ' +
   'WHERE userTable_id = ? '+
   'AND DATE(timeCompleted) = ? '+
   'ORDER BY timeCompleted DESC ',
@@ -933,7 +934,23 @@ const getUserWorkoutLogByDate = async function(req, res) {
       res.status(500).send("Error fetching workout log from database");
     }
     else{
-      res.status(200).json(results)
+      //Processes the results object creating an array of workout objects
+      const workouts = results.reduce((accumulator, current) => {
+          //If the workout hasn't been added to the accumulator object (what will be sent to the frontend), add it
+          if (!accumulator[current.userWorkoutTable_id]) {
+          accumulator[current.userWorkoutTable_id] = [];
+        }
+      
+        //Add the current object from results to the current object
+        accumulator[current.userWorkoutTable_id].push({
+          workoutName: current.workoutName,
+          date: current.timeCompleted,
+        });
+      
+        return accumulator;
+      }, {});
+      //sends the array of workouts to the frontend
+      res.status(200).json(workouts);
     }
   })
 }
