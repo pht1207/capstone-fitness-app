@@ -915,6 +915,28 @@ const getUserWorkoutLog = async function(req, res) {
     }
   })
 }
+const getUserWorkoutLogByDate = async function(req, res) {
+  const date = req.query.dateAccessed;
+  const userID = req.user.id;
+
+  //Need to do a left join on workoutsTable so names for the workouts can be attatched
+  pool.query(
+  'SELECT * ' +
+  'FROM user_workoutTable ' +
+  'WHERE userTable_id = ? '+
+  'AND DATE(timeCompleted) = ? '+
+  'ORDER BY timeCompleted DESC ',
+  [userID, date],
+  (error, results, fields) =>{
+    if(error){
+      console.error("db query error", error);
+      res.status(500).send("Error fetching workout log from database");
+    }
+    else{
+      res.status(200).json(results)
+    }
+  })
+}
 //Allows users to insert exercises into a workout assuming it has been made by them
 const insertExerciseIntoWorkout = async function(req, res){
   {/* Write a checker to see if the information inserted is appropriate for the DB columns */}
@@ -936,6 +958,7 @@ const insertExerciseIntoWorkout = async function(req, res){
 app.get('/getWorkouts', jwtVerify, getWorkouts);
 app.post('/createWorkouts', jwtVerify, createWorkouts);
 app.get('/getUserWorkoutLog', jwtVerify, getUserWorkoutLog);
+app.get('/getUserWorkoutLogByDate', jwtVerify, getUserWorkoutLogByDate);
 app.post('/logWorkouts', jwtVerify, logWorkouts);
 app.post('/insertExerciseIntoWorkout', jwtVerify, insertExerciseIntoWorkout)
 {/*
@@ -1019,16 +1042,13 @@ const getUserWeightLogByDate = async function(req, res) {
       res.status(500).send("Error fetching weight log from database");
     }
     else{
-      console.log(results)
       if(results.length !== 0){
-        console.log(results.length)
         res.status(200).json({
           results,
           message:"Successfully fetched user's weight log"
         })
     }
     else{
-      console.log(results.length)
       res.status(200).json({
         results:{
           0:{
