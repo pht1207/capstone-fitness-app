@@ -905,7 +905,7 @@ const getUserWorkoutLog = async function(req, res) {
   'LEFT JOIN workoutTable ON user_workoutTable.workoutTable_id = workoutTable.workoutTable_id ' +
   'WHERE userTable_id = ? '+
   'ORDER BY timeCompleted DESC '+
-  'LIMIT ?, 5', //DATE(dateTimeConsumed) extracts only the date from dateTimeConsumed column
+  'LIMIT ?, 6', //DATE(dateTimeConsumed) extracts only the date from dateTimeConsumed column
   [userID, page],
   (error, results, fields) =>{
     if(error){

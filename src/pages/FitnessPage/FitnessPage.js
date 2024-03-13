@@ -11,15 +11,20 @@ function FitnessPage() {
 
   const [completedWorkout, setCompletedWorkout] = useState([]);
   
+  let curr = new Date();
+  curr.setDate(curr.getDate() + 3);
+  let currentDate = curr.toISOString().substring(0,10);
+  const [date, setDate] = useState(currentDate)
+  
 
   const handleCompletedWorkout = (workoutData) => {
     setCompletedWorkout([...completedWorkout, workoutData]);
   };
 
-
-
+console.log(date)
   return (
     <div className= "FitnessPage"> {/*This div will contain every component for the fitness page. */}
+      <input type='date' onChange={((event)=>setDate(event.target.value))} defaultValue={date}></input>
 
       <div className= "Banner"> {/* Used to hold and seperate the 3 sections of the page. */}
 
@@ -39,7 +44,7 @@ function FitnessPage() {
       <div className="workoutl"> {/* The workout log will track certain info from the user's workout */}
         <h1>Workout Log</h1>
         <h2>History</h2>
-        <WorkoutLogComponent workoutData={completedWorkout} />
+        <WorkoutLogComponent workoutData={completedWorkout} date={date}/>
       </div>
 
       </div>
