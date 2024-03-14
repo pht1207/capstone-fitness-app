@@ -799,6 +799,7 @@ app.get('/getUserExerciseLog', jwtVerify, getUserExerciseLog);
 *  -/getWorkouts
 *  -/logWorkotus
 *  -/getUserWorkoutLog
+*  -/getUserWorkoutLogByDate
 *  -/createWorkouts
 */}
 const getWorkouts = async function(req, res){
@@ -901,9 +902,10 @@ const getUserWorkoutLog = async function(req, res) {
   pool.query(
   'SELECT * ' +
   'FROM user_workoutTable ' +
+  'LEFT JOIN workoutTable ON user_workoutTable.workoutTable_id = workoutTable.workoutTable_id ' +
   'WHERE userTable_id = ? '+
   'ORDER BY timeCompleted DESC '+
-  'LIMIT ?, 5', //DATE(dateTimeConsumed) extracts only the date from dateTimeConsumed column
+  'LIMIT ?, 6', //DATE(dateTimeConsumed) extracts only the date from dateTimeConsumed column
   [userID, page],
   (error, results, fields) =>{
     if(error){
@@ -912,6 +914,45 @@ const getUserWorkoutLog = async function(req, res) {
     }
     else{
       res.status(200).json(results)
+    }
+  })
+}
+const getUserWorkoutLogByDate = async function(req, res) {
+  const date = req.query.dateAccessed;
+  const userID = req.user.id;
+
+  //Need to do a left join on workoutsTable so names for the workouts can be attatched
+  pool.query(
+  'SELECT * ' +
+  'FROM user_workoutTable ' +
+  'LEFT JOIN workoutTable ON user_workoutTable.workoutTable_id = workoutTable.workoutTable_id ' +
+  'WHERE userTable_id = ? '+
+  'AND DATE(timeCompleted) = ? '+
+  'ORDER BY timeCompleted DESC ',
+  [userID, date],
+  (error, results, fields) =>{
+    if(error){
+      console.error("db query error", error);
+      res.status(500).send("Error fetching workout log from database");
+    }
+    else{
+      //Processes the results object creating an array of workout objects
+      const workouts = results.reduce((accumulator, current) => {
+          //If the workout hasn't been added to the accumulator object (what will be sent to the frontend), add it
+          if (!accumulator[current.userWorkoutTable_id]) {
+          accumulator[current.userWorkoutTable_id] = [];
+        }
+      
+        //Add the current object from results to the current object
+        accumulator[current.userWorkoutTable_id].push({
+          workoutName: current.workoutName,
+          date: current.timeCompleted,
+        });
+      
+        return accumulator;
+      }, {});
+      //sends the array of workouts to the frontend
+      res.status(200).json(workouts);
     }
   })
 }
@@ -936,6 +977,7 @@ const insertExerciseIntoWorkout = async function(req, res){
 app.get('/getWorkouts', jwtVerify, getWorkouts);
 app.post('/createWorkouts', jwtVerify, createWorkouts);
 app.get('/getUserWorkoutLog', jwtVerify, getUserWorkoutLog);
+app.get('/getUserWorkoutLogByDate', jwtVerify, getUserWorkoutLogByDate);
 app.post('/logWorkouts', jwtVerify, logWorkouts);
 app.post('/insertExerciseIntoWorkout', jwtVerify, insertExerciseIntoWorkout)
 {/*
@@ -1019,16 +1061,13 @@ const getUserWeightLogByDate = async function(req, res) {
       res.status(500).send("Error fetching weight log from database");
     }
     else{
-      console.log(results)
       if(results.length !== 0){
-        console.log(results.length)
         res.status(200).json({
           results,
           message:"Successfully fetched user's weight log"
         })
     }
     else{
-      console.log(results.length)
       res.status(200).json({
         results:{
           0:{

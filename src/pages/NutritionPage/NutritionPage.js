@@ -128,7 +128,7 @@ useEffect(() => {
     }
   };
   fetchData();
-}, []);
+}, [date]);
 
   return (
     <div className="NutritionPage">
