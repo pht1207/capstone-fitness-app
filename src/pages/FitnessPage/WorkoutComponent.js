@@ -178,7 +178,7 @@ const deleteSavedWorkout = (index) => {
     setWorkoutName(e.target.value);
   };
   const createExercise = () => {
-    setExercises([...exercises, { name: "", sets: "", reps: "" }]);
+    setExercises([...exercises, { name: "", sets: "", weight:"", reps: "" }]);
   };
 
   const handlecreateExercise = (index, updatedExercise) => {
@@ -258,7 +258,9 @@ const deleteSavedWorkout = (index) => {
                     />
                   </td>
                   <td>
-                    <button onClick={()=> deleteExercise(index)}>Delete</button>
+                    <button onClick={() => deleteExercise(index)}>
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -307,12 +309,19 @@ const deleteSavedWorkout = (index) => {
                     onClick={() => addPrebuiltWorkout(workout)}
                   >
                     {workout.workoutName}
-                    <button onClick={(e) => {e.stopPropagation(); deleteSavedWorkout(index)}}>Delete</button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteSavedWorkout(index);
+                      }}
+                    >
+                      Delete
+                    </button>
                   </li>
                 ))}
               </ul>
               <div className="cancel-button-container">
-              <button onClick={cancelWorkoutCreation}>Cancel</button>
+                <button onClick={cancelWorkoutCreation}>Cancel</button>
               </div>
             </div>
           )}
