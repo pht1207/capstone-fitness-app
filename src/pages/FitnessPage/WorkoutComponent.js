@@ -1,10 +1,10 @@
 import "./WorkoutComponent.css";
 import ExerciseComponent from "./ExerciseComponent";
-import WorkoutLogComponent from "./WorkoutLogComponent";
+import recommendedWorkouts from "./RecommendedWorkouts";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-function WorkoutComponent({ onWorkoutComplete }) {
+function WorkoutComponent({ onWorkoutComplete, selectedWorkout }) {
   //Your code to make the site functional goes in this empty space. The 'return()' below is what renders on the page (the html)
 
   const [createWorkout, setCreateWorkout] = useState(false);
@@ -17,6 +17,7 @@ function WorkoutComponent({ onWorkoutComplete }) {
   const [workoutDuration, setWorkoutDuration] = useState(0);
   const [workoutRating, setWorkoutRating] = useState(null);
   const [savedWorkouts, setSavedWorkouts] = useState([]);
+  const [workoutType, setWorkoutType] = useState("");
 
   const token = localStorage.getItem("jwt"); //Token for backend operations
 
@@ -227,6 +228,18 @@ const deleteSavedWorkout = (index) => {
     return () => clearInterval(timer);
   }, [timer]);
 
+  useEffect(() => {
+    if (selectedWorkout) {
+      setWorkoutName(selectedWorkout.workoutName);
+      setExercises(selectedWorkout.exercises);
+      setCreateWorkout(true);
+    }
+  }, [selectedWorkout]);
+
+  const addRecommendedWorkout = (workout) => {
+    setSavedWorkouts([...savedWorkouts, workout]);
+  };
+
   return (
     <div className="myworkout-table">
       {createWorkout ? (
@@ -280,56 +293,80 @@ const deleteSavedWorkout = (index) => {
         </div>
       ) : (
         <div>
-          <div className="create-workout-box" onClick={initiateCreateWorkout}>
-            Create Workout
+        {workoutType === "recommended" && (
+          <div>
+            {/* Render recommended workout section */}
+            <h2>Recommended Workouts</h2>
+            <ul className="recommended-workout-list">
+              {/* Loop through recommended workouts and render each */}
+              {recommendedWorkouts.map((workout, index) => (
+                <li
+                  key={index}
+                  className="recommended-workout-item"
+                  onClick={() => addRecommendedWorkout(workout)}
+                >
+                  {workout.workoutName}
+                </li>
+              ))}
+            </ul>
           </div>
-          <div className="select-workout-box" onClick={toggleSelectWorkout}>
-            Choose Workout
-          </div>
-          {selectWorkout && (
-            <div>
-              <h2>Workout Templates</h2>
-              <ul className="prebuilt-workout-list">
-                {prebuiltWorkout.map((workout, index) => (
-                  <li
-                    key={index}
-                    className="prebuilt-workout-item"
-                    onClick={() => addPrebuiltWorkout(workout)}
-                  >
-                    {workout.workoutName}
-                  </li>
-                ))}
-              </ul>
-              <h2>Saved Workouts</h2>
-              <ul className="saved-workout-list">
-                {savedWorkouts.map((workout, index) => (
-                  <li
-                    key={index}
-                    className="saved-workout-item"
-                    onClick={() => addPrebuiltWorkout(workout)}
-                  >
-                    {workout.workoutName}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        deleteSavedWorkout(index);
-                      }}
-                    >
-                      Delete
-                    </button>
-                  </li>
-                ))}
-              </ul>
-              <div className="cancel-button-container">
-                <button onClick={cancelWorkoutCreation}>Cancel</button>
-              </div>
+        )}
+        {workoutType !== "recommended" && (
+          <div>
+            <div className="create-workout-box" onClick={initiateCreateWorkout}>
+              Create Workout
             </div>
-          )}
-        </div>
-      )}
-      {createWorkout && <button onClick={createExercise}>Add Exercise</button>}
-    </div>
-  );
+            <div className="select-workout-box" onClick={toggleSelectWorkout}>
+              Choose Workout
+            </div>
+            {selectWorkout && (
+              <div>
+                <h2>Workout Templates</h2>
+                <ul className="prebuilt-workout-list">
+                  {/* Loop through prebuilt workouts and render each */}
+                  {prebuiltWorkout.map((workout, index) => (
+                    <li
+                      key={index}
+                      className="prebuilt-workout-item"
+                      onClick={() => addPrebuiltWorkout(workout)}
+                    >
+                      {workout.workoutName}
+                    </li>
+                  ))}
+                </ul>
+                <h2>Saved Workouts</h2>
+                <ul className="saved-workout-list">
+                  {/* Loop through saved workouts and render each */}
+                  {savedWorkouts.map((workout, index) => (
+                    <li
+                      key={index}
+                      className="saved-workout-item"
+                      onClick={() => addPrebuiltWorkout(workout)}
+                    >
+                      {workout.workoutName}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteSavedWorkout(index);
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+                <div className="cancel-button-container">
+                  <button onClick={cancelWorkoutCreation}>Cancel</button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    )}
+    {createWorkout && <button onClick={createExercise}>Add Exercise</button>}
+  </div>
+);
 }
 
 export default WorkoutComponent;
