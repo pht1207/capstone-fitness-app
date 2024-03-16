@@ -4,36 +4,38 @@ import WorkoutLogComponent from "./WorkoutLogComponent";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-function WorkoutComponent({onWorkoutComplete}) {
+function WorkoutComponent({ onWorkoutComplete }) {
   //Your code to make the site functional goes in this empty space. The 'return()' below is what renders on the page (the html)
-  
+
   const [createWorkout, setCreateWorkout] = useState(false);
-  const [selectWorkout,setSelectWorkout] = useState(false);
-  const [workoutName, setWorkoutName] = useState('');
-	const [exercises, setExercises] = useState([]);
+  const [selectWorkout, setSelectWorkout] = useState(false);
+  const [workoutName, setWorkoutName] = useState("");
+  const [exercises, setExercises] = useState([]);
   const [startTime, setStartTime] = useState(null);
   const [continueWorkout, setContinueWorkout] = useState(false);
   const [timer, setTimer] = useState(null);
   const [workoutDuration, setWorkoutDuration] = useState(0);
   const [workoutRating, setWorkoutRating] = useState(null);
   const [savedWorkouts, setSavedWorkouts] = useState([]);
-  
+
   const token = localStorage.getItem("jwt"); //Token for backend operations
 
   const initiateCreateWorkout = () => {
     setCreateWorkout(true);
-  }
+  };
   const toggleSelectWorkout = () => {
     setSelectWorkout(!selectWorkout);
-  }
+  };
 
-  const cancelWorkoutCreation =() => {
+  const cancelWorkoutCreation = () => {
     resetWorkoutState();
+    setCreateWorkout(false);
+    setSelectWorkout(false);
   };
 
   const resetWorkoutState = () => {
     setCreateWorkout(false);
-    setWorkoutName('');
+    setWorkoutName("");
     setExercises([]);
     setContinueWorkout(false);
     clearInterval(timer);
@@ -41,52 +43,67 @@ function WorkoutComponent({onWorkoutComplete}) {
     setWorkoutDuration(0);
     setWorkoutRating(null);
   };
-  
+
   const saveWorkout = () => {
     const newWorkout = {
       workoutName: workoutName,
-      exercises: exercises
+      exercises: exercises,
     };
     setSavedWorkouts([...savedWorkouts, newWorkout]);
     cancelWorkoutCreation();
   };
 
+const deleteExercise =(index) => {
+  const updatedExercises = [...exercises];
+  updatedExercises.splice(index, 1);
+  setExercises(updatedExercises);
+};
+
+const deleteSavedWorkout = (index) => {
+  const confirmDelete = window.confirm("Are your sure you want to delete this workout? ");
+  if (confirmDelete){
+  const updatedSavedWorkouts = [...savedWorkouts];
+  updatedSavedWorkouts.splice(index, 1); 
+  setSavedWorkouts(updatedSavedWorkouts); 
+}
+};
+
 
   const prebuiltWorkout = [
     {
-      workoutName: 'PUSH DAY',
+      workoutName: "PUSH DAY",
       exercises: [
-        {name: 'Dumbbell Flat Press', sets:'', reps:''},
-        {name: 'Incline Smith Press', sets:'', reps:''},
-        {name: 'Dumbbell Shoulder Press', sets:'', reps:''},
-        {name: 'Dumbell Lateral Raise', sets:'', reps:''},
-        {name: 'Tricep Pushdown', sets:'', reps:''}
-      ]
+        { name: "Dumbbell Flat Press", sets: "", reps: "" },
+        { name: "Incline Smith Press", sets: "", reps: "" },
+        { name: "Dumbbell Shoulder Press", sets: "", reps: "" },
+        { name: "Dumbell Lateral Raise", sets: "", reps: "" },
+        { name: "Tricep Pushdown", sets: "", reps: "" },
+      ],
     },
     {
-      workoutName: 'PULL DAY',
+      workoutName: "PULL DAY",
       exercises: [
-        {name: 'Chest-Supported Row', sets:'', reps:''},
-        {name: 'Lat Pulldown', sets:'', reps:''},
-        {name: 'Cable Lat Row', sets:'', reps:''},
-        {name: 'Reverse Pec Dec Fly', sets:'', reps:''},
-        {name: 'Dumbbell Curl', sets:'', reps:''}
-      ]
+        { name: "Chest-Supported Row", sets: "", reps: "" },
+        { name: "Lat Pulldown", sets: "", reps: "" },
+        { name: "Cable Lat Row", sets: "", reps: "" },
+        { name: "Reverse Pec Dec Fly", sets: "", reps: "" },
+        { name: "Dumbbell Curl", sets: "", reps: "" },
+      ],
     },
     {
-      workoutName: 'LEG DAY',
+      workoutName: "LEG DAY",
       exercises: [
-        {name: 'Calf Raise', sets:'', reps:''},
-        {name: 'Seated Leg Curl', sets:'', reps:''},
-        {name: 'Leg Press', sets:'', reps:''},
-        {name: 'Leg Extension', sets:'', reps:''},
-        {name: 'Adductor Machine', sets:'', reps:''},
-      ]
-    }
-  ]
+        { name: "Calf Raise", sets: "", reps: "" },
+        { name: "Seated Leg Curl", sets: "", reps: "" },
+        { name: "Leg Press", sets: "", reps: "" },
+        { name: "Leg Extension", sets: "", reps: "" },
+        { name: "Adductor Machine", sets: "", reps: "" },
+      ],
+    },
+  ];
 
-
-  {/* SECTION START: getWorkouts 
+  {
+    /* SECTION START: getWorkouts 
     This section is based around creating a state object from the getWorkouts method results.
     This method will get workouts created by the user as well as standard ones included in the system already.
     Problems with this are that the user may be able to create workouts that have the same name or a slightly different name.
@@ -122,42 +139,46 @@ function WorkoutComponent({onWorkoutComplete}) {
             }, []);
 
       
-  */}
+  */
+  }
 
   //Write your code here
 
   useEffect(() => {
     const getWorkouts = async () => {
       try {
-        const response = await axios.get("https://capstone.parkert.dev/backend/getWorkouts", {
-          headers: {
-            'Authorization': 'Bearer ' + token
+        const response = await axios.get(
+          "https://capstone.parkert.dev/backend/getWorkouts",
+          {
+            headers: {
+              Authorization: "Bearer " + token,
+            },
           }
-        });
-        
+        );
+
         console.log(response.data);
-        
       } catch (error) {
-        console.error('Error - Cannot get workouts: ', error);
+        console.error("Error - Cannot get workouts: ", error);
       }
     };
     getWorkouts();
   }, []);
 
-  {/* SECTION END: getWorkouts */}
+  {
+    /* SECTION END: getWorkouts */
+  }
 
   const addPrebuiltWorkout = (workout) => {
     setWorkoutName(workout.workoutName);
     setExercises(workout.exercises);
     setCreateWorkout(true);
   };
-  
 
   const handleWorkoutNameChange = (e) => {
     setWorkoutName(e.target.value);
-  }
-	const createExercise = () => {
-    setExercises([...exercises, { name: '', sets: '', reps: '' }]);
+  };
+  const createExercise = () => {
+    setExercises([...exercises, { name: "", sets: "", reps: "" }]);
   };
 
   const handlecreateExercise = (index, updatedExercise) => {
@@ -167,18 +188,20 @@ function WorkoutComponent({onWorkoutComplete}) {
   };
 
   const startWorkout = () => {
-    setStartTime( new Date());
+    setStartTime(new Date());
     setContinueWorkout(true);
-    setTimer(setInterval(() => {
-      setWorkoutDuration (prevDuration => prevDuration +1)
-    }, 1000));
+    setTimer(
+      setInterval(() => {
+        setWorkoutDuration((prevDuration) => prevDuration + 1);
+      }, 1000)
+    );
   };
 
   const finishWorkout = () => {
     setContinueWorkout(false);
     clearInterval(timer);
     requestRate();
-  }
+  };
 
   const requestRate = () => {
     const rate = prompt("Rate your Workout from 1-5: ");
@@ -189,14 +212,14 @@ function WorkoutComponent({onWorkoutComplete}) {
         const workoutData = {
           workoutName: workoutName,
           workoutDuration: workoutDuration,
-          workoutRating: userRating
+          workoutRating: userRating,
         };
         onWorkoutComplete(workoutData); // Ensure that onWorkoutComplete is called here
       } else {
-        alert("Please enter a valid rating between 1 and 5.")
+        alert("Please enter a valid rating between 1 and 5.");
       }
     } else {
-      alert("Please enter a valid rating between 1 and 5.")
+      alert("Please enter a valid rating between 1 and 5.");
     }
   };
 
@@ -204,22 +227,20 @@ function WorkoutComponent({onWorkoutComplete}) {
     return () => clearInterval(timer);
   }, [timer]);
 
-
-
   return (
     <div className="myworkout-table">
       {createWorkout ? (
         <div>
-          <table className='workout-table'>
+          <table className="workout-table">
             <thead>
               <tr>
                 <th>
-                  <input 
+                  <input
                     type="text"
                     value={workoutName}
                     onChange={handleWorkoutNameChange}
                     placeholder="Workout Name"
-                    style={{ width: '250px' }}
+                    style={{ width: "250px" }}
                   />
                 </th>
               </tr>
@@ -228,13 +249,18 @@ function WorkoutComponent({onWorkoutComplete}) {
               {exercises.map((exercise, index) => (
                 <tr key={index}>
                   <td>
-                  <ExerciseComponent
-                    key={index}
-                    exercise = {exercise}
-                    onChange={(updatedExercise) => handlecreateExercise(index, updatedExercise)}
-                  />
+                    <ExerciseComponent
+                      key={index}
+                      exercise={exercise}
+                      onChange={(updatedExercise) =>
+                        handlecreateExercise(index, updatedExercise)
+                      }
+                    />
                   </td>
-                </tr>     
+                  <td>
+                    <button onClick={()=> deleteExercise(index)}>Delete</button>
+                  </td>
+                </tr>
               ))}
             </tbody>
           </table>
@@ -242,42 +268,57 @@ function WorkoutComponent({onWorkoutComplete}) {
             Start
           </button>
           <button onClick={finishWorkout} disabled={!continueWorkout}>
-            Finish 
+            Finish
           </button>
-          {continueWorkout && (<p>Workout Duration: {workoutDuration} seconds</p>)}
+          {continueWorkout && (
+            <p>Workout Duration: {workoutDuration} seconds</p>
+          )}
           <button onClick={cancelWorkoutCreation}>Cancel</button>
           <button onClick={saveWorkout}>Save Workout</button>
         </div>
       ) : (
         <div>
-          <div className="create-workout-box" onClick={initiateCreateWorkout}>Create Workout</div>
-          <div className="select-workout-box" onClick={toggleSelectWorkout}>Choose Workout</div>
+          <div className="create-workout-box" onClick={initiateCreateWorkout}>
+            Create Workout
+          </div>
+          <div className="select-workout-box" onClick={toggleSelectWorkout}>
+            Choose Workout
+          </div>
           {selectWorkout && (
             <div>
               <h2>Workout Templates</h2>
               <ul className="prebuilt-workout-list">
                 {prebuiltWorkout.map((workout, index) => (
-                  <li key={index} className="prebuilt-workout-item" onClick={() => addPrebuiltWorkout(workout)}>
+                  <li
+                    key={index}
+                    className="prebuilt-workout-item"
+                    onClick={() => addPrebuiltWorkout(workout)}
+                  >
                     {workout.workoutName}
                   </li>
                 ))}
               </ul>
               <h2>Saved Workouts</h2>
-            <ul className="saved-workout-list">
-            {savedWorkouts.map((workout, index) => (
-              <li key={index} className="saved-workout-item" onClick={() => addPrebuiltWorkout(workout)}>
-                {workout.workoutName}
-              </li>
-            ))}
-            </ul>
+              <ul className="saved-workout-list">
+                {savedWorkouts.map((workout, index) => (
+                  <li
+                    key={index}
+                    className="saved-workout-item"
+                    onClick={() => addPrebuiltWorkout(workout)}
+                  >
+                    {workout.workoutName}
+                    <button onClick={(e) => {e.stopPropagation(); deleteSavedWorkout(index)}}>Delete</button>
+                  </li>
+                ))}
+              </ul>
+              <div className="cancel-button-container">
+              <button onClick={cancelWorkoutCreation}>Cancel</button>
+              </div>
             </div>
           )}
-          
         </div>
-        
       )}
-      {createWorkout && (<button onClick={createExercise}>Add Exercise</button>)}
-     
+      {createWorkout && <button onClick={createExercise}>Add Exercise</button>}
     </div>
   );
 }
