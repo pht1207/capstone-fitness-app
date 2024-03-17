@@ -32,18 +32,20 @@
 }
 
 .set-container label {
-    text-align: left; /* Align the set text to the left */
+    text-align: right; /* Align the set text to the right */
     margin-right: 5px; /* Add margin to the right of the label */
 }
 
 .set-container input {
+    margin-left: 5px; /* Add margin to the left of the first input */
     margin-right: 5px; /* Adjust margin between inputs */
     width: 50px; /* Adjust width as needed */
 }
 
 .remove-set-button {
-    margin-left: 5px;
+    margin-left: 5px; /* Adjust margin to align with the "Add Set" button */
 }
+
 
 .add-set-button {
     margin-top: 10px; /* Increase margin to separate the "Add Set" button */

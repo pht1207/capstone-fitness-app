@@ -1,96 +1,95 @@
 .myworkout-table {
-  width: calc(100% - 40px); /* Use all available space minus 40px for margin */
-  max-width: 500px; /* Set maximum width to prevent it from stretching too wide */
-  border-collapse: collapse;
-  margin: 0 auto; /* Center horizontally */
-  text-align: center;
-}
-
-.table {
-  width: 100%; /* Use all available space */
-  max-width: 500px; /* Set maximum width to prevent it from stretching too wide */
-  border-collapse: collapse;
-  margin: 0 auto; /* Center horizontally */
-  text-align: center;
-}
-
-
-.FitnessPage th, .FitnessPage td {
-    border: 1px solid hsl(246, 82%, 42%);
-    text-align: left;
-    padding: 8px;
-}
-
- .FitnessPage button {
-    margin-top: 20px;
-    margin: 2.5px;
-    align-content: center;
-    float: left;
-}
-
-
-
-@media screen and (max-width: 768px) {
-    /* Styles for screens up to 768px wide */
-    .container {
-        flex-direction: column;
-    }
-}
-
- .create-workout-box, .select-workout-box {
-  width: 250px;
-  height: 50px;
-  background-color: #f0f0f0;
-  border: 2px dashed #aaa;
   display: flex;
-  justify-content: center; /* Center horizontally */
-  align-items: center; /* Center vertically */
+  flex-direction: column;
+  width: 90%; /* Adjust width */
+  margin: 0 auto;
+  padding: 20px; /* Add padding */
+  border-radius: 8px;
+  overflow: hidden;
+}
+.myworkout-table button {
+  margin: 5px;
+  padding: 10px 20px;
+  border: none;
+  background-color: #00bfff;
+  color: #fff;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 18px;
-  color: #333;
-  margin: 10px auto; /* Auto margin for centering */
+  transition: background-color 0.3s;
 }
 
-.create-workout-box, .select-workout-box:hover {
-    background-color: #e0e0e0;
+.myworkout-table button:hover {
+  background-color: #00a5ff;
+}
+.workout-table th,
+.workout-table td {
+  padding: 8px;
+  border: 1px solid #ccc;
 }
 
-.prebuilt-workout-list {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .prebuilt-workout-item {
-    background-color: #f0f0f0;
-    padding: 10px;
-    margin: 5px 0;
-    cursor: pointer;
-    border-radius: 5px;
-  }
-  
-   .prebuilt-workout-item:hover {
-    background-color: #e0e0e0;
-  }
+.workout-name-input {
+  margin: 10px auto;
+  padding: 8px;
+  width: 300px;
+  display: block;
+}
 
-  .saved-workout-list {
-    list-style-type: none;
-    padding: 0;
-  }
+.delete-exercise-button {
+  margin-left: 5px;
+}
 
-  .saved-workout-item {
-    background-color: #f0f0f0;
-    padding: 10px;
-    margin: 5px 0;
-    cursor: pointer;
-    border-radius: 5px;
-  }
+.workout-table input[type="text"] {
+  margin: 5px;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  color: #000;
+  background-color: #fff;
+  border-radius: 4px;
+  width: calc(100% - 40px); /* Adjust width */
+}
 
-  .saved-workout-item:hover {
-    background-color: #e0e0e0;
-  }
+.workout-table button {
+  margin: 5px;
+  padding: 6px 12px;
+  border: none;
+  background-color: #00bfff;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
 
-.cancel-button-container{
+.workout-table button:hover {
+  background-color: #00a5ff;
+}
+
+.button-container {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  margin-top: 10px;
 }
 
+/* Responsive layout */
+@media screen and (max-width: 768px) {
+  .workout-name-input {
+    width: calc(100% - 20px);
+  }
+}
+
+.create-workout-box,
+.select-workout-box {
+  margin: 10px auto;
+  padding: 12px;
+  width: 200px;
+  background-color: #00bfff;
+  color: #fff;
+  border-radius: 4px;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.create-workout-box:hover,
+.select-workout-box:hover {
+  background-color: #00a5ff;
+}
