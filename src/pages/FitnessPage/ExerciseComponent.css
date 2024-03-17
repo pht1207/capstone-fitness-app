@@ -1,3 +1,50 @@
 .input {
     width: 60px;
+    padding: 10px; /* Increase padding for better appearance */
+    border: 2px solid #6c63ff; /* Change border color */
+    border-radius: 10px; /* Increase border radius for rounded corners */
+    box-sizing: border-box;
+    background-color: #f0f0f0; /* Change background color */
+    color: #333; /* Change text color */
+    font-size: 14px; /* Change font size */
+    font-family: Arial, sans-serif; /* Change font family */
+}
+
+.input:focus {
+    outline: none; /* Remove outline on focus */
+    border-color: #6c63ff; /* Change border color on focus */
+    box-shadow: 0 0 5px rgba(108, 99, 255, 0.5); /* Add box shadow on focus */
+}
+
+.input::placeholder {
+    color: #999; /* Change placeholder text color */
+}
+.ExerciseComponent {
+    margin-bottom: 20px;
+    text-align: center; /* Center the content */
+}
+
+.set-container {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center the elements horizontally */
+    margin-bottom: 5px;
+}
+
+.set-container label {
+    text-align: left; /* Align the set text to the left */
+    margin-right: 5px; /* Add margin to the right of the label */
+}
+
+.set-container input {
+    margin-right: 5px; /* Adjust margin between inputs */
+    width: 50px; /* Adjust width as needed */
+}
+
+.remove-set-button {
+    margin-left: 5px;
+}
+
+.add-set-button {
+    margin-top: 10px; /* Increase margin to separate the "Add Set" button */
 }

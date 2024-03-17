@@ -1,16 +1,19 @@
- .myworkout-table {
-    width: 500px;
-    border-collapse: collapse;
-    margin: 0 auto;
-    text-align: center;
-    
+.myworkout-table {
+  width: calc(100% - 40px); /* Use all available space minus 40px for margin */
+  max-width: 500px; /* Set maximum width to prevent it from stretching too wide */
+  border-collapse: collapse;
+  margin: 0 auto; /* Center horizontally */
+  text-align: center;
 }
 
- .WorkoutComponent table {
-    width: 500px;
-    border-collapse: collapse;
-    align-content: center;
+.table {
+  width: 100%; /* Use all available space */
+  max-width: 500px; /* Set maximum width to prevent it from stretching too wide */
+  border-collapse: collapse;
+  margin: 0 auto; /* Center horizontally */
+  text-align: center;
 }
+
 
 .FitnessPage th, .FitnessPage td {
     border: 1px solid hsl(246, 82%, 42%);
