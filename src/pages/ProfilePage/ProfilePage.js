@@ -9,7 +9,14 @@ function ProfilePage() {
   const [userData, setData] = useState(null);
   const token = localStorage.getItem("jwt")
   //Write a state element and setstate method for each input element in your form here
-
+  const [firstnameInput, setFirstname] = useState()
+  const [lastnameInput, setLastname] = useState()
+  const [usernameInput, setUsername] = useState()
+  const [emailInput, setEmail] = useState()
+  const [passwordInput, setPassword] = useState()
+  const [heightInput, setHeight] = useState()
+  const [weightInput, setWeight] = useState()
+  const [notificationsChecked, setNotificationscheck] = useState(0)
   {/*
     Using updateProfile
     It follows the same premise as getProfileData, except you use axios.post(), do not use axios.get()
@@ -28,9 +35,7 @@ function ProfilePage() {
                 "height": "72",
                 "notificationsOn": "1"
               }
-                  -You can test if the data is formatted correctly by console logging your body object before sending it
-    Your form was having issues, I removed the 'editClicked' function from the submit button, it was disabling the submit function of the button
-      -Include the 'editClicked' upon successful return code of axios updateProfile
+\\      -Include the 'editClicked' upon successful return code of axios updateProfile
 
     The proper way to do forms in react is to have an 'onChange' attribute on each of your <input> and other form elements. (This is done in LogWeight.js in the homepage folder if you need an example)
       -Each onChange should update a state variable you've made for each input element
@@ -43,10 +48,25 @@ function ProfilePage() {
 
         
   */}
-  function updateProfileFormSubmit(event){
+  async function updateProfileFormSubmit(event){
     event.preventDefault();//This prevents the page from reloading right when you submit
-    //Combine all the state values that were updated from your form into a body element and send it via axios.post
+    try{
+      let body = {
+
+        
+      }
+      const axiosResponse = await axios.post("https://capstone.parkert.dev/backend/logWeight", body, {
+        headers: {
+          Authorization: "Bearer " + token
+        }
+      });
+      
+    }
+    catch(error){
+      console.error("error: ", error.response)
+    }
   }
+  //Combine all the state values that were updated from your form into a body element and send it via axios.post
 
   useEffect(() => {
     const fetchData = async () => { 
@@ -124,22 +144,22 @@ function passwordShowClickled(){
         <form onSubmit={updateProfileFormSubmit}>
         <h1>UPDATE PROFILE</h1>
           <div className="UserI">
-            <div><p>First Name:</p><input type='text' name='firstName'  placeholder={userData ? (userData.firstName):('')}/></div>
-            <div><p>Last Name:</p><input type='text' name='lastName' placeholder={userData ? (userData.lastName):('')}/></div>
+            <div><p>First Name:</p><input type='text' name='firstName'  defaultValue={userData ? (userData.firstName):('')}/></div>
+            <div><p>Last Name:</p><input type='text' name='lastName' defaultValue={userData ? (userData.lastName):('')}/></div>
           </div>
   
           <div className="UserI">
-            <div><p>Username:</p><input type='text' name='username' placeholder={userData ? (userData.username):('')}/></div>
-            <div><p>Email:</p><input type='text' name='email' placeholder={userData ? (userData.email):('')}/></div>
+            <div><p>Username:</p><input type='text' name='username' defaultValue={userData ? (userData.username):('')}/></div>
+            <div><p>Email:</p><input type='text' name='email' defaultValue={userData ? (userData.email):('')}/></div>
           </div>
   
           <div className="UserI">
-            <div><p>Password:</p><input type={passwordShow?('password'):('text')} name='password' placeholder=''/><button type='button' onClick={passwordShowClickled}>show</button></div>
+            <div><p>Password:</p><input type={passwordShow?('password'):('text')} name='password' defaultValue=''/><button type='button' onClick={passwordShowClickled}>show</button></div>
           </div>
   
           <div className="UserI">
-            <div><p>Height:</p><input type='text' name='height' placeholder={userData ? (userData.height):('')}/></div>
-            <div><p>Weight:</p><input type='text' name='userWeight' value={userData ? (userData.userWeight):('')}/></div>
+            <div><p>Height:</p><input type='text' name='height' defaultValue={userData ? (userData.height):('')}/></div>
+            <div><p>Weight:</p><input type='text' name='userWeight' defaultValue={userData ? (userData.userWeight):('')}/></div>
           </div>
           <div className="UserI">
             <div><p>Goal:</p><select>
