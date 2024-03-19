@@ -1,22 +1,38 @@
 import './ProfilePage.css'
 import './EditProfilePage.css'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+import { HttpPopupContext } from '../../components/HttpPopupContext';
 
 
 function ProfilePage() {
 
-  const [userData, setData] = useState(null);
+  //Used as default case for if no data is retrieved for userData
+  const emptyUserData = {
+    firstName: "",
+    lastName: "",
+    username: "",
+    email: "",
+    password: "",
+    height: "",
+    weight: "",
+    goal: "",
+    notifications: ""
+}
+  const [userData, setData] = useState(emptyUserData);
   const token = localStorage.getItem("jwt")
+  const {setResponse} = useContext(HttpPopupContext);
+
   //Write a state element and setstate method for each input element in your form here
-  const [firstnameInput, setFirstname] = useState()
-  const [lastnameInput, setLastname] = useState()
-  const [usernameInput, setUsername] = useState()
-  const [emailInput, setEmail] = useState()
-  const [passwordInput, setPassword] = useState()
-  const [heightInput, setHeight] = useState()
-  const [weightInput, setWeight] = useState()
-  const [notificationsChecked, setNotificationscheck] = useState(0)
+  const [firstnameInput, setFirstname] = useState("");
+  const [lastnameInput, setLastname] = useState("");
+  const [usernameInput, setUsername] = useState("");
+  const [emailInput, setEmail] = useState("");
+  const [passwordInput, setPassword] = useState("");
+  const [heightInput, setHeight] = useState("");
+  const [weightInput, setWeight] = useState("");
+  const [goal, setGoal] = useState("");
+  const [notificationsChecked, setNotificationscheck] = useState(0);
   {/*
     Using updateProfile
     It follows the same premise as getProfileData, except you use axios.post(), do not use axios.get()
@@ -51,19 +67,29 @@ function ProfilePage() {
   async function updateProfileFormSubmit(event){
     event.preventDefault();//This prevents the page from reloading right when you submit
     try{
-      let body = {
-
-        
+      console.log(firstnameInput, lastnameInput)
+      let body = {  
+        /* Make it look just like this, but with the test values the state from your form (the ones changed via onChange())
+        "email": "ts@gmail.com",
+        "username": "test321",
+        "firstName": "changed",
+        "lastName": "changed",
+        "DOB": "2000-12-07",
+        "height": "72",
+        "notificationsOn": "1" //Do notifications toggle later, just send a hard-coded 0 or 1 for now, get the main things down before the small things
+        */
       }
-      const axiosResponse = await axios.post("https://capstone.parkert.dev/backend/logWeight", body, {
+      const axiosResponse = await axios.post("https://capstone.parkert.dev/backend/updateProfile", body, {
         headers: {
           Authorization: "Bearer " + token
         }
       });
-      
+      setResponse(axiosResponse) //used in httpopup.js
+      console.log("success")
     }
     catch(error){
       console.error("error: ", error.response)
+      setResponse(error.response) //used in httpopup.js
     }
   }
   //Combine all the state values that were updated from your form into a body element and send it via axios.post
@@ -71,19 +97,35 @@ function ProfilePage() {
   useEffect(() => {
     const fetchData = async () => { 
       try {
-        const response = await axios.get("https://capstone.parkert.dev/backend/getProfileData", {
+        const axiosResponse = await axios.get("https://capstone.parkert.dev/backend/getProfileData", {
           headers: {
             'Authorization': 'Bearer ' + token
           }
         });
-        setData(response.data[0]);
+        console.log(axiosResponse.data[0]);
+        setData(axiosResponse.data[0]);
       }
         catch (error) {
         console.error('Error fetching data: ', error);
+        setResponse(error.response) //used in httpopup.js
       }
     };
     fetchData();
   }, []);
+
+
+  //Used to set the variables inside profile page once userData is changed
+  useEffect(()=>{
+    setFirstname(userData.firstName);
+    setLastname(userData.lastName);
+    setUsername(userData.username);
+    setEmail(userData.email);
+    setPassword(userData.password);
+    setHeight(userData.height);
+    setWeight(userData.userWeight);
+    setGoal(userData.goalName);
+    setNotificationscheck(userData.notifications);
+  },[userData])
 
 //Fuction to change from ProfilePage to UpdateProfile page when edit is clickled,  using useState to trigger a re-render that allows seeing the new data
 const [editProfileClicked, setEditProfileClicked] = useState(true)
@@ -108,26 +150,26 @@ function passwordShowClickled(){
       <h1>PROFILE</h1>
 
         <div className="UserI">
-          <div><p>First Name:</p><p>{userData ? (userData.firstName):('')}</p></div>
-          <div><p>Last Name:</p><p>{userData ? (userData.lastName):('')}</p></div>
+          <div><p>First Name:</p><p>{firstnameInput}</p></div>
+          <div><p>Last Name:</p><p>{lastnameInput}</p></div>
         </div>
 
         <div className="UserI">
-          <div><p>Username:</p><p>{userData ? (userData.username):('')}</p></div>
-          <div><p>Email:</p><p>{userData ? (userData.email):('')}</p></div>
+          <div><p>Username:</p><p>{usernameInput}</p></div>
+          <div><p>Email:</p><p>{emailInput}</p></div>
         </div>
 
         <div className="UserI">
-          <div><p>Password:</p><p>{userData ? (userData.firstName):('')}</p></div>
+          <div><p>Password:</p><p>{passwordInput}</p></div>
         </div>
 
         <div className="UserI">
-          <div><p>Height:</p><p>{userData ? (userData.height):('')}</p></div>
-          <div><p>Weight:</p><p>{userData ? (userData.userWeight):('')}</p></div>
+          <div><p>Height:</p><p>{heightInput}</p></div>
+          <div><p>Weight:</p><p>{weightInput}</p></div>
         </div>
 
         <div className="UserI">
-          <div><p>Goal:</p><p>{userData ? (userData.goalName):('')}</p></div>
+          <div><p>Goal:</p><p>{goal}</p></div>
         </div>
 
         <div className="UserI">
@@ -144,13 +186,13 @@ function passwordShowClickled(){
         <form onSubmit={updateProfileFormSubmit}>
         <h1>UPDATE PROFILE</h1>
           <div className="UserI">
-            <div><p>First Name:</p><input type='text' name='firstName'  defaultValue={userData ? (userData.firstName):('')}/></div>
-            <div><p>Last Name:</p><input type='text' name='lastName' defaultValue={userData ? (userData.lastName):('')}/></div>
+            <div><p>First Name:</p><input type='text' name='firstName'  defaultValue={firstnameInput} onChange={(event)=>{setFirstname(event.target.value)}}/></div>
+            <div><p>Last Name:</p><input type='text' name='lastName' defaultValue={lastnameInput} onChange={(event)=>{setLastname(event.target.value)}}/></div>
           </div>
   
           <div className="UserI">
-            <div><p>Username:</p><input type='text' name='username' defaultValue={userData ? (userData.username):('')}/></div>
-            <div><p>Email:</p><input type='text' name='email' defaultValue={userData ? (userData.email):('')}/></div>
+            <div><p>Username:</p><input type='text' name='username' defaultValue={usernameInput}/></div>
+            <div><p>Email:</p><input type='text' name='email' defaultValue={emailInput}/></div>
           </div>
   
           <div className="UserI">
@@ -158,14 +200,14 @@ function passwordShowClickled(){
           </div>
   
           <div className="UserI">
-            <div><p>Height:</p><input type='text' name='height' defaultValue={userData ? (userData.height):('')}/></div>
-            <div><p>Weight:</p><input type='text' name='userWeight' defaultValue={userData ? (userData.userWeight):('')}/></div>
+            <div><p>Height:</p><input type='text' name='height' defaultValue={heightInput}/></div>
+            <div><p>Weight:</p><input type='text' name='userWeight' defaultValue={weightInput}/></div>
           </div>
           <div className="UserI">
             <div><p>Goal:</p><select>
-                                <option value="option1">Option 1</option>
-                                <option value="option2">Option 2</option>
-                                <option value="option3">Option 3</option>
+                                <option value="1">Weight Loss</option>
+                                <option value="2">Weight Gain</option>
+                                <option value="3">Health</option>
                               </select>
             </div>
           </div>
