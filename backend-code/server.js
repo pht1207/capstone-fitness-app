@@ -73,7 +73,7 @@ const loginSchema = Joi.object({
 const updateProfileSchema = Joi.object({
   email: Joi.string().email().required(),
   username: Joi.string().alphanum().min(3).max(45).required(),
-  password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
+  //password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
   firstName: Joi.string().alphanum().max(45).required(),
   lastName: Joi.string().alphanum().max(45).required(),
   DOB: Joi.date().iso().required(), // Checks for 'YYYY-MM-DD' format
@@ -304,21 +304,22 @@ app.post('/login', upload.none(), login);
 */}
 
 const updateProfile = async function(req, res) {
-  //write code here that mirrors /register but use an alter statement instead of an insert statement
+  console.log(req.body);
   const userID = req.user.id;
   const requestData = req.body;
   const email = requestData.email;
   const username = requestData.username;
-  const password = requestData.password;
+  //const password = "fa;sdhbb!@12314";
   const firstName = requestData.firstName;
   const lastName = requestData.lastName;
   const DOB = requestData.DOB;
   const height = requestData.height;
   const notificationsOn = requestData.notificationsOn;
 
-  let validatorObject = {email: email, username: username, password: password, firstName: firstName, lastName: lastName, DOB: DOB, height:height, notificationsOn: notificationsOn}
+ {/* removed  from validator object for now*/}
+  let validatorObject = {email: email, username: username, firstName: firstName, lastName: lastName, DOB: DOB, height:height, notificationsOn: notificationsOn}
 
-  const encryptedPassword = await bcrypt.hash(password, saltRounds)
+  //const encryptedPassword = await bcrypt.hash(password, saltRounds)
 
   const validationResult = updateProfileSchema.validate(validatorObject);
   if (validationResult.error) {
@@ -330,9 +331,9 @@ const updateProfile = async function(req, res) {
   else{
     const query = (
     "UPDATE userTable "+
-    "SET userTable.email = ?, userTable.username = ?, userTable.password = ?, userTable.firstName = ?, userTable.lastName = ?, userTable.DOB = ?, userTable.height = ?, userTable.notificationsOn = ? "+
+    "SET userTable.email = ?, userTable.username = ?, userTable.firstName = ?, userTable.lastName = ?, userTable.DOB = ?, userTable.height = ?, userTable.notificationsOn = ? "+
     "WHERE userTable.userTable_id = ?")
-    const values = [email, username, encryptedPassword, firstName, lastName, DOB, height, notificationsOn, userID]
+    const values = [email, username, firstName, lastName, DOB, height, notificationsOn, userID] //removed encryptedPassword from this array for now
     pool.query(query, values, (error, results) =>{
       if(error){
         console.error(error)
