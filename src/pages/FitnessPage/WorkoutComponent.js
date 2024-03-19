@@ -20,6 +20,7 @@ function WorkoutComponent({ onWorkoutComplete, selectedWorkout }) {
 
   const token = localStorage.getItem("jwt"); //Token for backend operations
 
+  
   const initiateCreateWorkout = () => {
     setCreateWorkout(true);
   };
@@ -247,20 +248,14 @@ function WorkoutComponent({ onWorkoutComplete, selectedWorkout }) {
     <div className="myworkout-table">
       {createWorkout ? (
         <div>
+          <input
+            type="text"
+            value={workoutName}
+            onChange={handleWorkoutNameChange}
+            placeholder="Workout Name"
+            className="workout-name-input"
+          />
           <table className="workout-table">
-            <thead>
-              <tr>
-                <th>
-                  <input
-                    type="text"
-                    value={workoutName}
-                    onChange={handleWorkoutNameChange}
-                    placeholder="Workout Name"
-                    style={{ width: "250px" }}
-                  />
-                </th>
-              </tr>
-            </thead>
             <tbody>
               {exercises.map((exercise, index) => (
                 <tr key={index}>
@@ -274,7 +269,7 @@ function WorkoutComponent({ onWorkoutComplete, selectedWorkout }) {
                     />
                   </td>
                   <td>
-                    <button onClick={() => deleteExercise(index)}>
+                    <button className="delete-exercise-button" onClick={() => deleteExercise(index)}>
                       Delete
                     </button>
                   </td>
@@ -282,26 +277,26 @@ function WorkoutComponent({ onWorkoutComplete, selectedWorkout }) {
               ))}
             </tbody>
           </table>
-          <button onClick={startWorkout} disabled={continueWorkout}>
-            Start
-          </button>
-          <button onClick={finishWorkout} disabled={!continueWorkout}>
-            Finish
-          </button>
-          {continueWorkout && (
-            <p>Workout Duration: {workoutDuration} seconds</p>
-          )}
-          <button onClick={cancelWorkoutCreation}>Cancel</button>
-          <button onClick={saveWorkout}>Save Workout</button>
+          <div className="button-container">
+            <button onClick={startWorkout} disabled={continueWorkout}>
+              Start
+            </button>
+            <button onClick={finishWorkout} disabled={!continueWorkout}>
+              Finish
+            </button>
+            {continueWorkout && (
+              <p>Workout Duration: {workoutDuration} seconds</p>
+            )}
+            <button onClick={cancelWorkoutCreation}>Cancel</button>
+            <button onClick={saveWorkout}>Save Workout</button>
+          </div>
         </div>
       ) : (
         <div>
           {workoutType === "recommended" && (
             <div>
-              {/* Render recommended workout section */}
               <h2>Recommended Workouts</h2>
               <ul className="recommended-workout-list">
-                {/* Loop through recommended workouts and render each */}
                 {recommendedWorkouts.map((workout, index) => (
                   <li
                     key={index}
@@ -329,7 +324,6 @@ function WorkoutComponent({ onWorkoutComplete, selectedWorkout }) {
                 <div>
                   <h2>Workout Templates</h2>
                   <ul className="prebuilt-workout-list">
-                    {/* Loop through prebuilt workouts and render each */}
                     {prebuiltWorkout.map((workout, index) => (
                       <li
                         key={index}
@@ -342,7 +336,6 @@ function WorkoutComponent({ onWorkoutComplete, selectedWorkout }) {
                   </ul>
                   <h2>Saved Workouts</h2>
                   <ul className="saved-workout-list">
-                    {/* Loop through saved workouts and render each */}
                     {savedWorkouts.map((workout, index) => (
                       <li
                         key={index}
