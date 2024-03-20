@@ -71,81 +71,11 @@ function WorkoutComponent({ onWorkoutComplete, selectedWorkout }) {
     }
   };
 
-  const prebuiltWorkout = [
-    {
-      workoutName: "PUSH DAY",
-      exercises: [
-        { name: "Dumbbell Flat Press", sets: [], reps: [] },
-        { name: "Incline Smith Press", sets: [], reps: [] },
-        { name: "Dumbbell Shoulder Press", sets: [], reps: [] },
-        { name: "Dumbell Lateral Raise", sets: [], reps: [] },
-        { name: "Tricep Pushdown", sets: [], reps: [] },
-      ],
-    },
-    {
-      workoutName: "PULL DAY",
-      exercises: [
-        { name: "Chest-Supported Row", sets: [], reps: [] },
-        { name: "Lat Pulldown", sets: [], reps: [] },
-        { name: "Cable Lat Row", sets: [], reps: [] },
-        { name: "Reverse Pec Dec Fly", sets: [], reps: [] },
-        { name: "Dumbbell Curl", sets: [], reps: [] },
-      ],
-    },
-    {
-      workoutName: "LEG DAY",
-      exercises: [
-        { name: "Calf Raise", sets: [], reps: [] },
-        { name: "Seated Leg Curl", sets: [], reps: []},
-        { name: "Leg Press", sets: [], reps: [] },
-        { name: "Leg Extension", sets: [], reps: [] },
-        { name: "Adductor Machine", sets: [], reps: [] },
-      ],
-    },
-  ];
 
-  {
-    /* SECTION START: getWorkouts 
-    This section is based around creating a state object from the getWorkouts method results.
-    This method will get workouts created by the user as well as standard ones included in the system already.
-    Problems with this are that the user may be able to create workouts that have the same name or a slightly different name.
-      -This means the list could get flooded by the user. Look into later.
 
-      Guide for what you need to do:
-      You need to call the getWorkouts method from the backend. This will return every workout in the DB that is standard or created by the specified user.
-        -This should be done inside a useEffect(), with an empty dependency.
-          -This means that the [] should be empty (like below there is useeffect with useeffect(()=>{},[timer]).
-            -This makes it to where it is only ran once, when the page is rendered.
-      
-      Console.log is your friend, it will make it easy to see what the results are from the backend method.
-      
-      This is a useEffect that is mostly copied and pasted from the profilepage.js file. It should at least be close to what you need:
 
-            useEffect(() => {
-
-              const fetchData = async () => { 
-                try {
-                  const response = await axios.get("https://capstone.parkert.dev/backend/getWorkouts", {
-                    headers: {
-                      'Authorization': 'Bearer ' + token
-                    }
-                  });
-                  console.log(response.data) //Response.data is the return data from the backend request. You will make a state variable to store this in (like setWorkoutArray(response.data))
-                }
-                  catch (error) {
-                  console.error('Error fetching data: ', error);
-                }
-              };
-
-              fetchData(); //This calls the function above
-            }, []);
-
-      
-  */
-  }
-
-  //Write your code here
-
+  const [backendSystemWorkouts, setBackendSystemWorkouts] = useState([])
+  const [backendUserWorkouts, setBackendUserWorkouts] = useState([])
   useEffect(() => {
     const getWorkouts = async () => {
       try {
@@ -158,8 +88,23 @@ function WorkoutComponent({ onWorkoutComplete, selectedWorkout }) {
           }
         );
 
-        console.log(response.data);
-      } catch (error) {
+        let tempArrayUser = [];
+        let tempArraySystem = [];
+        for(let i = 0; i < response.data.length; i++){
+          if(response.data[i].createdBy !== null){
+            tempArrayUser.push(response.data[i]);
+          }
+          else{
+            tempArraySystem.push(response.data[i]);
+          }
+        }
+        setBackendSystemWorkouts(tempArraySystem);
+        setBackendUserWorkouts(tempArrayUser);
+
+      
+      } 
+
+      catch (error) {
         console.error("Error - Cannot get workouts: ", error);
       }
     };
@@ -240,9 +185,7 @@ function WorkoutComponent({ onWorkoutComplete, selectedWorkout }) {
     }
   }, [selectedWorkout]);
 
-  const addRecommendedWorkout = (workout) => {
-    setSavedWorkouts([...savedWorkouts, workout]);
-  };
+
 
   return (
     <div className="myworkout-table">
@@ -291,7 +234,11 @@ function WorkoutComponent({ onWorkoutComplete, selectedWorkout }) {
             <button onClick={saveWorkout}>Save Workout</button>
           </div>
         </div>
-      ) : (
+      ) 
+      
+      : 
+
+      (
         <div>
           {workoutType === "recommended" && (
             <div>
@@ -301,7 +248,7 @@ function WorkoutComponent({ onWorkoutComplete, selectedWorkout }) {
                   <li
                     key={index}
                     className="recommended-workout-item"
-                    onClick={() => addRecommendedWorkout(workout)}
+                    onClick={() => addPrebuiltWorkout(workout)}
                   >
                     {workout.workoutName}
                   </li>
@@ -309,51 +256,34 @@ function WorkoutComponent({ onWorkoutComplete, selectedWorkout }) {
               </ul>
             </div>
           )}
+          
           {workoutType !== "recommended" && (
             <div>
-              <div
-                className="create-workout-box"
-                onClick={initiateCreateWorkout}
-              >
-                Create Workout
+              <div className="create-workout-box"onClick={initiateCreateWorkout}>
+                <p>Create Workout</p>
               </div>
               <div className="select-workout-box" onClick={toggleSelectWorkout}>
-                Choose Workout
+              <p>Choose Workout</p>
               </div>
               {selectWorkout && (
                 <div>
-                  <h2>Workout Templates</h2>
-                  <ul className="prebuilt-workout-list">
-                    {prebuiltWorkout.map((workout, index) => (
-                      <li
-                        key={index}
-                        className="prebuilt-workout-item"
-                        onClick={() => addPrebuiltWorkout(workout)}
-                      >
-                        {workout.workoutName}
-                      </li>
-                    ))}
-                  </ul>
-                  <h2>Saved Workouts</h2>
-                  <ul className="saved-workout-list">
-                    {savedWorkouts.map((workout, index) => (
-                      <li
-                        key={index}
-                        className="saved-workout-item"
-                        onClick={() => addPrebuiltWorkout(workout)}
-                      >
-                        {workout.workoutName}
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            deleteSavedWorkout(index);
-                          }}
-                        >
-                          Delete
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
+                  <div>
+                    <h2>Default Workouts</h2>
+                      {backendSystemWorkouts.map((object, index) =>(
+                        <div key={index} className="PickExerciseWindowListElement" onClick={()=>{console.log(object); addPrebuiltWorkout(object)}}>
+                            <h4>{object.workoutName}</h4>
+                        </div>
+                      ))}      
+                  </div>
+                  <div>
+                    <h2>User Workouts</h2>
+                      {backendUserWorkouts.map((object, index) =>(
+                        <div key={index} className="PickExerciseWindowListElement" onClick={()=>{console.log(object)}}>
+                            <h4>{object.workoutName}</h4>
+                        </div>
+                      ))}      
+                  </div>
+
                   <div className="cancel-button-container">
                     <button onClick={cancelWorkoutCreation}>Cancel</button>
                   </div>

@@ -18,7 +18,6 @@ function FitnessPage() {
   const [date, setDate] = useState(currentDate)
   const [selectedWorkout, setSelectedWorkout] = useState(null);
 
-
   const handleCompletedWorkout = (workoutData) => {
     setCompletedWorkout([...completedWorkout, workoutData]);
   };
@@ -27,11 +26,10 @@ function FitnessPage() {
     setSelectedWorkout(workout);
   };
 
-console.log(date)
 
   return (
     <div className= "FitnessPage"> {/*This div will contain every component for the fitness page. */}
-      <input type='date' onChange={((event)=>setDate(event.target.value))} defaultValue={date}></input>
+      <p>Pick date to check or log for:</p><input type='date' onChange={((event)=>setDate(event.target.value))} defaultValue={date}></input>
 
       <div className= "Banner"> {/* Used to hold and seperate the 3 sections of the page. */}
 
