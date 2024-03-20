@@ -84,6 +84,7 @@
     align-items: center;
     flex-wrap:wrap;
     width: 80%;
+    overflow-y: scroll;
 }
 .PickExercise .PickExerciseWindow .PickExerciseWindowList .PickExerciseWindowListElement{
     display: flex;

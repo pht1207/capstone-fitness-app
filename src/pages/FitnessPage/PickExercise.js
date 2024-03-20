@@ -21,7 +21,6 @@ function PickExercise(props) {
                     }
                 );
                 setExerciseList(response.data)
-                console.log(response.data);
             }
             else{ //if a muscle group filter is set do this
                 response = await axios.get(
@@ -33,7 +32,6 @@ function PickExercise(props) {
                     }
                 );
                 setExerciseList(response.data)
-                console.log(response.data);
             }
 
         } catch (error) {
@@ -78,8 +76,8 @@ function PickExercise(props) {
                         <option value={"Obliques"}>Obliques</option>
 
                         <option disabled>──Arms──</option>
-                        <option value={"Biceps"}>Biceps</option>
-                        <option value={"Triceps"}>Triceps</option>
+                        <option value={"Bicep"}>Biceps</option>
+                        <option value={"Tricep"}>Triceps</option>
 
                         <option disabled>──Legs──</option>
                         <option value={"Quads"}>Quads</option>
