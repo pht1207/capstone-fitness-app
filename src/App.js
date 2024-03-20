@@ -46,7 +46,6 @@ function App() {
     const usersJWT = localStorage.getItem('jwt');
     if(jwtExpiryCheck(usersJWT))
     {
-      console.log("JWT is expired")
       setJWTExpired(true);
     }
     else{

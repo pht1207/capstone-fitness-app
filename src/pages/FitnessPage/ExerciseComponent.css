@@ -50,3 +50,52 @@
 .add-set-button {
     margin-top: 10px; /* Increase margin to separate the "Add Set" button */
 }
+
+
+
+
+.PickExercise{
+    position:absolute;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    top: 6%;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  
+}
+.PickExercise .PickExerciseWindow{
+    background-color: white;
+    width: 70%;
+    height: 60%;
+    border-style: solid;
+    border-radius: 1em;
+    border-width: .1em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.PickExercise .PickExerciseWindow .PickExerciseWindowList{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-wrap:wrap;
+    width: 80%;
+}
+.PickExercise .PickExerciseWindow .PickExerciseWindowList .PickExerciseWindowListElement{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    width: 33%;
+    display: inline-block;
+    border-style: solid;
+    border-width: .1em;
+    margin:1em;
+}
+
+.PickExercise .PickExerciseWindow .PickExerciseWindowList :hover{
+    cursor: pointer;
+}

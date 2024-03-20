@@ -102,8 +102,10 @@ function ProfilePage() {
             'Authorization': 'Bearer ' + token
           }
         });
-        console.log(axiosResponse.data[0]);
-        setData(axiosResponse.data[0]);
+        console.log(axiosResponse.data[0])
+        if(axiosResponse.data[0] !== undefined){
+          setData(axiosResponse.data[0]);
+        }
       }
         catch (error) {
         console.error('Error fetching data: ', error);
