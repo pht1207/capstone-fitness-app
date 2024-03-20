@@ -593,7 +593,7 @@ function dailyNutritionTableCalculator(){
       gramsFat: null
     }
 
-    if(goalName === "weightLoss"){ //40% carbs, 35% protein, 25% fat
+    if(goalName === "Weight Loss"){ //40% carbs, 35% protein, 25% fat
       dailyNutritionIntake.dailyCalories = maintenanceCalories-500;
       dailyNutritionIntake.gramsCarbs = (Math.round(dailyNutritionIntake.dailyCalories*.40/carbCalories));
       dailyNutritionIntake.gramsProtein = (Math.round(dailyNutritionIntake.dailyCalories*.35/proteinCalories));
@@ -601,7 +601,7 @@ function dailyNutritionTableCalculator(){
 
       return(dailyNutritionIntake)
     }
-    else if(goalName === "weightGain"){ //40% carbs, 30% protein, 30% fat
+    else if(goalName === "Weight Gain"){ //40% carbs, 30% protein, 30% fat
       dailyNutritionIntake.dailyCalories = maintenanceCalories+500;
       dailyNutritionIntake.gramsCarbs = (Math.round(dailyNutritionIntake.dailyCalories*.40/carbCalories));
       dailyNutritionIntake.gramsProtein = (Math.round(dailyNutritionIntake.dailyCalories*.30/proteinCalories));
@@ -678,7 +678,7 @@ const getExercises = async function(req, res){
   //Will return every exercise, including ones made by the user, with a filter for what muscle group they are search for (if one exists)
   if(req.query.muscleGroup){
     pool.query(
-      'SELECT exerciseTable.exerciseTable_id, exerciseTable.exerciseName, exerciseTable.muscleGroup, exerciseTable.setCount, exerciseTable.repCount, exerciseTable.timeAmountInMins ' +
+      'SELECT exerciseTable.exerciseTable_id, exerciseTable.exerciseName, exerciseTable.muscleGroup ' +
       'FROM exerciseTable ' +
       'LEFT JOIN userTable ON exerciseTable.createdBy = userTable.userTable_id ' + //Joins all values from exerciseTable and when there is a match between the userTable_id and the createdBy columns & only if they match muscleGroup filter
       'WHERE (userTable.userTable_id = ? AND exerciseTable.muscleGroup = ?) ' +
@@ -692,6 +692,7 @@ const getExercises = async function(req, res){
         } 
         else{
             // Process the results
+            console.log(results);
             res.status(200).json(results)
           }
     });
@@ -699,7 +700,7 @@ const getExercises = async function(req, res){
   else{
     //Will return every exercise, including ones created by the user
     pool.query(
-      'SELECT exerciseTable.exerciseTable_id, exerciseTable.exerciseName, exerciseTable.muscleGroup, exerciseTable.setCount, exerciseTable.repCount, exerciseTable.timeAmountInMins ' +
+      'SELECT exerciseTable.exerciseTable_id, exerciseTable.exerciseName, exerciseTable.muscleGroup ' +
       'FROM exerciseTable ' +
       'LEFT JOIN userTable ON exerciseTable.createdBy = userTable.userTable_id ' + //Joins all values from exerciseTable and when there is a match between the userTable_id and the createdBy columns
       'WHERE userTable.userTable_id = ? '+
@@ -712,6 +713,7 @@ const getExercises = async function(req, res){
           res.status(500).send("Error fetching foods from database");
         }
         else{
+          console.log(results);
           res.status(200).json(results)
         }
     });
