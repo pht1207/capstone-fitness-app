@@ -66,7 +66,7 @@ function WorkoutLog() {
               ))}
           </>
           :
-          <h1>Loading...</h1>
+          <h1>No Workout Log Found</h1>
         }
       </div>
 

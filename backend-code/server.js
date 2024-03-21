@@ -73,7 +73,7 @@ const loginSchema = Joi.object({
 const updateProfileSchema = Joi.object({
   email: Joi.string().email().required(),
   username: Joi.string().alphanum().min(3).max(45).required(),
-  password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
+  //password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
   firstName: Joi.string().alphanum().max(45).required(),
   lastName: Joi.string().alphanum().max(45).required(),
   DOB: Joi.date().iso().required(), // Checks for 'YYYY-MM-DD' format
@@ -162,33 +162,33 @@ const register = async function(req,res){
     "weight":req.body.weight
     }
 
-    try{
-    //Creates a new user row in the userTable table
-    const userTableQuery = "INSERT INTO userTable (email, username, password, firstname, lastname, DOB, height, notificationsOn)  VALUES (?, ?, ?, ?, ?, ?, ?, ?); ";
-    const userTableQueryValues = [user.email, user.username, encryptedPassword, user.firstName, user.lastName, user.DOB, user.height, user.notificationsOn];
-    const userTableInsert = await executeQuery(userTableQuery, userTableQueryValues);
+    try {
+      // Creates a new user row in the userTable table
+      const userTableQuery = "INSERT INTO userTable (email, username, password, firstname, lastname, DOB, height, notificationsOn) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+      const userTableQueryValues = [user.email, user.username, encryptedPassword, user.firstName, user.lastName, user.DOB, user.height, user.notificationsOn];
+      const userTableInsert = await executeQuery(userTableQuery, userTableQueryValues);
 
-    //Gets and sets the userID made from the previous query
-    const setCurrentUserIDQuery = "SET @currentUser_id = LAST_INSERT_ID(); ";
-    const setCurrentUserIDPromise = await executeQuery(setCurrentUserIDQuery, []);
+      // Get the ID of the newly inserted user
+      const newUserId = userTableInsert.insertId;
 
-    //Inserts the goal of the user
-    const userGoalTableQuery =   "INSERT INTO user_goalTable (goalTable_id, userTable_id, dateTimeChanged) VALUES (?, @currentUser_id, ?); "
-    const userGoalTableQueryValues = [user.goal, getCurrentTime()];
-    const userGoalTableInsert = await executeQuery(userGoalTableQuery, userGoalTableQueryValues);
-    
-    //Inserts the weight of the user
-    const userWeightTableQuery =   "INSERT INTO userWeightTable (userTable_id, userWeight, dateTimeChanged) VALUES (@currentUser_id, ?, ?);";
-    const userWeightTableQueryValues = [user.weight, getCurrentTime()]
-    const userWeightTableInsert = await executeQuery(userWeightTableQuery, userWeightTableQueryValues);
-    
-    res.status(200).json({
-      message:"Account creation successful"
-    })
-  }
-  catch{
-    console.error("error occured while registering account")
-  }
+      // Inserts the goal of the user
+      const userGoalTableQuery = "INSERT INTO user_goalTable (goalTable_id, userTable_id, dateTimeChanged) VALUES (?, ?, ?);";
+      const userGoalTableQueryValues = [user.goal, newUserId, getCurrentTime()];
+      const userGoalTableInsert = await executeQuery(userGoalTableQuery, userGoalTableQueryValues);
+
+      // Inserts the weight of the user
+      const userWeightTableQuery = "INSERT INTO userWeightTable (userTable_id, userWeight, dateTimeChanged) VALUES (?, ?, ?);";
+      const userWeightTableQueryValues = [newUserId, user.weight, getCurrentTime()];
+      const userWeightTableInsert = await executeQuery(userWeightTableQuery, userWeightTableQueryValues);
+
+      return res.status(200).json({
+        message: "Account creation successful"
+      });
+    }
+
+    catch{
+      console.error("error occured while registering account")
+    }
     //Used to execute queries
     function executeQuery(query, values){
       return new Promise((resolve, reject) =>{
@@ -304,21 +304,22 @@ app.post('/login', upload.none(), login);
 */}
 
 const updateProfile = async function(req, res) {
-  //write code here that mirrors /register but use an alter statement instead of an insert statement
+  console.log(req.body);
   const userID = req.user.id;
   const requestData = req.body;
   const email = requestData.email;
   const username = requestData.username;
-  const password = requestData.password;
+  //const password = "fa;sdhbb!@12314";
   const firstName = requestData.firstName;
   const lastName = requestData.lastName;
   const DOB = requestData.DOB;
   const height = requestData.height;
   const notificationsOn = requestData.notificationsOn;
 
-  let validatorObject = {email: email, username: username, password: password, firstName: firstName, lastName: lastName, DOB: DOB, height:height, notificationsOn: notificationsOn}
+ {/* removed  from validator object for now*/}
+  let validatorObject = {email: email, username: username, firstName: firstName, lastName: lastName, DOB: DOB, height:height, notificationsOn: notificationsOn}
 
-  const encryptedPassword = await bcrypt.hash(password, saltRounds)
+  //const encryptedPassword = await bcrypt.hash(password, saltRounds)
 
   const validationResult = updateProfileSchema.validate(validatorObject);
   if (validationResult.error) {
@@ -330,9 +331,9 @@ const updateProfile = async function(req, res) {
   else{
     const query = (
     "UPDATE userTable "+
-    "SET userTable.email = ?, userTable.username = ?, userTable.password = ?, userTable.firstName = ?, userTable.lastName = ?, userTable.DOB = ?, userTable.height = ?, userTable.notificationsOn = ? "+
+    "SET userTable.email = ?, userTable.username = ?, userTable.firstName = ?, userTable.lastName = ?, userTable.DOB = ?, userTable.height = ?, userTable.notificationsOn = ? "+
     "WHERE userTable.userTable_id = ?")
-    const values = [email, username, encryptedPassword, firstName, lastName, DOB, height, notificationsOn, userID]
+    const values = [email, username, firstName, lastName, DOB, height, notificationsOn, userID] //removed encryptedPassword from this array for now
     pool.query(query, values, (error, results) =>{
       if(error){
         console.error(error)
@@ -592,7 +593,7 @@ function dailyNutritionTableCalculator(){
       gramsFat: null
     }
 
-    if(goalName === "weightLoss"){ //40% carbs, 35% protein, 25% fat
+    if(goalName === "Weight Loss"){ //40% carbs, 35% protein, 25% fat
       dailyNutritionIntake.dailyCalories = maintenanceCalories-500;
       dailyNutritionIntake.gramsCarbs = (Math.round(dailyNutritionIntake.dailyCalories*.40/carbCalories));
       dailyNutritionIntake.gramsProtein = (Math.round(dailyNutritionIntake.dailyCalories*.35/proteinCalories));
@@ -600,7 +601,7 @@ function dailyNutritionTableCalculator(){
 
       return(dailyNutritionIntake)
     }
-    else if(goalName === "weightGain"){ //40% carbs, 30% protein, 30% fat
+    else if(goalName === "Weight Gain"){ //40% carbs, 30% protein, 30% fat
       dailyNutritionIntake.dailyCalories = maintenanceCalories+500;
       dailyNutritionIntake.gramsCarbs = (Math.round(dailyNutritionIntake.dailyCalories*.40/carbCalories));
       dailyNutritionIntake.gramsProtein = (Math.round(dailyNutritionIntake.dailyCalories*.30/proteinCalories));
@@ -677,7 +678,7 @@ const getExercises = async function(req, res){
   //Will return every exercise, including ones made by the user, with a filter for what muscle group they are search for (if one exists)
   if(req.query.muscleGroup){
     pool.query(
-      'SELECT exerciseTable.exerciseTable_id, exerciseTable.exerciseName, exerciseTable.muscleGroup, exerciseTable.setCount, exerciseTable.repCount, exerciseTable.timeAmountInMins ' +
+      'SELECT exerciseTable.exerciseTable_id, exerciseTable.exerciseName, exerciseTable.muscleGroup ' +
       'FROM exerciseTable ' +
       'LEFT JOIN userTable ON exerciseTable.createdBy = userTable.userTable_id ' + //Joins all values from exerciseTable and when there is a match between the userTable_id and the createdBy columns & only if they match muscleGroup filter
       'WHERE (userTable.userTable_id = ? AND exerciseTable.muscleGroup = ?) ' +
@@ -698,7 +699,7 @@ const getExercises = async function(req, res){
   else{
     //Will return every exercise, including ones created by the user
     pool.query(
-      'SELECT exerciseTable.exerciseTable_id, exerciseTable.exerciseName, exerciseTable.muscleGroup, exerciseTable.setCount, exerciseTable.repCount, exerciseTable.timeAmountInMins ' +
+      'SELECT exerciseTable.exerciseTable_id, exerciseTable.exerciseName, exerciseTable.muscleGroup ' +
       'FROM exerciseTable ' +
       'LEFT JOIN userTable ON exerciseTable.createdBy = userTable.userTable_id ' + //Joins all values from exerciseTable and when there is a match between the userTable_id and the createdBy columns
       'WHERE userTable.userTable_id = ? '+
@@ -721,8 +722,8 @@ const createExercises = async function(req, res){
   const userID = req.user.id;
   {/* Write a checker to see if the information inserted is appropriate for the DB columns */}
   let exercise = req.body;
-  const query = "INSERT INTO exerciseTable (exerciseName, muscleGroup, setCount, repCount, timeAmountInMins, createdBy) VALUES (?, ?, ?, ?, ?, ?)"
-  const values = [exercise.exerciseName || null, exercise.muscleGroup || null, exercise.setCount || null, exercise.repCount || null, exercise.timeAmountInMins || null, userID ]
+  const query = "INSERT INTO exerciseTable (exerciseName, muscleGroup, createdBy) VALUES (?, ?, ?)"
+  const values = [exercise.exerciseName || null, exercise.muscleGroup, userID ]
   pool.query(query, values, (error, results) =>{
     if(error){
       console.error(error);
@@ -738,22 +739,36 @@ const createExercises = async function(req, res){
 
 //allows the use of the exercises page to log exercises for the user
 const logExercises = async function(req, res) {    
-  //write insert statements for the user
   const userID = req.user.id;
   const exerciseLog = req.body;
-  const query = "INSERT INTO user_exerciseTable (userTable_id, exerciseTable_id, timeStarted, timeCompleted)  VALUES (?, ?, ?, ?)"
-  const values = [userID, exerciseLog.exerciseTable_id || null, exerciseLog.timeStarted || null, exerciseLog.timeCompleted || null]
-  pool.query(query, values, (error, results) =>{
+  const getIDQuery = "SELECT exerciseTable_id from exerciseTable WHERE exerciseName = ? AND (createdBy = ? OR createdBy IS NULL)";
+  let exerciseID;
+  pool.query(getIDQuery, [exerciseLog.exerciseName, userID], (error, results) =>{
     if(error){
       console.error(error);
       res.status(500).send("Error logging exercise to database");
     }
-    else{
-      res.status(200).json({
-        message: "workout log successful",
-      });      
+    else if(results.length>0){
+        exerciseID = results[0].exerciseTable_id;
+        const query = "INSERT INTO user_exerciseTable (userTable_id, exerciseTable_id, timeStarted, timeCompleted, reps, sets, weight)  VALUES (?, ?, ?, ?, ?, ?, ?)"
+        const values = [userID, exerciseID || null, exerciseLog.timeStarted || null, exerciseLog.timeCompleted || null, exerciseLog.reps ||null, exerciseLog.sets ||null, exerciseLog.weight]
+        pool.query(query, values, (error, results) =>{
+          if(error){
+            console.error(error);
+            res.status(500).send("Error logging exercise to database");
+          }
+          else{
+            res.status(200).json({
+              message: "exercise log successful",
+            });      
+          }
+        });
     }
-  });
+    else{
+      res.status(500).send("Error logging exercise to database, no exercise by that name");
+    }
+  })
+
 }
 
 const getUserExerciseLog = async function(req, res) {
@@ -809,8 +824,8 @@ const getWorkouts = async function(req, res){
   It also shows every exercise that the workoutTable_id is associated with.
   This data is used in the else statement to create the object that will be sent to the frontend*/}
   pool.query( 
-    `SELECT workoutTable.workoutTable_id, workoutTable.workoutName, workoutTable.workoutDescription, workoutTable.createdAt, workoutTable.createdBy, 
-            exerciseTable.exerciseTable_id, exerciseTable.exerciseName, exerciseTable.muscleGroup, exerciseTable.setCount, exerciseTable.repCount, exerciseTable.timeAmountInMins 
+    `SELECT workoutTable.workoutTable_id, workoutTable.workoutName, workoutTable.workoutDescription, workoutTable.createdBy, 
+            exerciseTable.exerciseTable_id, exerciseTable.exerciseName, exerciseTable.muscleGroup 
      FROM workoutTable
      LEFT JOIN workout_exerciseTable ON workoutTable.workoutTable_id = workout_exerciseTable.workoutTable_id
      LEFT JOIN exerciseTable ON workout_exerciseTable.exerciseTable_id = exerciseTable.exerciseTable_id
@@ -829,21 +844,14 @@ const getWorkouts = async function(req, res){
             accumulator[current.workoutTable_id] = {//The key is the workoutTable_id
               workoutTable_id: current.workoutTable_id,
               workoutName: current.workoutName,
-              workoutDescription: current.workoutDescription,
-              createdAt: current.createdAt,
-              createdBy: current.createdBy,
               exercises: []
             };
           }
           //This block adds exercises to the parent workout object if they exist
           if (current.exerciseTable_id) { //check if there's an exercise ID available
             accumulator[current.workoutTable_id].exercises.push({
-              exerciseTable_id: current.exerciseTable_id,
               exerciseName: current.exerciseName,
               muscleGroup: current.muscleGroup,
-              setCount: current.setCount,
-              repCount: current.repCount,
-              timeAmountInMins: current.timeAmountInMins
             });
           }
           return accumulator;

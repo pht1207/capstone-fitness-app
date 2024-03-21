@@ -1,15 +1,15 @@
 import './ExerciseComponent.css'
+import PickExercise from './PickExercise'
 
 import { useState, useEffect } from "react";
 
 function ExerciseComponent(props) {
 
-  //Your code to make the site functional goes in this empty space. The 'return()' below is what renders on the page (the html)
-  //Inserted by parker: https://capstone.parkert.dev/backend/getFoods
   const [exerciseName, setExerciseName] = useState(props.exercise.name);
   const [sets, setSets] = useState(props.exercise.sets || []);
   const [weights, setWeights] = useState(props.exercise.weights || []);
   const [reps, setReps] = useState(props.exercise.reps || []);
+  const [showPickExercise, setShowPickExercise] = useState(false);
 
   useEffect(() => {
     setExerciseName(props.exercise.name);
@@ -62,6 +62,7 @@ function ExerciseComponent(props) {
     <div className="ExerciseComponent">
       <input
         type="text"
+        onClick={(()=>{setShowPickExercise(true)})}
         value={exerciseName}
         onChange={handleExerciseNameChange}
         placeholder="Exercise Name"
@@ -94,6 +95,8 @@ function ExerciseComponent(props) {
           Add Set
         </button>
       </div>
+      {showPickExercise ? <PickExercise setExerciseName={setExerciseName} setShowPickExercise={setShowPickExercise}/>: <></>}
+
     </div>
   );
 }
