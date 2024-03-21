@@ -196,7 +196,7 @@ function WorkoutComponent({ onWorkoutComplete, selectedWorkout }) {
 
       (
         <div>
-          {showCreateWorkout ? <CreateWorkout/>: <></>}
+          {showCreateWorkout ? <CreateWorkout setShowCreateWorkout={setShowCreateWorkout}/>: <></>}
           {workoutType !== "recommended" && (
             <div>
               <div className="create-workout-box"onClick={initiateCreateWorkout}>

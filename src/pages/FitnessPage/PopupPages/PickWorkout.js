@@ -59,8 +59,11 @@ function PickWorkout(props) {
                             ))}
                         </div>
                     :
-                        <h3>No results found</h3>
-                    }
+                    <div className="CreatedWorkouts">
+                      <h4>System Created Workouts</h4>
+                      <h4>No results found</h4>
+                    </div>                    
+                  }
                     <div className="CreatedWorkouts">
                         <h4>Recommended Workouts</h4>
                         {recommendedWorkouts.map((object, index) => (
@@ -70,6 +73,7 @@ function PickWorkout(props) {
                         ))}
                     </div>
                     {backendUserWorkouts.length > 0 ?
+                    
                         <div className="CreatedWorkouts">
                             <h4>User Created Workouts</h4>
                             {backendUserWorkouts.map((object, index) =>(
@@ -79,7 +83,10 @@ function PickWorkout(props) {
                             ))}
                         </div>
                     :
-                        <h3>No results found</h3>
+                        <div className="CreatedWorkouts">
+                          <h4>User Created Workouts</h4>
+                          <h4>No results found</h4>
+                        </div>
                     }
                 </div>
             </div>

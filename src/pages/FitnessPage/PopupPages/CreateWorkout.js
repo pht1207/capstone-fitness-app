@@ -69,6 +69,7 @@ function CreateWorkout(props) {
                     }
                 );
                 console.log("response: ", response)
+                props.setShowCreateWorkout(false);
             }
     
             catch (error) {
@@ -81,16 +82,15 @@ function CreateWorkout(props) {
     return (
         <div className="CreateWorkout">
             <div className="CreateWorkoutWindow">
-                <h1>Create Workout</h1>
                 <div className="CreateWorkoutRow">
                     <div className="MadeExercise">
                         <h4>Your Workout</h4>
-                        <label><p>Workout name: </p> <input onChange={(e)=>{setCreatedWorkoutContent({workoutName:e.target.value, exercises:createdWorkoutContent.exercises})}}></input></label>
+                        <label><p>Workout name: </p> <input placeholder={"Type a Workout Name"} onChange={(e)=>{setCreatedWorkoutContent({workoutName:e.target.value, exercises:createdWorkoutContent.exercises})}}></input></label>
                         {createdWorkoutContent.exercises.length > 0 ?
                                 <>
                                     {createdWorkoutContent.exercises.map((object, index) =>(
-                                        <div key={index} className="PickExerciseWindowListElement" onClick={()=>{console.log("implement feature to remove me on click later")}}>
-                                            <p>name:{object}</p>
+                                        <div key={index} className="CreatedWorkoutContentElement" onClick={()=>{console.log("implement feature to remove me on click later")}}>
+                                            <p>{index}: {object}</p>
                                         </div>
                                         
                                     ))}
@@ -101,7 +101,7 @@ function CreateWorkout(props) {
                             }
                     </div>
                     <div className="PickExerciseWindowColumn">
-                        <h4>Available Exercises</h4>
+                        <h4>Choose exercises to put in your workout</h4>
                     <p>Muscle Group Filter: </p>
                     <select onChange={filterChange}>
 

@@ -895,7 +895,6 @@ const getWorkouts = async function(req, res){
   const createWorkoutsWithExercises = async function(req, res){
     const userID = req.user.id;
     let workout = req.body;
-    console.log(req.body)
     const query = "INSERT INTO workoutTable (workoutName, workoutDescription, createdAt, createdBy) VALUES (?, ?, ?, ?)"
     const values = [workout.workoutName || null, workout.workoutDescription || null, getCurrentTime(), userID ]
     pool.query(query, values, (error, results) =>{
@@ -904,9 +903,7 @@ const getWorkouts = async function(req, res){
         res.status(500).send("Error creating workout");
       }
       else{
-        console.log(results)
         let workoutID = results.insertId;
-        console.log("workout id "+workoutID)
         for(let i = 0; i < workout.exercises.length; i++){
           //First, find the exercise id
           pool.query("SELECT exerciseTable.exerciseTable_id FROM exerciseTable WHERE exerciseName = ?", [workout.exercises[i]], (error, results)=>{
@@ -916,7 +913,6 @@ const getWorkouts = async function(req, res){
             }
             else{
               let exerciseTableId = results[0].exerciseTable_id;
-              console.log(exerciseTableId)
               pool.query("INSERT INTO workout_exerciseTable (workoutTable_id, exerciseTable_id, dateTimeChanged) VALUES (?, ?, ?) ", [workoutID, exerciseTableId, getCurrentTime()], (error, results)=>{
                 if(error){
                   console.error(error);

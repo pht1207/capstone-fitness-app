@@ -40,7 +40,9 @@
     border-width: .1em;
     margin:1em;
 }
-
+.PickExerciseWindowListElement :hover{
+cursor: pointer;
+}
 .PickExercise .PickExerciseWindow .PickExerciseWindowList :hover{
     cursor: pointer;
 }
@@ -62,6 +64,7 @@
   
 }
 .PickWorkout .PickWorkoutWindowColumn{
+    overflow-y: scroll;
     background-color: white;
     width: 70%;
     height: 60%;
