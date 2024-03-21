@@ -19,7 +19,6 @@ function WorkoutLogComponent(props) {
           }
         );
         
-        console.log(response.data)
         setWorkoutLog(response.data)
       } 
 
@@ -28,7 +27,7 @@ function WorkoutLogComponent(props) {
       }
     };
     getWorkouts();
-  }, [props.date]);
+  }, [props.date]); //write another dependency to update upon logging a workout in parent/sister components
 
 
   return (

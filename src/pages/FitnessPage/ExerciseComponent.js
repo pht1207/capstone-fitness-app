@@ -1,5 +1,5 @@
 import './ExerciseComponent.css'
-import PickExercise from './PickExercise'
+import PickExercise from './PopupPages/PickExercise'
 
 import { useState, useEffect } from "react";
 
@@ -66,7 +66,6 @@ function ExerciseComponent(props) {
         value={exerciseName}
         onChange={handleExerciseNameChange}
         placeholder="Exercise Name"
-        style={{ width: '150px' }}
       />
       {sets.map((set, index) => (
         <div className="set-container" key={index}>

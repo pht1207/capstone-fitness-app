@@ -1,8 +1,10 @@
 import "./WorkoutComponent.css";
 import ExerciseComponent from "./ExerciseComponent";
-import recommendedWorkouts from "./RecommendedWorkouts";
+import recommendedWorkouts from "./PopupPages/RecommendedWorkouts";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import PickWorkout from "./PopupPages/PickWorkout";
+import CreateWorkout from "./PopupPages/CreateWorkout";
 
 function WorkoutComponent({ onWorkoutComplete, selectedWorkout }) {
   //Your code to make the site functional goes in this empty space. The 'return()' below is what renders on the page (the html)
@@ -60,60 +62,9 @@ function WorkoutComponent({ onWorkoutComplete, selectedWorkout }) {
     setExercises(updatedExercises);
   };
 
-  const deleteSavedWorkout = (index) => {
-    const confirmDelete = window.confirm(
-      "Are your sure you want to delete this workout? "
-    );
-    if (confirmDelete) {
-      const updatedSavedWorkouts = [...savedWorkouts];
-      updatedSavedWorkouts.splice(index, 1);
-      setSavedWorkouts(updatedSavedWorkouts);
-    }
-  };
 
 
 
-
-  const [backendSystemWorkouts, setBackendSystemWorkouts] = useState([])
-  const [backendUserWorkouts, setBackendUserWorkouts] = useState([])
-  useEffect(() => {
-    const getWorkouts = async () => {
-      try {
-        const response = await axios.get(
-          "https://capstone.parkert.dev/backend/getWorkouts",
-          {
-            headers: {
-              Authorization: "Bearer " + token,
-            },
-          }
-        );
-
-        let tempArrayUser = [];
-        let tempArraySystem = [];
-        for(let i = 0; i < response.data.length; i++){
-          if(response.data[i].createdBy !== null){
-            tempArrayUser.push(response.data[i]);
-          }
-          else{
-            tempArraySystem.push(response.data[i]);
-          }
-        }
-        setBackendSystemWorkouts(tempArraySystem);
-        setBackendUserWorkouts(tempArrayUser);
-
-      
-      } 
-
-      catch (error) {
-        console.error("Error - Cannot get workouts: ", error);
-      }
-    };
-    getWorkouts();
-  }, []);
-
-  {
-    /* SECTION END: getWorkouts */
-  }
 
   const addPrebuiltWorkout = (workout) => {
     setWorkoutName(workout.workoutName);
@@ -185,19 +136,22 @@ function WorkoutComponent({ onWorkoutComplete, selectedWorkout }) {
     }
   }, [selectedWorkout]);
 
-
+  const [showPickWorkout, setShowPickWorkout] = useState(false);
+  const [showCreateWorkout, setShowCreateWorkout] = useState(false);
 
   return (
     <div className="myworkout-table">
       {createWorkout ? (
-        <div>
+        <>
           <input
             type="text"
             value={workoutName}
             onChange={handleWorkoutNameChange}
             placeholder="Workout Name"
             className="workout-name-input"
+            onClick={()=>{setShowPickWorkout(true)}}
           />
+          {showPickWorkout ? <PickWorkout addPrebuiltWorkout={addPrebuiltWorkout} setWorkoutName={setWorkoutName} setShowPickWorkout={setShowPickWorkout}/>: <></>}
           <table className="workout-table">
             <tbody>
               {exercises.map((exercise, index) => (
@@ -220,6 +174,8 @@ function WorkoutComponent({ onWorkoutComplete, selectedWorkout }) {
               ))}
             </tbody>
           </table>
+
+
           <div className="button-container">
             <button onClick={startWorkout} disabled={continueWorkout}>
               Start
@@ -233,62 +189,22 @@ function WorkoutComponent({ onWorkoutComplete, selectedWorkout }) {
             <button onClick={cancelWorkoutCreation}>Cancel</button>
             <button onClick={saveWorkout}>Save Workout</button>
           </div>
-        </div>
+        </>
       ) 
       
       : 
 
       (
         <div>
-          {workoutType === "recommended" && (
-            <div>
-              <h2>Recommended Workouts</h2>
-              <ul className="recommended-workout-list">
-                {recommendedWorkouts.map((workout, index) => (
-                  <li
-                    key={index}
-                    className="recommended-workout-item"
-                    onClick={() => addPrebuiltWorkout(workout)}
-                  >
-                    {workout.workoutName}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-          
+          {showCreateWorkout ? <CreateWorkout/>: <></>}
           {workoutType !== "recommended" && (
             <div>
               <div className="create-workout-box"onClick={initiateCreateWorkout}>
-                <p>Create Workout</p>
+                <p>Log Workout</p>
               </div>
-              <div className="select-workout-box" onClick={toggleSelectWorkout}>
-              <p>Choose Workout</p>
+              <div className="select-workout-box" onClick={()=>{setShowCreateWorkout(true)}}>
+              <p>Create Workout</p>
               </div>
-              {selectWorkout && (
-                <div>
-                  <div>
-                    <h2>Default Workouts</h2>
-                      {backendSystemWorkouts.map((object, index) =>(
-                        <div key={index} className="PickExerciseWindowListElement" onClick={()=>{console.log(object); addPrebuiltWorkout(object)}}>
-                            <h4>{object.workoutName}</h4>
-                        </div>
-                      ))}      
-                  </div>
-                  <div>
-                    <h2>User Workouts</h2>
-                      {backendUserWorkouts.map((object, index) =>(
-                        <div key={index} className="PickExerciseWindowListElement" onClick={()=>{console.log(object)}}>
-                            <h4>{object.workoutName}</h4>
-                        </div>
-                      ))}      
-                  </div>
-
-                  <div className="cancel-button-container">
-                    <button onClick={cancelWorkoutCreation}>Cancel</button>
-                  </div>
-                </div>
-              )}
             </div>
           )}
         </div>

@@ -1,6 +1,6 @@
-import "./WorkoutComponent.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import './PopupPages.css'
 
 function PickExercise(props) {
     const [exerciseList, setExerciseList] = useState([]);

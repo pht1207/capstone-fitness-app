@@ -11,7 +11,7 @@ function Tips() {
         "Don't forget to warm up before you start.",
         "Make sure you cool down when you're done.", 
         "Mix it up, include a variety of exercises to your routine.",
-        "Consistency is key."
+        "Consistency is key.",
       ];
     const [tip, setTip] = useState(tips[Math.floor(Math.random()*tips.length)]); //Sets the current tip to be displayed, the starting default value is a random tip from the tips array
     const [usedTips, setUsedTips] = useState([]);

@@ -181,6 +181,7 @@ function passwordShowClickled(){
         <div className="UserI">
           <div><button className="button1" onClick={editClicked}>EDIT</button></div>
         </div>
+
       </div>
       ):(
         <div className="ProfilePage">
@@ -219,7 +220,6 @@ function passwordShowClickled(){
               <button className="button3" type='button' onClick={editClicked}>Cancel</button></div>
           </div>
           </form>
-
         </div>
       )
   );
