@@ -17,11 +17,11 @@
     padding: 0 5% 0 5%;
     height: 75px;
 }
-.ProfilePage {
+.ProfilePage, .ProfilePage form{
     display: flex;
     flex-direction: column;
     align-items: center;
-    border: soid;
+    border: sold;
     text-align: left;
 }
 .ProfilePage .UserI div p {

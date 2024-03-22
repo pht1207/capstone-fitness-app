@@ -816,6 +816,7 @@ app.get('/getUserExerciseLog', jwtVerify, getUserExerciseLog);
 *  -/getUserWorkoutLog
 *  -/getUserWorkoutLogByDate
 *  -/createWorkouts
+*  -/createWorkoutWithExercises
 */}
 const getWorkouts = async function(req, res){
   const userID = req.user.id;
@@ -836,31 +837,41 @@ const getWorkouts = async function(req, res){
         console.error("db query error", error);
         res.status(500).send("Error fetching workouts from database");
       }
-      else{
-        //Processes the results object creating an array of workout objects
-        const workouts = results.reduce((accumulator, current) => {
-          //If the workout hasn't been added to the accumulator object (what will be sent to the frontend), add it
-          if (!accumulator[current.workoutTable_id]) {//Creates a workout object if one does not exist
-            accumulator[current.workoutTable_id] = {//The key is the workoutTable_id
+      else {
+        // Initialize workouts as an empty object
+        const workoutsMap = results.reduce((accumulator, current) => {
+          // Check if the workout has already been processed
+          if (!accumulator[current.workoutTable_id]) {
+            // If not, create a new workout object
+            accumulator[current.workoutTable_id] = {
               workoutTable_id: current.workoutTable_id,
               workoutName: current.workoutName,
-              exercises: []
+              createdBy: current.createdBy,
+              description: current.workoutDescription, // assuming you want to include this
+              exercises: [] // Initialize exercises as an empty array
             };
           }
-          //This block adds exercises to the parent workout object if they exist
-          if (current.exerciseTable_id) { //check if there's an exercise ID available
+          // Add exercises to the workout object if they exist
+          if (current.exerciseTable_id) {
             accumulator[current.workoutTable_id].exercises.push({
-              exerciseName: current.exerciseName,
-              muscleGroup: current.muscleGroup,
+              id: current.exerciseTable_id,
+              name: current.exerciseName,
+              muscleGroup: current.muscleGroup
             });
           }
           return accumulator;
-        });
-        //sends the array of workouts to the frontend
-        res.status(200).json(workouts);
+        }, {}); // The initial value is an empty object
+      
+        // Convert the workouts object into an array
+        const workoutsArray = Object.values(workoutsMap);
+      
+        // Send the array of workouts to the frontend
+        res.status(200).json(workoutsArray);
       }
+      
   });
 }
+
 
   const createWorkouts = async function(req, res){
     const userID = req.user.id;
@@ -874,6 +885,45 @@ const getWorkouts = async function(req, res){
         res.status(500).send("Error creating workout");
       }
       else{
+        res.status(200).json({
+          message:"workout created"
+      })
+      }
+    })
+  }
+
+  const createWorkoutsWithExercises = async function(req, res){
+    const userID = req.user.id;
+    let workout = req.body;
+    const query = "INSERT INTO workoutTable (workoutName, workoutDescription, createdAt, createdBy) VALUES (?, ?, ?, ?)"
+    const values = [workout.workoutName || null, workout.workoutDescription || null, getCurrentTime(), userID ]
+    pool.query(query, values, (error, results) =>{
+      if(error){
+        console.error(error);
+        res.status(500).send("Error creating workout");
+      }
+      else{
+        let workoutID = results.insertId;
+        for(let i = 0; i < workout.exercises.length; i++){
+          //First, find the exercise id
+          pool.query("SELECT exerciseTable.exerciseTable_id FROM exerciseTable WHERE exerciseName = ?", [workout.exercises[i]], (error, results)=>{
+            if(error){
+              console.error(error);
+              res.status(500).send("Error creating workout");
+            }
+            else{
+              let exerciseTableId = results[0].exerciseTable_id;
+              pool.query("INSERT INTO workout_exerciseTable (workoutTable_id, exerciseTable_id, dateTimeChanged) VALUES (?, ?, ?) ", [workoutID, exerciseTableId, getCurrentTime()], (error, results)=>{
+                if(error){
+                  console.error(error);
+                  res.status(500).send("Error creating workout");
+                }
+              })
+            }
+          })
+        }
+
+        //if full success
         res.status(200).json({
           message:"workout created"
       })
@@ -929,40 +979,32 @@ const getUserWorkoutLogByDate = async function(req, res) {
   const date = req.query.dateAccessed;
   const userID = req.user.id;
 
-  //Need to do a left join on workoutsTable so names for the workouts can be attatched
   pool.query(
-  'SELECT * ' +
-  'FROM user_workoutTable ' +
-  'LEFT JOIN workoutTable ON user_workoutTable.workoutTable_id = workoutTable.workoutTable_id ' +
-  'WHERE userTable_id = ? '+
-  'AND DATE(timeCompleted) = ? '+
-  'ORDER BY timeCompleted DESC ',
-  [userID, date],
-  (error, results, fields) =>{
-    if(error){
-      console.error("db query error", error);
-      res.status(500).send("Error fetching workout log from database");
+    'SELECT * ' +
+    'FROM user_workoutTable ' +
+    'LEFT JOIN workoutTable ON user_workoutTable.workoutTable_id = workoutTable.workoutTable_id ' +
+    'WHERE userTable_id = ? ' +
+    'AND DATE(timeCompleted) = ? ' +
+    'ORDER BY timeCompleted DESC ',
+    [userID, date],
+    (error, results, fields) => {
+      if(error){
+        console.error("db query error", error);
+        res.status(500).send("Error fetching workout log from database");
+      }
+      else{
+        // Map the results to the desired format
+        const workoutsArray = results.map(item => ({
+          userWorkoutTable_id: item.userWorkoutTable_id,
+          workoutName: item.workoutName,
+          timeCompleted: item.timeCompleted
+        }));
+
+        // Sends the array of workouts to the frontend
+        res.status(200).json(workoutsArray);
+      }
     }
-    else{
-      //Processes the results object creating an array of workout objects
-      const workouts = results.reduce((accumulator, current) => {
-          //If the workout hasn't been added to the accumulator object (what will be sent to the frontend), add it
-          if (!accumulator[current.userWorkoutTable_id]) {
-          accumulator[current.userWorkoutTable_id] = [];
-        }
-      
-        //Add the current object from results to the current object
-        accumulator[current.userWorkoutTable_id].push({
-          workoutName: current.workoutName,
-          date: current.timeCompleted,
-        });
-      
-        return accumulator;
-      }, {});
-      //sends the array of workouts to the frontend
-      res.status(200).json(workouts);
-    }
-  })
+  );
 }
 //Allows users to insert exercises into a workout assuming it has been made by them
 const insertExerciseIntoWorkout = async function(req, res){
@@ -982,12 +1024,16 @@ const insertExerciseIntoWorkout = async function(req, res){
     }
   })
 }
+
+
 app.get('/getWorkouts', jwtVerify, getWorkouts);
 app.post('/createWorkouts', jwtVerify, createWorkouts);
 app.get('/getUserWorkoutLog', jwtVerify, getUserWorkoutLog);
 app.get('/getUserWorkoutLogByDate', jwtVerify, getUserWorkoutLogByDate);
 app.post('/logWorkouts', jwtVerify, logWorkouts);
 app.post('/insertExerciseIntoWorkout', jwtVerify, insertExerciseIntoWorkout)
+app.post('/createWorkoutsWithExercises', jwtVerify, createWorkoutsWithExercises)
+
 {/*
   * END OF SECTION: WORKOUTS
 */}

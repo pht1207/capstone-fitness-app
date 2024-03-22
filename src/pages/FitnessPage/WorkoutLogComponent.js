@@ -1,36 +1,55 @@
 import "./WorkoutLogComponent.css";
 import React from 'react';
+import { useEffect, useState } from "react";
+import axios from "axios";
+const token = localStorage.getItem("jwt"); //Token for backend operations
 
-function WorkoutLogComponent({ workoutData }, props) {
-   {/* WorkoutLogComponent
-    Here, the user's workoutLog from the database will be shown, mapped out using workoutData.map(...).
-    Data will be fetched from getUserWorkoutLogByDate.
-      -It will be a get method that uses '...getUserWorkoutLogByDate?dateAccessed='+props.date.
-        -This will concatenate the string to take in the date that was set ontop of the page in this components parent element.
-      
-  */} 
+function WorkoutLogComponent(props) {
+  const [workoutLog, setWorkoutLog] = useState([]);
+
+  useEffect(() => {
+    const getWorkouts = async () => {
+      try {
+        const response = await axios.get(
+          "https://capstone.parkert.dev/backend/getUserWorkoutLogByDate?dateAccessed="+encodeURIComponent(props.date),
+          {
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+          }
+        );
+        
+        setWorkoutLog(response.data)
+      } 
+
+      catch (error) {
+        console.error("Error - Cannot get workouts: ", error);
+      }
+    };
+    getWorkouts();
+  }, [props.date]); //write another dependency to update upon logging a workout in parent/sister components
+
+
   return (
     <div className="workout-log">
-      <table className="log-table">
-        <thead>
-          <tr>
-            <th>Workout Name</th>
-            <th>Duration</th>
-            <th>Date</th>
-            <th>Rating</th>
-          </tr>
-        </thead>
-        <tbody>
-          {workoutData.map((workout, index) => (
-            <tr key={index}>
-              <td>{workout.workoutName}</td>
-              <td>{workout.workoutDuration}</td>
-              <td>{new Date().toLocaleDateString()}</td>
-              <td>{workout.workoutRating}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="WorkoutLogHeader">
+        <p>Workout Name</p>
+        <p>Duration</p>
+        <p>Date</p>
+        <p>Rating</p>
+      </div>
+      {workoutLog.length > 0 &&
+      <div>
+        {workoutLog.map((object, index) =>(
+          <div key={index} className="WorkoutLogRow" onClick={()=>{console.log(object)}}>
+              <p>{object.workoutName}</p>
+              <p>10 seconds</p>
+              <p>{props.date}</p>
+              <p>#</p>
+          </div>
+        ))}
+        </div>
+      }
     </div>
   );
 }
