@@ -16,7 +16,7 @@
 
 }
 .HomePage .WeightGraph, .WorkoutLog{
-  background-color: rgba(185, 185, 185, 0.164);
+  background-color: rgb(223, 223, 223);
   border-style: solid;
 }
 
@@ -50,7 +50,6 @@
   justify-content: space-between;
   height:40%;
   width: 80%;
-  background-color: rgba(0, 0, 0, 0.123);
 }
 .WorkoutLogContainer{
   height: 100%;
