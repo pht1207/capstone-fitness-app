@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import './NutritionPage.css'
+import { CircularProgressBar } from "react-percentage-bar";
 
 function NutrientContainer(props) {
   
@@ -14,6 +15,7 @@ function NutrientContainer(props) {
         <h3>{props.containerName}</h3>
         <p>Current Count</p>
           <p>{props.loggedCount}</p>
+          <CircularProgressBar/>
         <div><p>Goal:</p> <p>{props.goalValue}g</p></div>
         <div><p>Remaining:</p> <p>{remainingValue}g</p></div>
   </div>

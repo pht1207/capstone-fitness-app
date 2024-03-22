@@ -7,7 +7,7 @@ import { HttpPopupContext } from '../../components/HttpPopupContext';
 
 function NutritionPage() {
 
-  const [nutritionLog, setNutritionLog] = useState({ proteinConsumed:"0", carbsConsumed:"0", fatsGoal:"0"});
+  const [nutritionLog, setNutritionLog] = useState({ proteinConsumed:"0", carbsConsumed:"0", fatsConsumed:"0"});
   const [nutritionGoal, setNutritionGoal] = useState({ proteinGoal:"0", carbsGoal:"0", fatsGoal:"0"});
   const token = localStorage.getItem("jwt")
   
@@ -28,7 +28,7 @@ function NutritionPage() {
             'Authorization': 'Bearer ' + token
           }
         });
-        setNutritionLog(response.data  || { proteinConsumed:"0", carbsConsumed:"0", fatsGoal:"0"});
+        setNutritionLog(response.data  || { proteinConsumed:"0", carbsConsumed:"0", fatsConsumed:"0"});
       }
         catch (error) {
         console.error('Error fetching data: ', error);
@@ -93,6 +93,7 @@ function NutritionPage() {
  const [weight, setWeight] = useState(0);
 
  //write your useeffects here
+ //log goal useEffect - Washington
  useEffect(() => {
   const fetchData = async () => { 
     try {
