@@ -7,6 +7,7 @@
   border-radius: 8px;
   overflow: hidden;
 }
+
 .myworkout-table button {
   margin: 5px;
   padding: 10px 20px;
@@ -92,4 +93,34 @@
 .create-workout-box:hover,
 .select-workout-box:hover {
   background-color: #00a5ff;
+}
+
+
+
+
+
+.WorkoutComponent{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-style: solid;
+  width: 75%;
+}
+.WorkoutComponent input{
+  width: 50%;
+  margin:0;
+}
+.WorkoutComponent .WorkoutComponentRow{
+  display: flex;
+  flex-direction: row;
+  border-style: solid;
+  margin: 1em;
+}
+
+.WorkoutComponentControls{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-around;
+  margin: 1em;
 }
