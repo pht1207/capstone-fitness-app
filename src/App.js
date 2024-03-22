@@ -7,7 +7,6 @@ import {
   Link,
   Routes
 } from "react-router-dom";
-import FitnessPage from './pages/FitnessPage/FitnessPage';
 import HomePage from './pages/HomePage/HomePage';
 
 import NutritionPage from './pages/NutritionPage/NutritionPage';
@@ -17,6 +16,7 @@ import { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import HttpPopup from './components/HttpPopup';
 import { HttpPopupContext } from './components/HttpPopupContext';
+import FitnessPageTernary from './pages/FitnessPage/FitnessPageTernary';
 
 
 function App() {
@@ -62,14 +62,14 @@ function App() {
       <HttpPopup/>
             <nav className="NavigationFlexBox">
                 <Link to="/">Home</Link>
-                <Link to="/FitnessPage">Fitness </Link>
+                <Link to="/FitnessPageTernary">Fitness </Link>
                 <Link to="/NutritionPage">Nutrition</Link>
                 {isJWTExpired ? <Link to="/LoginRegisterPage" >Login/Register</Link> : <Link to="/ProfilePage">Profile</Link>}
             </nav>
 
             <Routes>
                 <Route path="/" element={<HomePage />} />
-                <Route path="/FitnessPage" element={<FitnessPage />} />
+                <Route path="/FitnessPageTernary" element={<FitnessPageTernary />} />
                 <Route path="/NutritionPage" element={<NutritionPage />} />
                 <Route path="/ProfilePage" element={<ProfilePage />} />
                 <Route path="/LoginRegisterPage" element={<LoginRegisterPage loginEvent= {loginEvent} setLoginEvent={setLoginEvent}/>} />

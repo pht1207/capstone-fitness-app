@@ -2,7 +2,7 @@ import './FitnessPage.css';
 import React,{useState} from 'react';
 import WorkoutComponent from './WorkoutComponent';
 import WorkoutLogComponent from './WorkoutLogComponent';
-function FitnessPage() {
+function AdvancedFitness() {
 
   const [completedWorkout, setCompletedWorkout] = useState([]);
   
@@ -43,4 +43,4 @@ function FitnessPage() {
   );
 }
 
-export default FitnessPage;
+export default AdvancedFitness;
