@@ -6,19 +6,14 @@ import axios from "axios";
 import PickWorkout from "./PopupPages/PickWorkout";
 import CreateWorkout from "./PopupPages/CreateWorkout";
 
-function WorkoutComponent({ onWorkoutComplete, selectedWorkout }) {
+function WorkoutComponent({selectedWorkout }) {
   //Your code to make the site functional goes in this empty space. The 'return()' below is what renders on the page (the html)
   const [createWorkout, setCreateWorkout] = useState(false);
-  const [selectWorkout, setSelectWorkout] = useState(false);
   const [workoutName, setWorkoutName] = useState("");
   const [exercises, setExercises] = useState([]);
-  const [startTime, setStartTime] = useState(null);
-  const [continueWorkout, setContinueWorkout] = useState(false);
-  const [timer, setTimer] = useState(null);
-  const [workoutDuration, setWorkoutDuration] = useState(0);
-  const [workoutRating, setWorkoutRating] = useState(null);
-  const [savedWorkouts, setSavedWorkouts] = useState([]);
   const [workoutType, setWorkoutType] = useState(""); // this is used to sepeerate recommended workouts from the create and prebuilt
+  const [showPickWorkout, setShowPickWorkout] = useState(false);
+  const [showCreateWorkout, setShowCreateWorkout] = useState(false);
 
   const token = localStorage.getItem("jwt"); //Token for backend operations
 
@@ -26,34 +21,16 @@ function WorkoutComponent({ onWorkoutComplete, selectedWorkout }) {
   const initiateCreateWorkout = () => {
     setCreateWorkout(true);
   };
-  const toggleSelectWorkout = () => {
-    setSelectWorkout(!selectWorkout);
-  };
-
+  
   const cancelWorkoutCreation = () => {
     resetWorkoutState();
     setCreateWorkout(false);
-    setSelectWorkout(false);
   };
 
   const resetWorkoutState = () => {
     setCreateWorkout(false);
     setWorkoutName("");
     setExercises([]);
-    setContinueWorkout(false);
-    clearInterval(timer);
-    setTimer(null);
-    setWorkoutDuration(0);
-    setWorkoutRating(null);
-  };
-
-  const saveWorkout = () => {
-    const newWorkout = {
-      workoutName: workoutName,
-      exercises: exercises,
-    };
-    setSavedWorkouts([...savedWorkouts, newWorkout]);
-    cancelWorkoutCreation();
   };
 
   const deleteExercise = (index) => {
@@ -61,10 +38,6 @@ function WorkoutComponent({ onWorkoutComplete, selectedWorkout }) {
     updatedExercises.splice(index, 1);
     setExercises(updatedExercises);
   };
-
-
-
-
 
   const addPrebuiltWorkout = (workout) => {
     setWorkoutName(workout.workoutName);
@@ -89,46 +62,6 @@ function WorkoutComponent({ onWorkoutComplete, selectedWorkout }) {
     setExercises(updatedExercises);
   };
 
-  const startWorkout = () => {
-    setStartTime(new Date());
-    setContinueWorkout(true);
-    setTimer(
-      setInterval(() => {
-        setWorkoutDuration((prevDuration) => prevDuration + 1);
-      }, 1000)
-    );
-  };
-
-  const finishWorkout = () => {
-    setContinueWorkout(false);
-    clearInterval(timer);
-    requestRate();
-  };
-
-  const requestRate = () => {
-    const rate = prompt("Rate your Workout from 1-5: ");
-    if (rate !== null && rate.trim() !== "" && !isNaN(rate)) {
-      const userRating = parseInt(rate, 10);
-      if (userRating >= 1 && userRating <= 5) {
-        setWorkoutRating(userRating);
-        const workoutData = {
-          workoutName: workoutName,
-          workoutDuration: workoutDuration,
-          workoutRating: userRating,
-        };
-        onWorkoutComplete(workoutData); // Ensure that onWorkoutComplete is called here
-      } else {
-        alert("Please enter a valid rating between 1 and 5.");
-      }
-    } else {
-      alert("Please enter a valid rating between 1 and 5.");
-    }
-  };
-
-  useEffect(() => {
-    return () => clearInterval(timer);
-  }, [timer]);
-
   useEffect(() => {
     if (selectedWorkout) {
       setWorkoutName(selectedWorkout.workoutName);
@@ -137,9 +70,7 @@ function WorkoutComponent({ onWorkoutComplete, selectedWorkout }) {
     }
   }, [selectedWorkout]);
 
-  const [showPickWorkout, setShowPickWorkout] = useState(false);
-  const [showCreateWorkout, setShowCreateWorkout] = useState(false);
-
+  
   return (
     <div className="myworkout-table">
       {createWorkout ? (
@@ -150,9 +81,9 @@ function WorkoutComponent({ onWorkoutComplete, selectedWorkout }) {
             onChange={handleWorkoutNameChange}
             placeholder="Workout Name"
             className="workout-name-input"
-            onClick={()=>{setShowPickWorkout(true)}}
+            onClick={() => { setShowPickWorkout(true) }}
           />
-          {showPickWorkout ? <PickWorkout addPrebuiltWorkout={addPrebuiltWorkout} setWorkoutName={setWorkoutName} setShowPickWorkout={setShowPickWorkout}/>: <></>}
+          {showPickWorkout ? <PickWorkout addPrebuiltWorkout={addPrebuiltWorkout} setWorkoutName={setWorkoutName} setShowPickWorkout={setShowPickWorkout} /> : null}
           <table className="workout-table">
             <tbody>
               {exercises.map((exercise, index) => (
@@ -175,26 +106,20 @@ function WorkoutComponent({ onWorkoutComplete, selectedWorkout }) {
               ))}
             </tbody>
           </table>
-
-
           <div className="button-container">
             <button onClick={cancelWorkoutCreation}>Cancel</button>
           </div>
         </>
-      ) 
-      
-      : 
-
-      (
+      ) : (
         <div>
-          {showCreateWorkout ? <CreateWorkout setShowCreateWorkout={setShowCreateWorkout}/>: <></>}
+          {showCreateWorkout ? <CreateWorkout setShowCreateWorkout={setShowCreateWorkout} /> : null}
           {workoutType !== "recommended" && (
             <div>
-              <div className="create-workout-box"onClick={initiateCreateWorkout}>
+              <div className="create-workout-box" onClick={initiateCreateWorkout}>
                 <p>Log Workout</p>
               </div>
-              <div className="select-workout-box" onClick={()=>{setShowCreateWorkout(true)}}>
-              <p>Create Workout</p>
+              <div className="select-workout-box" onClick={() => { setShowCreateWorkout(true) }}>
+                <p>Create Workout</p>
               </div>
             </div>
           )}
@@ -203,6 +128,5 @@ function WorkoutComponent({ onWorkoutComplete, selectedWorkout }) {
       {createWorkout && <button onClick={createExercise}>Add Exercise</button>}
     </div>
   );
-}
-
+ }
 export default WorkoutComponent;

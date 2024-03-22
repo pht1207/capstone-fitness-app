@@ -15,7 +15,7 @@ function NutritionPage() {
 
 
   let curr = new Date();
-  curr.setDate(curr.getDate() + 3);
+  curr.setDate(curr.getDate());
   let currentDate = curr.toISOString().substring(0,10);
   const [date, setDate] = useState(currentDate)
 
