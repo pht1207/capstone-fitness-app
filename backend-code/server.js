@@ -952,6 +952,106 @@ const logWorkouts = async function(req, res) {
   });
 }
 
+const logCompleteWorkout = async function(req, res) {
+  function getWorkoutID(workoutName){
+    return new Promise((resolve, reject) =>{
+      let query = "SELECT workoutTable_id from workoutTable WHERE workoutName = ?";
+      let values = [workoutName]
+
+      pool.query(query, values, (error, results) =>{
+        if(error){
+          console.error(error)
+          reject(error);
+        }
+        else{
+          resolve(results[0].workoutTable_id);
+        }
+      })
+    })
+  }
+  function getExerciseID(exercises) {
+    return new Promise((resolve, reject) => {
+      let promises = exercises.map(exercise => {
+        return new Promise((res, rej) => {
+          let query = "SELECT exerciseTable_id from exerciseTable WHERE exerciseName = ?";
+          let values = [exercise.exerciseName];
+          pool.query(query, values, (error, results) => {
+            if(error){
+              console.error(error);
+              rej(error);
+            } 
+            else{
+              res(results[0].exerciseTable_id);
+            }
+          });
+        });
+      });
+  
+      Promise.all(promises)
+        .then(exerciseIDs => {
+          resolve(exerciseIDs);
+        })
+        .catch(error => {
+          console.error("Error in querying exercise IDs", error);
+          reject(error);
+        });
+    });
+  }
+
+  //write insert statements for the user
+  const userID = req.user.id;
+  const workoutObject = req.body;
+  const exercises = workoutObject.exercises;
+
+  const workoutID = await getWorkoutID(workoutObject.workoutName);
+  const exerciseIDs = await getExerciseID(exercises);
+
+  //First, insert into user_workoutTable
+  const uwTQuery = "INSERT INTO user_workoutTable (userTable_id, workoutTable_id, timeCompleted, rating, duration) VALUES (?,?,?,?,?)"
+  const uwtValues = [userID, workoutID, workoutObject.timeCompleted, workoutObject.rating, workoutObject.duration]
+  pool.query(uwTQuery, uwtValues, (error, results)=>{
+    if(error){
+      console.error(error);
+      res.status(500).send("Error inserting workout to database");
+    }
+    else{ //if succesfully logged the workout, start logging the exercises
+      let uwtInsertID = results.insertId;
+      for(let i = 0; i < exerciseIDs.length; i++){
+        const uewtQuery = "INSERT INTO user_exercise_workoutTable (exerciseTable_id, userWorkoutTable_id, userTable_id) VALUES (?,?,?)"
+        const uewtValues = [exerciseIDs[i], uwtInsertID, userID]
+        pool.query(uewtQuery, uewtValues, (error, results)=>{
+          if(error){
+            console.error(error);
+            res.status(500).send("Error inserting exercise to database");
+          }
+          else{
+            let uewtInsertID = results.insertId;
+            for(let k = 0; k < exercises[i].sets.length; k++){
+              let currentSet = exercises[i].sets[k];
+              const sitQuery = "INSERT INTO set_infoTable (user_exercise_workoutTable_id, setNumber, reps, weight) VALUES (?,?,?,?)";
+              const sitValues = [uewtInsertID, currentSet.setNumber, currentSet.reps, currentSet.weight]
+              pool.query(sitQuery, sitValues, (error, results)=>{
+                if(error){
+                  console.error(error);
+                  res.status(500).send("Error set info to database");
+                }
+                else{
+                  //continue
+              }
+              })
+            }
+          }
+        })
+      }
+      res.status(200).json({
+        message:"workout insert created"
+      })
+    }
+  })
+
+
+}
+
 const getUserWorkoutLog = async function(req, res) {
   const page = (parseInt(req.query.page)*5)-5;
   const userID = req.user.id;
@@ -1031,6 +1131,7 @@ app.post('/createWorkouts', jwtVerify, createWorkouts);
 app.get('/getUserWorkoutLog', jwtVerify, getUserWorkoutLog);
 app.get('/getUserWorkoutLogByDate', jwtVerify, getUserWorkoutLogByDate);
 app.post('/logWorkouts', jwtVerify, logWorkouts);
+app.post('/logCompleteWorkout', jwtVerify, logCompleteWorkout);
 app.post('/insertExerciseIntoWorkout', jwtVerify, insertExerciseIntoWorkout)
 app.post('/createWorkoutsWithExercises', jwtVerify, createWorkoutsWithExercises)
 
