@@ -952,6 +952,171 @@ const logWorkouts = async function(req, res) {
   });
 }
 
+const logCompleteWorkout = async function(req, res) {
+  function getWorkoutID(workoutName){
+    return new Promise((resolve, reject) =>{
+      let query = "SELECT workoutTable_id from workoutTable WHERE workoutName = ?";
+      let values = [workoutName]
+
+      pool.query(query, values, (error, results) =>{
+        if(error){
+          console.error(error)
+          reject(error);
+        }
+        else{
+          resolve(results[0].workoutTable_id);
+        }
+      })
+    })
+  }
+  function getExerciseID(exercises) {
+    return new Promise((resolve, reject) => {
+      let promises = exercises.map(exercise => {
+        return new Promise((res, rej) => {
+          let query = "SELECT exerciseTable_id from exerciseTable WHERE exerciseName = ?";
+          let values = [exercise.exerciseName];
+          pool.query(query, values, (error, results) => {
+            if(error){
+              console.error(error);
+              rej(error);
+            } 
+            else{
+              res(results[0].exerciseTable_id);
+            }
+          });
+        });
+      });
+  
+      Promise.all(promises)
+        .then(exerciseIDs => {
+          resolve(exerciseIDs);
+        })
+        .catch(error => {
+          console.error("Error in querying exercise IDs", error);
+          reject(error);
+        });
+    });
+  }
+
+  //write insert statements for the user
+  const userID = req.user.id;
+  const workoutObject = req.body;
+  const exercises = workoutObject.exercises;
+
+  const workoutID = await getWorkoutID(workoutObject.workoutName);
+  const exerciseIDs = await getExerciseID(exercises);
+
+  //First, insert into user_workoutTable
+  const uwTQuery = "INSERT INTO user_workoutTable (userTable_id, workoutTable_id, timeCompleted, rating, duration) VALUES (?,?,?,?,?)"
+  const uwtValues = [userID, workoutID, workoutObject.timeCompleted, workoutObject.rating, workoutObject.duration]
+  pool.query(uwTQuery, uwtValues, (error, results)=>{
+    if(error){
+      console.error(error);
+      res.status(500).send("Error inserting workout to database");
+    }
+    else{ //if succesfully logged the workout, start logging the exercises
+      let uwtInsertID = results.insertId;
+      for(let i = 0; i < exerciseIDs.length; i++){
+        const uewtQuery = "INSERT INTO user_exercise_workoutTable (exerciseTable_id, userWorkoutTable_id, userTable_id) VALUES (?,?,?)"
+        const uewtValues = [exerciseIDs[i], uwtInsertID, userID]
+        pool.query(uewtQuery, uewtValues, (error, results)=>{
+          if(error){
+            console.error(error);
+            res.status(500).send("Error inserting exercise to database");
+          }
+          else{
+            let uewtInsertID = results.insertId;
+            for(let k = 0; k < exercises[i].sets.length; k++){
+              let currentSet = exercises[i].sets[k];
+              const sitQuery = "INSERT INTO set_infoTable (user_exercise_workoutTable_id, setNumber, reps, weight) VALUES (?,?,?,?)";
+              const sitValues = [uewtInsertID, currentSet.setNumber, currentSet.reps, currentSet.weight]
+              pool.query(sitQuery, sitValues, (error, results)=>{
+                if(error){
+                  console.error(error);
+                  res.status(500).send("Error set info to database");
+                }
+                else{
+                  //continue
+              }
+              })
+            }
+          }
+        })
+      }
+      res.status(200).json({
+        message:"workout insert created"
+      })
+    }
+  })
+
+
+}
+
+const getCompleteWorkoutLogByDate = async function(req, res){
+  const date = req.query.dateAccessed;
+  const userID = req.user.id;
+
+  const query = `
+    SELECT 
+      uw.userWorkoutTable_id,
+      wt.workoutName, 
+      et.exerciseName, 
+      sit.setNumber, 
+      sit.reps, 
+      sit.weight
+    FROM user_workoutTable uw
+    LEFT JOIN workoutTable wt ON uw.workoutTable_id = wt.workoutTable_id
+    LEFT JOIN user_exercise_workoutTable uet ON uw.userWorkoutTable_id = uet.userWorkoutTable_id
+    LEFT JOIN exerciseTable et ON uet.exerciseTable_id = et.exerciseTable_id
+    LEFT JOIN set_infoTable sit ON uet.user_exercise_workoutTable_id = sit.user_exercise_workoutTable_id
+    WHERE uw.userTable_id = ? AND DATE(uw.timeCompleted) = ?
+    ORDER BY uw.timeCompleted DESC, uet.exerciseTable_id, sit.setNumber;`;
+
+  pool.query(query, [userID, date], (error, results, fields) => {
+    if(error){
+      console.error("db query error", error);
+      res.status(500).send("Error fetching workout log from database");
+    } 
+    else{
+      //creates a workouts object that contains all the workouts logged on this day by reducing the results object
+      const workouts = results.reduce((workoutsAcc, cur) => {
+        //finds workouts in the results object
+        let workout = workoutsAcc.find(w => w.userWorkoutTable_id === cur.userWorkoutTable_id);
+        
+        if (!workout) {//creates a workout object if one does not exist
+          workout = {
+            userWorkoutTable_id: cur.userWorkoutTable_id,//used to distinguish between workout instances
+            workoutName: cur.workoutName,
+            exercises: [],
+          };
+          workoutsAcc.push(workout);
+        }
+        
+        //finds exercising that belong to the current workout
+        let exercise = workout.exercises.find(e => e.exerciseName === cur.exerciseName);
+        if (!exercise) { //creates an exercise object if one does not exist
+          exercise = {
+            exerciseName: cur.exerciseName,
+            sets: [],
+          };
+          workout.exercises.push(exercise);
+        }
+        
+        //pushes the set info into the exercise array (this should be included in every exercise? Check in future, leave be for right now as it works for the moment)
+        exercise.sets.push({
+          setNumber: cur.setNumber,
+          reps: cur.reps,
+          weight: cur.weight,
+        });
+
+        return workoutsAcc;
+      }, []);
+      //sends the completed workouts object to the frontend
+      res.status(200).json(workouts);
+    }
+  });
+};
+
 const getUserWorkoutLog = async function(req, res) {
   const page = (parseInt(req.query.page)*5)-5;
   const userID = req.user.id;
@@ -1030,7 +1195,10 @@ app.get('/getWorkouts', jwtVerify, getWorkouts);
 app.post('/createWorkouts', jwtVerify, createWorkouts);
 app.get('/getUserWorkoutLog', jwtVerify, getUserWorkoutLog);
 app.get('/getUserWorkoutLogByDate', jwtVerify, getUserWorkoutLogByDate);
+app.get('/getCompleteWorkoutLogByDate', jwtVerify, getCompleteWorkoutLogByDate);
+
 app.post('/logWorkouts', jwtVerify, logWorkouts);
+app.post('/logCompleteWorkout', jwtVerify, logCompleteWorkout);
 app.post('/insertExerciseIntoWorkout', jwtVerify, insertExerciseIntoWorkout)
 app.post('/createWorkoutsWithExercises', jwtVerify, createWorkoutsWithExercises)
 
