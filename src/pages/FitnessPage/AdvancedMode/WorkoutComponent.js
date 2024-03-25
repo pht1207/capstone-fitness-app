@@ -56,7 +56,7 @@ function WorkoutComponent({selectedWorkout }) {
     ]);
   };
 
-  const handlecreateExercise = (index, updatedExercise) => {
+  const handleCreateExercise = (index, updatedExercise) => {
     const updatedExercises = [...exercises];
     updatedExercises[index] = updatedExercise;
     setExercises(updatedExercises);
@@ -81,31 +81,22 @@ function WorkoutComponent({selectedWorkout }) {
             onChange={handleWorkoutNameChange}
             placeholder="Workout Name"
             className="workout-name-input"
-            onClick={() => { setShowPickWorkout(true) }}
+            onClick={() => setShowPickWorkout(true)}
           />
           {showPickWorkout ? <PickWorkout addPrebuiltWorkout={addPrebuiltWorkout} setWorkoutName={setWorkoutName} setShowPickWorkout={setShowPickWorkout} /> : null}
-          <table className="workout-table">
-            <tbody>
-              {exercises.map((exercise, index) => (
-                <tr key={index}>
-                  <td>
-                    <ExerciseComponent
-                      key={index}
-                      exercise={exercise}
-                      onChange={(updatedExercise) =>
-                        handlecreateExercise(index, updatedExercise)
-                      }
-                    />
-                  </td>
-                  <td>
-                    <button className="delete-exercise-button" onClick={() => deleteExercise(index)}>
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="workout-components">
+            {exercises.map((exercise, index) => (
+              <div key={index} className="workout-component">
+                <ExerciseComponent
+                  key={index}
+                  index={index} // Passing the index of the exercise
+                  exercise={exercise}
+                  onChange={(updatedExercise) => handleCreateExercise(index, updatedExercise)}
+                  onDelete = {() => deleteExercise(index)}
+                />
+              </div>
+            ))}
+          </div>
           <div className="button-container">
             <button onClick={cancelWorkoutCreation}>Cancel</button>
           </div>
@@ -118,7 +109,7 @@ function WorkoutComponent({selectedWorkout }) {
               <div className="create-workout-box" onClick={initiateCreateWorkout}>
                 <p>Log Workout</p>
               </div>
-              <div className="select-workout-box" onClick={() => { setShowCreateWorkout(true) }}>
+              <div className="select-workout-box" onClick={() => setShowCreateWorkout(true)}>
                 <p>Create Workout</p>
               </div>
             </div>
@@ -128,5 +119,6 @@ function WorkoutComponent({selectedWorkout }) {
       {createWorkout && <button onClick={createExercise}>Add Exercise</button>}
     </div>
   );
- }
+}
+
 export default WorkoutComponent;

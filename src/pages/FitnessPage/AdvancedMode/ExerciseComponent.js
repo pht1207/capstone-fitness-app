@@ -58,15 +58,25 @@ function ExerciseComponent(props) {
     props.onChange({ ...props.exercise, sets: newSets, weights: newWeights, reps: newReps });
   };
 
+  const handleDelet = () => {
+    props.onDelete();
+  }
+
   return (
     <div className="ExerciseComponent">
-      <input
-        type="text"
-        onClick={(()=>{setShowPickExercise(true)})}
-        value={exerciseName}
-        onChange={handleExerciseNameChange}
-        placeholder="Exercise Name"
-      />
+      <div className="exercise-input-group">
+        <input
+          type="text"
+          onClick={(() => { setShowPickExercise(true) })}
+          value={exerciseName}
+          onChange={handleExerciseNameChange}
+          placeholder="Exercise Name"
+          className="exercise-name-input"
+        />
+        <button className="delete-exercise-button" onClick={() => props.onDelete()}>
+          Delete
+        </button>
+      </div>
       {sets.map((set, index) => (
         <div className="set-container" key={index}>
           <div className="set-number">{`Set ${index + 1}`}</div>
@@ -94,7 +104,7 @@ function ExerciseComponent(props) {
           Add Set
         </button>
       </div>
-      {showPickExercise ? <PickExercise setExerciseName={setExerciseName} setShowPickExercise={setShowPickExercise}/>: <></>}
+      {showPickExercise ? <PickExercise setExerciseName={setExerciseName} setShowPickExercise={setShowPickExercise} /> : <></>}
 
     </div>
   );
