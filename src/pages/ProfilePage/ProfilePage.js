@@ -24,13 +24,13 @@ function ProfilePage() {
   const {setResponse} = useContext(HttpPopupContext);
 
   //Write a state element and setstate method for each input element in your form here
-  const [firstnameInput, setFirstname] = useState("");
-  const [lastnameInput, setLastname] = useState("");
-  const [usernameInput, setUsername] = useState("");
-  const [emailInput, setEmail] = useState("");
-  const [passwordInput, setPassword] = useState("");
-  const [heightInput, setHeight] = useState("");
-  const [weightInput, setWeight] = useState("");
+  const [firstname, setFirstname] = useState("");
+  const [lastname, setLastname] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [height, setHeight] = useState("");
+  const [weight, setWeight] = useState("");
   const [goal, setGoal] = useState("");
   const [notificationsChecked, setNotificationscheck] = useState(0);
   {/*
@@ -67,17 +67,15 @@ function ProfilePage() {
   async function updateProfileFormSubmit(event){
     event.preventDefault();//This prevents the page from reloading right when you submit
     try{
-      console.log(firstnameInput, lastnameInput)
+      console.log(firstname, lastname)
       let body = {  
-        /* Make it look just like this, but with the test values the state from your form (the ones changed via onChange())
-        "email": "ts@gmail.com",
-        "username": "test321",
-        "firstName": "changed",
-        "lastName": "changed",
-        "DOB": "2000-12-07",
-        "height": "72",
-        "notificationsOn": "1" //Do notifications toggle later, just send a hard-coded 0 or 1 for now, get the main things down before the small things
-        */
+        email: email,
+        username: username,
+        firstName: firstname,
+        lastName: lastname,
+        DOB: '2000-12-07',
+        height: height,
+        notificationsOn: 1
       }
       const axiosResponse = await axios.post("https://capstone.parkert.dev/backend/updateProfile", body, {
         headers: {
@@ -88,7 +86,7 @@ function ProfilePage() {
       console.log("success")
     }
     catch(error){
-      console.error("error: ", error.response)
+      console.error("post error: ", error.response)
       setResponse(error.response) //used in httpopup.js
     }
   }
@@ -130,14 +128,16 @@ function ProfilePage() {
   },[userData])
 
 //Fuction to change from ProfilePage to UpdateProfile page when edit is clickled,  using useState to trigger a re-render that allows seeing the new data
+//changes current state value(true) according to previous state
+
 const [editProfileClicked, setEditProfileClicked] = useState(true)
-//changes current state value(true) according to previous state, since its boolean it changes between true and false
 function editClicked(){
   setEditProfileClicked(!editProfileClicked);
   }
 //fuction to hide or show password when show is clicked, using useState to trigger a re-render that allows seeing the new data
-const [passwordShow, setpasswordShow] = useState(true)
 //changes current state value(true) according to previous state
+
+const [passwordShow, setpasswordShow] = useState(true)
 function passwordShowClickled(){
   setpasswordShow(!passwordShow);
 }
@@ -152,22 +152,22 @@ function passwordShowClickled(){
       <h1>PROFILE</h1>
 
         <div className="UserI">
-          <div><p>First Name:</p><p>{firstnameInput}</p></div>
-          <div><p>Last Name:</p><p>{lastnameInput}</p></div>
+          <div><p>First Name:</p><p>{firstname}</p></div>
+          <div><p>Last Name:</p><p>{lastname}</p></div>
         </div>
 
         <div className="UserI">
-          <div><p>Username:</p><p>{usernameInput}</p></div>
-          <div><p>Email:</p><p>{emailInput}</p></div>
+          <div><p>Username:</p><p>{username}</p></div>
+          <div><p>Email:</p><p>{email}</p></div>
         </div>
 
         <div className="UserI">
-          <div><p>Password:</p><p>{passwordInput}</p></div>
+          <div><p>Date of Birth:</p><p>{password}</p></div>
         </div>
 
         <div className="UserI">
-          <div><p>Height:</p><p>{heightInput}</p></div>
-          <div><p>Weight:</p><p>{weightInput}</p></div>
+          <div><p>Height:</p><p>{height}</p></div>
+          <div><p>Weight:</p><p>{weight}</p></div>
         </div>
 
         <div className="UserI">
@@ -189,13 +189,13 @@ function passwordShowClickled(){
         <form onSubmit={updateProfileFormSubmit}>
         <h1>UPDATE PROFILE</h1>
           <div className="UserI">
-            <div><p>First Name:</p><input type='text' name='firstName'  defaultValue={firstnameInput} onChange={(event)=>{setFirstname(event.target.value)}}/></div>
-            <div><p>Last Name:</p><input type='text' name='lastName' defaultValue={lastnameInput} onChange={(event)=>{setLastname(event.target.value)}}/></div>
+            <div><p>First Name:</p><input type='text' name='firstName'  defaultValue={firstname} onChange={(event)=>{setFirstname(event.target.value)}}/></div>
+            <div><p>Last Name:</p><input type='text' name='lastName' defaultValue={lastname} onChange={(event)=>{setLastname(event.target.value)}}/></div>
           </div>
   
           <div className="UserI">
-            <div><p>Username:</p><input type='text' name='username' defaultValue={usernameInput}/></div>
-            <div><p>Email:</p><input type='text' name='email' defaultValue={emailInput}/></div>
+            <div><p>Username:</p><input type='text' name='username' onChange={(event)=>{setUsername(event.target.value)}} defaultValue={username}/></div>
+            <div><p>Email:</p><input type='text' name='email' onChange={(event)=>{setEmail(event.target.value)}} defaultValue={email}/></div>
           </div>
   
           <div className="UserI">
@@ -203,8 +203,8 @@ function passwordShowClickled(){
           </div>
   
           <div className="UserI">
-            <div><p>Height:</p><input type='text' name='height' defaultValue={heightInput}/></div>
-            <div><p>Weight:</p><input type='text' name='userWeight' defaultValue={weightInput}/></div>
+            <div><p>Height:</p><input type='text' name='height' onChange={(event)=>{setHeight(event.target.value)}} defaultValue={height}/></div>
+            <div><p>Weight:</p><input type='text' name='userWeight' onChange={(event)=>{setWeight(event.target.value)}} defaultValue={weight}/></div>
           </div>
           <div className="UserI">
             <div><p>Goal:</p><select>
