@@ -10,6 +10,7 @@
     height: 60%;
     width: 100%;
     border-style: solid;
+    border-width: .1em;
     background-color: rgb(223, 223, 223);
 }
 
