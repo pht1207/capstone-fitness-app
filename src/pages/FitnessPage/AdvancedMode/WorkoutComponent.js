@@ -17,6 +17,11 @@ function WorkoutComponent({selectedWorkout }) {
 
   const token = localStorage.getItem("jwt"); //Token for backend operations
 
+
+  function WorkoutSubmitted(){
+
+  }
+
   
   const initiateCreateWorkout = () => {
     setCreateWorkout(true);
@@ -70,7 +75,8 @@ function WorkoutComponent({selectedWorkout }) {
     }
   }, [selectedWorkout]);
 
-  
+  console.log(exercises)
+
   return (
     <div className="myworkout-table">
       {createWorkout ? (
@@ -117,6 +123,8 @@ function WorkoutComponent({selectedWorkout }) {
         </div>
       )}
       {createWorkout && <button onClick={createExercise}>Add Exercise</button>}
+      {createWorkout && <button onClick={WorkoutSubmitted}>Log Exercise</button>}
+
     </div>
   );
 }

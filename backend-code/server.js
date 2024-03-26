@@ -1087,6 +1087,8 @@ const getCompleteWorkoutLogByDate = async function(req, res){
           workout = {
             userWorkoutTable_id: cur.userWorkoutTable_id,//used to distinguish between workout instances
             workoutName: cur.workoutName,
+            rating: "5",
+            duration: "360",
             exercises: [],
           };
           workoutsAcc.push(workout);

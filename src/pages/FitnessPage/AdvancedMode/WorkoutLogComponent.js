@@ -11,15 +11,16 @@ function WorkoutLogComponent(props) {
     const getWorkouts = async () => {
       try {
         const response = await axios.get(
-          "https://capstone.parkert.dev/backend/getUserWorkoutLogByDate?dateAccessed="+encodeURIComponent(props.date),
+          "https://capstone.parkert.dev/backend/getCompleteWorkoutLogByDate?dateAccessed="+encodeURIComponent(props.date),
           {
             headers: {
               Authorization: "Bearer " + token,
             },
           }
         );
-        
         setWorkoutLog(response.data)
+        //console.log(response.data)
+
       } 
 
       catch (error) {
@@ -32,21 +33,36 @@ function WorkoutLogComponent(props) {
 
   return (
     <div className="workout-log">
-      <div className="WorkoutLogHeader">
-        <p>Workout Name</p>
-        <p>Duration</p>
-        <p>Date</p>
-        <p>Rating</p>
-      </div>
+
       {workoutLog.length > 0 &&
       <div>
         {workoutLog.map((object, index) =>(
-          <div key={index} className="WorkoutLogRow" onClick={()=>{console.log(object)}}>
-              <p>{object.workoutName}</p>
-              <p>10 seconds</p>
-              <p>{props.date}</p>
-              <p>#</p>
-          </div>
+          <>
+            <div key={index} className="WorkoutLogItem" onClick={()=>{console.log(object)}}>
+              <div className="WorkoutLogHeader">
+                <p>{object.workoutName}</p>
+              </div>
+              
+                {object.exercises.map((exercise, index) =>
+                <>
+                <div key={index} className="ExerciseLogEntry" style={{backgroundColor:"#f2f2f2"}}>
+                  <p>{exercise.exerciseName}</p>
+                </div>
+
+                  {exercise.sets.map((set, index) =>
+                  <>
+                    <div key={index} className="SetLogEntry" onClick={()=>{console.log(set)}}>
+                      <p>Set #{set.setNumber}</p>
+                      <p>Reps: {set.reps}</p>
+                      <p>Weight: {set.weight}</p>
+                    </div>
+                  </>
+                  )}
+                </>
+                )}
+
+            </div>          
+          </>
         ))}
         </div>
       }
