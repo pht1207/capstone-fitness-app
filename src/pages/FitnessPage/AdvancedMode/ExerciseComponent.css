@@ -1,3 +1,9 @@
+.ExerciseComponent {
+    margin: 0 auto; /* Center horizontally */
+    text-align: center; /* Center the content */
+    max-width: 400px; /* Limit the width */
+}
+
 .input {
     width: 60px;
     padding: 10px; /* Increase padding for better appearance */
@@ -10,18 +16,26 @@
     font-family: Arial, sans-serif; /* Change font family */
 }
 
+.input {
+    width: 50px; /* Reduce width */
+    padding: 8px; /* Adjust padding */
+    border: 2px solid #6c63ff;
+    border-radius: 20px; /* Make it round */
+    box-sizing: border-box;
+    background-color: #f0f0f0;
+    color: #333;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+}
+
 .input:focus {
-    outline: none; /* Remove outline on focus */
-    border-color: #6c63ff; /* Change border color on focus */
-    box-shadow: 0 0 5px rgba(108, 99, 255, 0.5); /* Add box shadow on focus */
+    outline: none;
+    border-color: #6c63ff;
+    box-shadow: 0 0 5px rgba(108, 99, 255, 0.5);
 }
 
 .input::placeholder {
-    color: #999; /* Change placeholder text color */
-}
-.ExerciseComponent {
-    margin-bottom: 20px;
-    text-align: center; /* Center the content */
+    color: #999;
 }
 
 .set-container {
@@ -48,9 +62,9 @@
 
 
 .add-set-button {
-    margin-top: 10px; /* Increase margin to separate the "Add Set" button */
+    margin-top: 5px; /* Reduce margin */
+    padding: 8px 12px; /* Adjust padding */
 }
-
 
 
 
