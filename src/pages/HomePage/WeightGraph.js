@@ -50,9 +50,9 @@ function WeightGraph(props) {
     <div className="WeightGraph">
       <h4>Weight Graph</h4>
       <hr/>
-      <ResponsiveContainer width="100%" height="80%">
+      <ResponsiveContainer width="100%" height="100%">
         <LineChart data={dataObject}
-          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+          margin={{right: 25}}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="dateTimeChanged" />
           <YAxis />
