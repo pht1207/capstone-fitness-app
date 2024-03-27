@@ -40,3 +40,40 @@
 .Day .ExerciseRow figure img{
     height: fit-content;
 }
+
+/*Styling for the beginner home*/
+.BeginnerHome {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  h1, h2, h3, h4, h5 {
+    color: #333;
+  }
+  
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+  }
+  
+  h2 {
+    font-size: 2rem;
+    margin-top: 30px;
+    margin-bottom: 10px;
+  }
+  
+  h3 {
+    font-size: 1.8rem;
+    margin-top: 20px;
+    margin-bottom: 10px;
+  }
+  
+  p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+  
+  p, h4 {
+    margin-bottom: 15px;
+  }
