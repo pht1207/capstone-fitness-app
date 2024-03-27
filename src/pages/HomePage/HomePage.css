@@ -65,15 +65,17 @@
   justify-content: baseline;
 }
 .WorkoutLogContainer .WorkoutLogRow{
-  height:20%;
   display: flex;
   width:100%;
   flex-direction: row;
   justify-content: space-between;
+  height: 100%;
 }
 .WorkoutLogContainer .WorkoutLogRow p{
   padding-left: 1em;
   padding-right: 1em;
+  margin: 0;
+  align-self: center;
 }
 .WorkoutLog .PageChanger{
   display: flex;
