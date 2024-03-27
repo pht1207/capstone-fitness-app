@@ -17,17 +17,61 @@ function WorkoutComponent({selectedWorkout }) {
 
   const token = localStorage.getItem("jwt"); //Token for backend operations
 
-<<<<<<< HEAD
-  function workoutSubmitted(){
-    
+
+  const workoutSubmitted = async (exercises, workoutName, token) => {
+    try {
+      let exerciseBox = [];
+  
+      for (const exercise of exercises) {
+        const setsInfo = [];
+  
+        // Check if exercise.sets exists and is iterable
+        if (exercise.sets && typeof exercise.sets[Symbol.iterator] === 'function') {
+          // Loop over sets if it's iterable
+          for (const set of exercise.sets) {
+            setsInfo.push({
+              weight: set.weight,
+              reps: set.reps
+            });
+          }
+        }
+  
+        exerciseBox.push({            
+          name: exercise.name,
+          sets: setsInfo
+        });
+      }
+  
+      const body = {
+        workoutName: workoutName,
+        exercises: exerciseBox
+      };
+  
+      console.log("Workout Body:", body);
+  
+      // Send the data to the database
+      // const response = await axios.post("https://capstone.parkert.dev/backend/logCompletedWorkout", body, {
+      //   headers: {
+      //     Authorization: "Bearer " + token
+      //   },
+      // });
+  
+      // Handle response if needed
+      // console.log("Workout logged successfully:", response.data);
+    } catch (error) {
+      // Handle error
+      console.error("Error logging workout:", error);
+    }
+  };
+
+  // Component code
+useEffect(() => {
+  // Call workoutSubmitted when there are exercises added or workoutName has a value
+  if (exercises.length > 0 && workoutName !== "") {
+    workoutSubmitted(exercises, workoutName, token);
   }
-=======
+}, [exercises, workoutName, token]);
 
-  function WorkoutSubmitted(){
-
-  }
-
->>>>>>> 3df6305b1159b1cb8feca8d254a45648aeff4b4a
   
   const initiateCreateWorkout = () => {
     setCreateWorkout(true);
@@ -63,8 +107,8 @@ function WorkoutComponent({selectedWorkout }) {
   const createExercise = () => {
     setExercises([
       ...exercises,
-      { name: "", sets: [], weights: [], reps: [] } // Ensure weights is initialized as an array
-    ]);
+      { name: "", sets: []} // Ensure weights is initialized as an array
+    ]); //removed : , weights: [], reps: [] 
   };
 
   const handleCreateExercise = (index, updatedExercise) => {
@@ -129,12 +173,8 @@ function WorkoutComponent({selectedWorkout }) {
         </div>
       )}
       {createWorkout && <button onClick={createExercise}>Add Exercise</button>}
-<<<<<<< HEAD
-      {createWorkout && <button onClick={workoutSubmitted}>Log Workout</button>}
-=======
-      {createWorkout && <button onClick={WorkoutSubmitted}>Log Exercise</button>}
 
->>>>>>> 3df6305b1159b1cb8feca8d254a45648aeff4b4a
+      {createWorkout && <button onClick= {() => workoutSubmitted(exercises, workoutName, token)}>Log Workout</button>}
     </div>
   );
 }
