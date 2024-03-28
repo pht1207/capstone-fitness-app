@@ -47,7 +47,7 @@ function LogWeight(props) {
         <h3>Log Weight</h3>
         <form onSubmit={weightLogSubmit} className='LogWeightForm'>
           <label>Weight: <input className='WeightInput' type='number' onChange={weightChange}/></label>
-          <label>Date Logged: <input type='date' onChange={dateChange} defaultValue={dateLogged}></input></label>
+          <label>Date: <input type='date' onChange={dateChange} defaultValue={dateLogged}></input></label>
           <button type='submit'>Submit</button>
         </form>
 

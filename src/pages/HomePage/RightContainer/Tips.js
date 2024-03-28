@@ -15,6 +15,7 @@ function Tips() {
       ];
     const [tip, setTip] = useState(tips[Math.floor(Math.random()*tips.length)]); //Sets the current tip to be displayed, the starting default value is a random tip from the tips array
     const [usedTips, setUsedTips] = useState([]);
+    const [wasClicked, setWasClicked] = useState(0);
   
 
     useEffect(()=>{
@@ -36,9 +37,20 @@ function Tips() {
   
 
   return (
-    <div className="Tips">
+    <div className="Tips" onClick={()=>{
+        let unusedTips = tips.filter(t => !usedTips.includes(t));
+        if (unusedTips.length === 0) {
+            // If all tips have been used, reset usedTips array
+            unusedTips = tips;
+            setUsedTips([]);
+        }
+        const randomIndex = Math.floor(Math.random() * unusedTips.length);
+        const nextTip = unusedTips[randomIndex];
+        setTip(nextTip);
+        setUsedTips([...usedTips, nextTip]);
+      }}>
         <h3>Tips</h3>
-        <p id="tipText">{tip}</p>
+        <p>{tip}</p>
   </div>
   );
 }
