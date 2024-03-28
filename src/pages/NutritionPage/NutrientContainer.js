@@ -22,6 +22,7 @@ function NutrientContainer(props) {
             text={"Based on your remaining"}
             percentage={Math.round((remainingValue/props.goalValue)*100)} //Goal (props.goalValue) = 100%. Goal (props.goalValue) - Current Count (props.loggedCount) = Remaining (remainingValue). To calculate the percent, divide by 100%, which is the Goal. (remainingValue/props.goalValue). Then multiply by 100.
             duration={"100"}
+            padding={".8"}
           />
         <div><p>Goal:</p> <p>{props.goalValue}g</p></div>
         <div><p>Remaining:</p> <p>{remainingValue}g</p></div>
