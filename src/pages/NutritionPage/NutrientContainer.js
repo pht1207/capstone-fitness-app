@@ -20,7 +20,7 @@ function NutrientContainer(props) {
             size={".5rem"}
             radius={"6rem"}
             text={"Based on your remaining"}
-            percentage={console.log(Math.round((remainingValue/props.goalValue)*100).toFixed(0))} //Goal (props.goalValue) = 100%. Goal (props.goalValue) - Current Count (props.loggedCount) = Remaining (remainingValue). To calculate the percent, divide by 100%, which is the Goal. (remainingValue/props.goalValue)
+            percentage={Math.round((remainingValue/props.goalValue)*100)} //Goal (props.goalValue) = 100%. Goal (props.goalValue) - Current Count (props.loggedCount) = Remaining (remainingValue). To calculate the percent, divide by 100%, which is the Goal. (remainingValue/props.goalValue). Then multiply by 100.
             duration={"100"}
           />
         <div><p>Goal:</p> <p>{props.goalValue}g</p></div>
