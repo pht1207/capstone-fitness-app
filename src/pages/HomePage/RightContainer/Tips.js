@@ -48,7 +48,7 @@ function Tips() {
         const nextTip = unusedTips[randomIndex];
         setTip(nextTip);
         setUsedTips([...usedTips, nextTip]);
-}}>
+      }}>
         <h3>Tips</h3>
         <p>{tip}</p>
   </div>

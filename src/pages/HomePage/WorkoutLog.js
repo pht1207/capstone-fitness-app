@@ -71,9 +71,10 @@ function WorkoutLog() {
       </div>
 
       <div className='PageChanger'>
-        {page > 1 && <button onClick={pageBackward}>{'<'}</button>}
+        {page > 1 ? <button onClick={pageBackward}>{'<'}</button> : <button style={{opacity:"0%"}}onClick={pageBackward}>{'<'}</button>}
         <p>Page {page}</p>
-        {workoutLog.length > 5 && <button onClick={pageForward}>{'>'}</button>}
+        {workoutLog.length > 5 ? <button onClick={pageForward}>{'>'}</button> : <button style={{opacity:"0%"}} onClick={pageForward}>{'>'}</button>}
+
       </div>
 
     </div>
