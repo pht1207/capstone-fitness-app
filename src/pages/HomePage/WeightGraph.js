@@ -26,6 +26,7 @@ function WeightGraph(props) {
           Authorization: "Bearer " + localStorage.getItem("jwt")
         }
       });
+      console.log(axiosResponse)
       setResponse(axiosResponse) //used in httpopup.js
       setAxiosData(axiosResponse.data.results)
     }
@@ -49,10 +50,9 @@ function WeightGraph(props) {
   return (
     <div className="WeightGraph">
       <h4>Weight Graph</h4>
-      <hr/>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={dataObject}
-          margin={{right: 25}}>
+          margin={{right: 20}}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="dateTimeChanged" />
           <YAxis />

@@ -38,3 +38,15 @@
 .App .HomePage, .LoginRegisterPage, .NutritionPage, .ProfilePage, .FitnessPage{
   height: 95%;
 }
+
+*{
+  font-size: calc(.4vw + .4vh + .4vmin);
+}
+
+button, input[type="button"], input[type="submit"], input[type="reset"], input,a {
+  font-size: calc(.4vw + .4vh + .4vmin); /* Apply the viewport units directly to buttons */
+  border-width: .1em;
+}
+a {
+  font-size: calc(.5vw + .5vh + .5vmin) !important;
+}
