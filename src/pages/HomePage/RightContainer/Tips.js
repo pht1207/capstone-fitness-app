@@ -49,7 +49,7 @@ function Tips() {
         setTip(nextTip);
         setUsedTips([...usedTips, nextTip]);
       }}>
-        <h3>Tips</h3>
+        <h4>Tips</h4>
         <p>{tip}</p>
   </div>
   );

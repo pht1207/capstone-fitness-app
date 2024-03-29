@@ -20,7 +20,7 @@
 
 
 
-.RightContainer .Tips h3{
+.RightContainer .Tips h4{
     border-bottom-style: solid;
     border-width: .1em;
     width: 100%;
@@ -40,7 +40,7 @@
     align-items: center;
     width: 100%;
 }
-.RightContainer .LogWeight h3{
+.RightContainer .LogWeight h4{
     margin:0;
     border-bottom-style: solid;
     border-width: .1em;
