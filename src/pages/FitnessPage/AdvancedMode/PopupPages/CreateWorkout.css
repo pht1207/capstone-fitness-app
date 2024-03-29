@@ -22,6 +22,18 @@
     align-items: center;
     overflow-y: scroll;
 }
+
+/*Hides the scrollbar*/
+.CreateWorkout .CreateWorkoutWindow::-webkit-scrollbar {
+    display: none; /* This will hide the scrollbar */
+}
+
+/* Hide scrollbar for Firefox */
+.CreateWorkout .CreateWorkoutWindow {
+    scrollbar-width: none; /* This will hide the scrollbar in Firefox */
+}
+
+
 .CreateWorkout .CreateWorkoutWindow .PickExerciseWindowList{
     display: flex;
     flex-direction: row;

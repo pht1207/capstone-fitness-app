@@ -50,7 +50,7 @@ function PickExercise(props) {
     return (
         <div className="PickExercise">
             <div className="PickExerciseWindow">
-                <h1>Pick Exercise</h1>
+                <div className="PopupHeaderFlexRow"><button style={{opacity:0}}>.</button><h1>Pick Exercise</h1><button className="ExitButton"onClick={()=>{props.setShowPickExercise(false)}}>X</button></div>
                     <p>Muscle Group Filter: </p>
                     <select onChange={filterChange}>
 

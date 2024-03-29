@@ -101,6 +101,8 @@ function CreateWorkout(props) {
                             }
                     </div>
                     <div className="PickExerciseWindowColumn">
+                    <div className="PopupHeaderFlexRow"><button style={{opacity:0}}>.</button><button className="ExitButton"onClick={()=>{props.setShowCreateWorkout(false)}}>X</button></div>
+
                         <h4>Choose exercises to put in your workout</h4>
                     <p>Muscle Group Filter: </p>
                     <select onChange={filterChange}>
