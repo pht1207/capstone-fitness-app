@@ -3,7 +3,7 @@ import React,{useState} from 'react';
 import WorkoutComponent from './WorkoutComponent';
 import WorkoutLogComponent from './WorkoutLogComponent';
 
-function AdvancedFitness() {
+function AdvancedFitness(props) {
 
   const [date, setDate] = useState(new Date().toISOString().substring(0,10));
   const [selectedWorkout, setSelectedWorkout] = useState(null); 
@@ -11,9 +11,10 @@ function AdvancedFitness() {
  
   return (
     <div className= "FitnessPage"> {/*This div will contain every component for the fitness page. */}
+    <div>
       <p>Pick date to check or log for:</p><input type='date' onChange={((event)=>setDate(event.target.value))} defaultValue={date}/>
-
         <div className='FitnessPageMainRow'>
+
           <div className= "WorkoutFunctionContainer"> {/* User made or templates will fall in this section */}
             <h1>My Workouts</h1>
             <WorkoutComponent selectedWorkout={selectedWorkout}/> 
@@ -25,6 +26,9 @@ function AdvancedFitness() {
           </div>
 
         </div>
+
+    </div>
+        <button className="SwitchModeButton" onClick={async ()=>{{props.setIsBeginner(true); await localStorage.setItem("beginnerBoolean", true)}}}>Switch to beginner mode</button>
     </div>
   );
 }

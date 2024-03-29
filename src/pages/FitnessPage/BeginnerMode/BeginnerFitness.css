@@ -77,3 +77,10 @@
   p, h4 {
     margin-bottom: 15px;
   }
+
+
+
+.SwitchModeButton{
+  width: fit-content;
+  align-self: center;
+}

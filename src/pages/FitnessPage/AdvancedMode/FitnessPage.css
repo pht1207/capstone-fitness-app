@@ -1,11 +1,9 @@
-
-.FitnessPage.Baner {
-  width: 100%;
-}
-
 .FitnessPage{
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between
 }
 .FitnessPageMainRow{
   display: flex;
@@ -25,4 +23,12 @@
   align-items: center;
   height: 100%;
   width: 100%;
+}
+
+
+
+
+.SwitchModeButton{
+  width: fit-content;
+  align-self: center;
 }

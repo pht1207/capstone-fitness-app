@@ -4,7 +4,7 @@ import BeginnerHome from './BeginnerHome';
 import Day1 from './Day1';
 import Day2 from './Day2';
 import Day3 from './Day3';
-function BeginnerFitness() {
+function BeginnerFitness(props) {
     const [currentPage, setCurrentPage] = useState('home')
 
 
@@ -21,6 +21,8 @@ function BeginnerFitness() {
         {currentPage === 'day1' && <Day1/>}
         {currentPage === 'day2' && <Day2/>}
         {currentPage === 'day3' && <Day3/>}
+        
+        <button className='SwitchModeButton' onClick={async ()=>{{props.setIsBeginner(false); await localStorage.setItem("beginnerBoolean", false)}}}>Switch to advanced mode</button>
 
     </div>
   );
