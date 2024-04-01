@@ -42,17 +42,18 @@
     display: flex;
     align-items: center;
     justify-content: center; /* Center the elements horizontally */
-    margin-bottom: 5px;
+    margin-bottom: 10px;
+    margin-top: 10px;
 }
 
 .set-container label {
     text-align: right; /* Align the set text to the right */
-    margin-right: 5px; /* Add margin to the right of the label */
+    margin-right: 10px; /* Add margin to the right of the label */
 }
 
 .set-container input {
     margin-left: 5px; /* Add margin to the left of the first input */
-    margin-right: 5px; /* Adjust margin between inputs */
+    margin-right: 10px; /* Adjust margin between inputs */
     width: 50px; /* Adjust width as needed */
 }
 

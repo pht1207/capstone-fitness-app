@@ -106,6 +106,7 @@ const handleSetChange = (index, key, value) => {
           onChange={handleExerciseNameChange}
           placeholder="Exercise Name"
           className="exercise-name-input"
+          style={{width:'200px'}}
         />
         <button className="delete-exercise-button" onClick={() => props.onDelete()}>
           Delete
