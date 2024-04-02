@@ -369,7 +369,7 @@ const updateProfile = async function(req, res) {
 const getProfileData = async function(req, res){
   const userID = req.user.id;
   pool.query(
-    'SELECT userTable.email, userTable.username, userTable.firstName, userTable.lastName, userTable.height, goalTable.goalName, userWeightTable.userWeight, userWeightTable.dateTimeChanged ' + //specify each column that should be gathered throughout the query
+    'SELECT userTable.email, userTable.DOB, userTable.username, userTable.firstName, userTable.lastName, userTable.height, goalTable.goalName, userWeightTable.userWeight, userWeightTable.dateTimeChanged ' + //specify each column that should be gathered throughout the query
     'FROM userTable ' + //get all rows from usertable and only show columns in select statement
     'LEFT JOIN user_goalTable ON userTable.userTable_id = user_goalTable.userTable_id '+ //get all rows from user_goalTable that match the userTable_id in userTable
     'INNER JOIN goalTable ON user_goalTable.goalTable_id = goalTable.goalTable_id '+ //Gets the rows from goalTable where goalTable_id matches both tables
