@@ -28,7 +28,6 @@ function AdvancedFitness(props) {
         </div>
 
     </div>
-        <button className="SwitchModeButton" onClick={async ()=>{{props.setIsBeginner(true); await localStorage.setItem("beginnerBoolean", true)}}}>Switch to beginner mode</button>
     </div>
   );
 }
