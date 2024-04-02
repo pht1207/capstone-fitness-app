@@ -1,64 +1,138 @@
 import React, { useState } from "react";
 import "./BeginnerFitness.css";
-function BeginnerHome() {
+import PPLDayComponent from "./PPLDayComponent";
+function BeginnerHome(props) {
   return (
     <div className="BeginnerHome">
-      <h1>Starting Your Fitness Journey</h1>
-      <p>
-        As a beginner, it may be difficult to know what exactly needs to be done
-        to accomplish your fitness goals. To eliminate the need for you to
-        figure everything yourself, we have provided a simple yet effective
-        routine for you to follow. It will hit all the muscle groups in a span
-        of 3 days and can be arranged to give you time to rest between workouts.
-      </p>
+      
+      <div className="LeftColumn">
 
-      <h2>The PPL Split</h2>
-      <p>
-        The split we recommend for you is the PPL split. PPL stands for push,
-        pull, legs. Each component of PPL covers muscle groups that work
-        together.
-      </p>
+        <div className="StartingJourney">
+          <h2>Starting Your Fitness Journey</h2>
+          <hr/><br/>
+          <div className="HomeBoxText">
+            <p>As a beginner, it can be difficult to start and choose how to accomplish your fitness goals.</p>
+            <p>To assist you, we have provided a simple yet effective routine for you to follow.</p>
+            <p>This routine is called the PPL split. It stands for Push, Pull and Legs.</p>
+            <p>It will hit all the muscle groups over the coruse of 3 days and can be arranged in many different ways to give you more time to rest, or more time to exercise.</p>
+            
+          </div>
+        </div>
 
-      <h3>PUSH Day</h3>
-      <p>
-        This workout will consist of all muscles that are used to push away from
-        the body. The primary muscles are the chest, shoulder (front and lateral),
-        and triceps.
-      </p>
+        <div className="PPLDescription">
+          <div className="PPLTopDescription">
+            <h2>The PPL Split</h2>
+            <hr/><br/>
+            <div className="HomeBoxText">
+              <p>The split we recommend for you is the PPL split.</p> 
+              <p>PPL stands for push, pull, and legs. Each component of PPL covers muscle groups that work together.</p>
+              <p></p>
+            </div>
 
-      <h3>PULL Day</h3>
-      <p>
-        This workout will consist of all the muscles that are used to pull
-        towards the body. The primary muscles are the back, rear deltoids
-        (shoulder), and the biceps.
-      </p>
+          </div>
 
-      <h3>LEG Day</h3>
-      <p>
-        This workout will consist of all the muscles in the legs. The primary
-        muscles are the quads, hamstrings, glutes, and calves.
-      </p>
 
-      <h2>Recommended Splits</h2>
-      <h3>1. Standard Split</h3>
-      <p>
-        Within three days, you will be able to work the body in its entirety.
-        It will be important to incorporate rest days to reduce fatigue or burnout.
-      </p>
-      <p>MON: PUSH, TUE: REST, WED: PULL, THU: REST, FRI: LEGS, SAT: REST, SUN: REST</p>
 
-      <h3>2. Back-to-Back Split</h3>
-      <p>
-        You will be able to workout back-to-back and rest for 4 days.
-      </p>
-      <p>MON: PUSH, TUE: PULL, WED: LEGS, THU: REST, FRI: REST, SAT: REST, SUN: REST</p>
+          <div className="SplitList">
+            <div className="SplitContainer">
+            <h1>Standard Split</h1>
+            <div className="SplitRow">
+              <div className="SplitDescription">
+                <h1>Workout Days</h1>
+                <p>[MON: PUSH], [WED: PULL], [FRI: LEGS]</p>
+              </div>
 
-      <h3>3. Advanced Split</h3>
-      <p>
-        This is a more difficult approach to the workout, hitting muscles twice
-        a week which is ideal for muscle growth.
-      </p>
-      <p>MON: PUSH, TUE: PULL, WED: LOWER, THU: REST, FRI: PUSH, SAT: PULL, SUN: LEGS, ...</p>
+              <div className="SplitDescription">
+                <h1>Rest Days</h1>
+                <p>[TUE, WED, THU, SAT, SUN]</p>
+              </div>
+            </div>
+            </div>
+
+
+            <div className="SplitContainer">
+            <h1>Back-to-Back Split</h1>
+            <div className="SplitRow">
+              <div className="SplitDescription">
+                <h1>Workout Days</h1>
+                <p>[MON: PUSH], [TUE: PULL], [WED: LEGS]</p>
+              </div>
+
+              <div className="SplitDescription">
+                <h1>Rest Days</h1>
+                <p>[TUE, WED, THU, SAT, SUN]</p>
+              </div>
+            </div>
+            </div>
+
+
+            {/* Possibly remove the advanced split to keep it simple for the user, or replace it with a simpler one */}
+            <div className="SplitContainer">
+            <h1>Advanced Split</h1>
+            <div className="SplitRow">
+                <div className="SplitDescription">
+                  <h1>Workout Days</h1>
+                  <p>[MON: PUSH], [TUE, PULL] [WED: LEGS], [FRI: PUSH], [SAT: PUSH], [SUN: LEGS]</p>
+                </div>
+
+                <div className="SplitDescription">
+                  <h1>Rest Days</h1>
+                  <p>[THU]</p>
+                </div>
+              </div>
+              </div>
+          </div>
+        </div>
+
+      </div>
+
+
+
+
+      <div className="Divider"/>
+
+
+      <div className="RightColumn">
+
+              <PPLDayComponent
+              title={"Push Day"}
+              description1={"This workout will consist of all muscles that are used to push away from the body."}
+              description2={"The primary muscles are the chest, shoulders,and triceps."}
+              image1src={"/dumbbell-bench-press.png"}
+              image1Header={"Bench Press"}
+              image2src={"/dumbbell-bench-press.png"}
+              image2Header={"Lateral Raises"}
+              image3src={"/dumbbell-bench-press.png"}
+              image3Header={"Tricep Pushdowns"}
+              />
+              <PPLDayComponent
+              title={"Pull Day"}
+              description1={"This workout will consist of all the muscles that are used to pull towards the body."}
+              description2={"The primary muscles are the back, shoulders and the biceps."}
+              image1src={"/dumbbell-bench-press.png"}
+              image1Header={"Rows"}
+              image2src={"/dumbbell-bench-press.png"}
+              image2Header={"Lat Pulldowns"}
+              image3src={"/dumbbell-bench-press.png"}
+              image3Header={"Dumbbell Curls"}
+
+              />
+              <PPLDayComponent
+              title={"Leg Day"}
+              description1={"This workout will consist of all the muscles in the legs."}
+              description2={"The primary muscles are the quads, hamstrings, glutes, and calves."}
+              image1src={"/dumbbell-bench-press.png"}
+              image1Header={"Leg Press"}
+              image2src={"/dumbbell-bench-press.png"}
+              image2Header={"Calf Raises"}
+              image3src={"/dumbbell-bench-press.png"}
+              image3Header={"Hip Adductors"}
+
+              />
+
+      </div>
+
+
     </div>
 
   );

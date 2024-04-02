@@ -1,6 +1,6 @@
 import React,{useEffect, useState} from 'react';
 import AdvancedFitness from './AdvancedMode/AdvancedFitness';
-import BeginnerFitness from './BeginnerMode/BeginnerFitness';
+import BeginnerHome from './BeginnerMode/BeginnerHome';
 function FitnessPageTernary() {
     useEffect(()=>{
       if(localStorage.getItem("beginnerBoolean") === null){
@@ -14,7 +14,12 @@ function FitnessPageTernary() {
 
   return (
     <>
-        {isBeginner ? <BeginnerFitness setIsBeginner={setIsBeginner}/> : <AdvancedFitness setIsBeginner={setIsBeginner}/>}
+        {isBeginner ? <BeginnerHome setIsBeginner={setIsBeginner}/> : <AdvancedFitness setIsBeginner={setIsBeginner}/>}
+        {isBeginner ? <button className='SwitchModeButton' onClick={async ()=>{{setIsBeginner(false); await localStorage.setItem("beginnerBoolean", false)}}}>Switch to advanced mode</button> 
+        :
+        <button className='SwitchModeButton' onClick={async ()=>{{setIsBeginner(true); await localStorage.setItem("beginnerBoolean", false)}}}>Switch to beginner mode</button>
+        }
+
     </>
   );
 }
