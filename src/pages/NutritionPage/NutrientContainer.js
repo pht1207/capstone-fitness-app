@@ -20,6 +20,7 @@ function NutrientContainer(props) {
             className="CircularProgressBar"
             size={".5rem"}
             radius={"6rem"}
+            text={"Based on your remaining"}
             maxValue={100}
             minValue={0}
             text={Math.round((props.loggedCount/props.goalValue)*100)+"%"}
