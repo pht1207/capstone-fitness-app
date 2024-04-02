@@ -39,7 +39,7 @@
   height: 95%;
 }
 
-*{
+p{
   font-size: calc(.4vw + .4vh + .4vmin);
 }
 
