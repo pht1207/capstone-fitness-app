@@ -17,6 +17,7 @@ function ProfilePage() {
     height: "",
     weight: "",
     goal: "",
+    DOB: "",
     notifications: ""
 }
   const [userData, setData] = useState(emptyUserData);
@@ -32,42 +33,13 @@ function ProfilePage() {
   const [height, setHeight] = useState("");
   const [weight, setWeight] = useState("");
   const [goal, setGoal] = useState("");
-  const [notificationsChecked, setNotificationscheck] = useState(0);
-  {/*
-    Using updateProfile
-    It follows the same premise as getProfileData, except you use axios.post(), do not use axios.get()
-    You're going to have an 'onSubmit={updateProfileFormSubmit}' attribute in your form element, I've added it already.
-      -This will call profileSubmitFunction whenever your form is submitted
-      -You are not submitting the form, onSubmit will just be a queue to submit a object you are going to dynamically create. This is explained further below
-    You will need to create a body element to send to the backend, this will be included in your axios.post(https://.....), body, {headers}
-      -The body element will be a javascript object named body that will contain data formatted like this:
-            - {
-                "email": "ts@gmail.com",
-                "username": "test321",
-                "password": "t",
-                "firstName": "changed",
-                "lastName": "changed",
-                "DOB": "2000-12-07",
-                "height": "72",
-                "notificationsOn": "1"
-              }
-\\      -Include the 'editClicked' upon successful return code of axios updateProfile
+  const [DOB, setDOB] = useState("");
+  const [notificationsOn, setNotificationsOn] = useState(1);
 
-    The proper way to do forms in react is to have an 'onChange' attribute on each of your <input> and other form elements. (This is done in LogWeight.js in the homepage folder if you need an example)
-      -Each onChange should update a state variable you've made for each input element
-        -Finally, when you submit, you are combining all those State's into an object named body so it can be sent when you use the axios.post method.
-
-    Goals are updated using a different method, so ignore updating the goals right now. Only the values listed in the example object above can be sent
-    
-    notificationsOn can only be a 0 or 1, 0 meaning off and 1 meaning on
-
-
-        
-  */}
   async function updateProfileFormSubmit(event){
     event.preventDefault();//This prevents the page from reloading right when you submit
     try{
-      console.log(firstname, lastname)
+      console.log(firstname, lastname, Number(notificationsOn))
       let body = {  
         email: email,
         username: username,
@@ -75,7 +47,7 @@ function ProfilePage() {
         lastName: lastname,
         DOB: '2000-12-07',
         height: height,
-        notificationsOn: 1
+        notificationsOn: Number(notificationsOn)
       }
       const axiosResponse = await axios.post("https://capstone.parkert.dev/backend/updateProfile", body, {
         headers: {
@@ -111,6 +83,7 @@ function ProfilePage() {
       }
     };
     fetchData();
+    console.log(userData)
   }, []);
 
 
@@ -124,7 +97,8 @@ function ProfilePage() {
     setHeight(userData.height);
     setWeight(userData.userWeight);
     setGoal(userData.goalName);
-    setNotificationscheck(userData.notifications);
+    setDOB(userData.DOB.substring(0,10))
+    setNotificationsOn(userData.notificationsOn);
   },[userData])
 
 //Fuction to change from ProfilePage to UpdateProfile page when edit is clickled,  using useState to trigger a re-render that allows seeing the new data
@@ -142,8 +116,14 @@ function passwordShowClickled(){
   setpasswordShow(!passwordShow);
 }
 
+function notificationsSwitch(){
+  setNotificationsOn(!notificationsOn)
+}
 
-
+function flipDate (str){
+  let parts = str.split('-')
+  return parts[2]+'-'+parts[1]+'-'+parts[0]
+}
 
 
   return (
@@ -162,12 +142,12 @@ function passwordShowClickled(){
         </div>
 
         <div className="UserI">
-          <div><p>Date of Birth:</p><p>{password}</p></div>
+          <div><p>Date of Birth:</p><p>{flipDate(DOB)}</p></div>
         </div>
 
         <div className="UserI">
           <div><p>Height:</p><p>{height}</p></div>
-          <div><p>Weight:</p><p>{weight}</p></div>
+          <div><p>Weight:</p><p>{weight} </p></div>
         </div>
 
         <div className="UserI">
@@ -175,7 +155,7 @@ function passwordShowClickled(){
         </div>
 
         <div className="UserI">
-          <div><p>notifications:<label className="switch" ><input type="checkbox"/><span className="slider"></span></label></p></div>
+          <div><p>Notifications:</p><p>{notificationsOn ? 'on': 'off'}</p></div>
         </div>
 
         <div className="UserI">
@@ -200,12 +180,14 @@ function passwordShowClickled(){
   
           <div className="UserI">
             <div><p>Password:</p><input type={passwordShow?('password'):('text')} name='password' defaultValue=''/><button type='button' onClick={passwordShowClickled}>show</button></div>
+            <div><p>Date of Birth:</p><input type="date" id='DOB'Value='2000-12-07'/></div>
           </div>
   
           <div className="UserI">
             <div><p>Height:</p><input type='text' name='height' onChange={(event)=>{setHeight(event.target.value)}} defaultValue={height}/></div>
             <div><p>Weight:</p><input type='text' name='userWeight' onChange={(event)=>{setWeight(event.target.value)}} defaultValue={weight}/></div>
           </div>
+
           <div className="UserI">
             <div><p>Goal:</p><select>
                                 <option value="1">Weight Loss</option>
@@ -214,9 +196,14 @@ function passwordShowClickled(){
                               </select>
             </div>
           </div>
+
+            <div className="UserI">
+             <div><p>Notifications:<label className="switch" ><input type="checkbox" checked={notificationsOn} onClick={notificationsSwitch} /><span className="slider"></span></label></p></div>
+            </div>
+
           <div className="UserI">
             <div>
-              <button className="button2" type='submit'>Save</button>
+              <button className="button2" type='submit' onChange={editClicked}>Save</button>
               <button className="button3" type='button' onClick={editClicked}>Cancel</button></div>
           </div>
           </form>
