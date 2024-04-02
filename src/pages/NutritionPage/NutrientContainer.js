@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import './NutritionPage.css'
-import { CircularProgressBar } from "react-percentage-bar";
+import { CircularProgressbar } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
 
 function NutrientContainer(props) {
   
@@ -15,14 +16,11 @@ function NutrientContainer(props) {
         <h3>{props.containerName}</h3>
         <p>Current Count</p>
           <p>{props.loggedCount}</p>
-          <CircularProgressBar
-            className="CircularProgressBar"
-            size={".5rem"}
-            radius={"6rem"}
-            text={"Based on your remaining"}
-            percentage={Math.round((remainingValue/props.goalValue)*100)} //Goal (props.goalValue) = 100%. Goal (props.goalValue) - Current Count (props.loggedCount) = Remaining (remainingValue). To calculate the percent, divide by 100%, which is the Goal. (remainingValue/props.goalValue). Then multiply by 100.
-            duration={"100"}
-            padding={".8"}
+          <CircularProgressbar
+            maxValue={100}
+            minValue={0}
+            text={Math.round((remainingValue/props.goalValue)*100)+"%"}
+            value={Math.round((remainingValue/props.goalValue)*100)} //Goal (props.goalValue) = 100%. Goal (props.goalValue) - Current Count (props.loggedCount) = Remaining (remainingValue). To calculate the percent, divide by 100%, which is the Goal. (remainingValue/props.goalValue). Then multiply by 100.
           />
         <div><p>Goal:</p> <p>{props.goalValue}g</p></div>
         <div><p>Remaining:</p> <p>{remainingValue}g</p></div>
