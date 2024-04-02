@@ -1,13 +1,14 @@
+
 .myworkout-table {
   display: flex;
   flex-direction: column;
   align-items: center; /* Center the content */
-  width: 90%;
-  margin: 0 auto;
-  padding: 20px;
+  width: 60%; /* Let the width adjust to the content */
+  margin: 20px auto; /* Adjust margin as needed */
+  padding: 10px; /* Decreased padding */
   border-radius: 8px;
   overflow: hidden;
-  background-color: #f5f5f5; /* Add background color */
+  background-color: #addbf3; /* Add background color */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add box shadow */
 }
 
@@ -16,6 +17,8 @@
   flex-direction: column;
   align-items: center; /* Center the exercises */
 }
+
+
 
 .workout-component {
   display: flex;
@@ -27,6 +30,9 @@
   padding: 10px; /* Add padding */
   border-radius: 8px; /* Add border radius */
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* Add box shadow */
+  width: 320px; /* Set a fixed width for the exercise box */
+  height: 150px; /* Set a fixed height for the exercise box */
+  overflow: hidden; /* Hide overflowing content */
 }
 
 .exercise-with-button {
@@ -38,17 +44,37 @@
   margin-left: 5px;
 }
 
+
+
 .workout-name-input {
+  border-radius: 10px; /* Make it round */
   margin: 10px auto;
   padding: 8px;
-  width: 300px;
+  width: 250px;
   display: block;
 }
 
 .button-container {
   display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
+  justify-content: space-between; /* Spread the buttons evenly */
+  margin-top: 20px; /* Increase top margin for spacing */
+}
+
+.button-container button {
+  margin: 0 10px; /* Add margin to each button for spacing */
+  font-size: 12px; /* Set the font size */
+  padding: 6px 12px; /* Adjust padding for button size */
+  border: 2px solid #333; /* Add border with a neutral color */
+  border-radius: 4px; /* Apply rounded corners */
+  background-color: #fff; /* White background */
+  color: #333; /* Dark text color */
+  cursor: pointer; /* Show pointer on hover */
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s; /* Smooth transition */
+}
+
+.button-container button:hover {
+  background-color: #ddd; /* Light background on hover */
+  color: #333; /* Dark text color on hover */
 }
 
 .create-workout-box,

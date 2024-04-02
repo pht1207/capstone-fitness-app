@@ -6,7 +6,7 @@ import axios from "axios";
 import PickWorkout from "./PopupPages/PickWorkout";
 import CreateWorkout from "./PopupPages/CreateWorkout";
 
-function WorkoutComponent({selectedWorkout }) {
+function WorkoutComponent({ selectedWorkout }) {
   //Your code to make the site functional goes in this empty space. The 'return()' below is what renders on the page (the html)
   const [createWorkout, setCreateWorkout] = useState(false);
   const [workoutName, setWorkoutName] = useState("");
@@ -17,45 +17,82 @@ function WorkoutComponent({selectedWorkout }) {
 
   const token = localStorage.getItem("jwt"); //Token for backend operations
 
-
   const workoutSubmitted = async (exercises, workoutName, token) => {
     try {
+      const durationInput = prompt(
+        "Enter the duration of your workout (in seconds):"
+      );
+      if (!durationInput) {
+        console.log("Duration input failed");
+        return;
+      }
+      const duration = parseInt(durationInput);
+
+      let ratingInput = prompt("Rate the workout experience between 1-5:");
+      if (!ratingInput) {
+        console.log("Rating input cancelled");
+        return;
+      }
+
+      if (isNaN(ratingInput) || ratingInput < 1 || ratingInput > 5) {
+        console.error(
+          "Invalid input. The rating must be a number between 1-5."
+        );
+        return;
+      }
+
       let exerciseBox = [];
-  
+
       for (const exercise of exercises) {
         const setsInfo = [];
-  
+
         // Check if exercise.sets exists and is iterable
-        if (exercise.sets && typeof exercise.sets[Symbol.iterator] === 'function') {
+        if (
+          exercise.sets &&
+          typeof exercise.sets[Symbol.iterator] === "function"
+        ) {
           // Loop over sets if it's iterable
           for (const set of exercise.sets) {
             setsInfo.push({
+              setNumber: 1,
               weight: set.weight,
-              reps: set.reps
+              reps: set.reps,
             });
           }
         }
-  
-        exerciseBox.push({            
-          name: exercise.name,
-          sets: setsInfo
+
+        exerciseBox.push({
+          exerciseName: exercise.name,
+          sets: setsInfo,
         });
       }
-  
+      const currentTime = new Date()
+        .toISOString()
+        .slice(0, 19)
+        .replace("T", " "); // Format: yyyy-mm-ddThh:mm:ss
+      console.log("Current Time:", currentTime);
+
       const body = {
         workoutName: workoutName,
-        exercises: exerciseBox
+        timeCompleted: currentTime,
+        duration: duration,
+        rating: ratingInput,
+        exercises: exerciseBox,
       };
-  
+
       console.log("Workout Body:", body);
-  
-      // Send the data to the database
-      // const response = await axios.post("https://capstone.parkert.dev/backend/logCompletedWorkout", body, {
-      //   headers: {
-      //     Authorization: "Bearer " + token
-      //   },
-      // });
-  
+
+      //Send the data to the database
+      const response = await axios.post(
+        "https://capstone.parkert.dev/backend/logCompleteWorkout",
+        body,
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
+
       // Handle response if needed
       // console.log("Workout logged successfully:", response.data);
     } catch (error) {
@@ -65,18 +102,14 @@ function WorkoutComponent({selectedWorkout }) {
   };
 
   // Component code
-useEffect(() => {
-  // Call workoutSubmitted when there are exercises added or workoutName has a value
-  if (exercises.length > 0 && workoutName !== "") {
-    workoutSubmitted(exercises, workoutName, token);
-  }
-}, [exercises, workoutName, token]);
+  useEffect(() => {
+    // Call workoutSubmitted when there are exercises added or workoutName has a value
+  }, [exercises, workoutName, token]);
 
-  
   const initiateCreateWorkout = () => {
     setCreateWorkout(true);
   };
-  
+
   const cancelWorkoutCreation = () => {
     resetWorkoutState();
     setCreateWorkout(false);
@@ -107,8 +140,8 @@ useEffect(() => {
   const createExercise = () => {
     setExercises([
       ...exercises,
-      { name: "", sets: []} // Ensure weights is initialized as an array
-    ]); //removed : , weights: [], reps: [] 
+      { name: "", sets: [] }, // Ensure weights is initialized as an array
+    ]); //removed : , weights: [], reps: []
   };
 
   const handleCreateExercise = (index, updatedExercise) => {
@@ -125,7 +158,7 @@ useEffect(() => {
     }
   }, [selectedWorkout]);
 
-  console.log(exercises)
+  console.log(exercises);
 
   return (
     <div className="myworkout-table">
@@ -139,42 +172,59 @@ useEffect(() => {
             className="workout-name-input"
             onClick={() => setShowPickWorkout(true)}
           />
-          {showPickWorkout ? <PickWorkout addPrebuiltWorkout={addPrebuiltWorkout} setWorkoutName={setWorkoutName} setShowPickWorkout={setShowPickWorkout} /> : null}
+          {showPickWorkout ? (
+            <PickWorkout
+              addPrebuiltWorkout={addPrebuiltWorkout}
+              setWorkoutName={setWorkoutName}
+              setShowPickWorkout={setShowPickWorkout}
+            />
+          ) : null}
           <div className="workout-components">
             {exercises.map((exercise, index) => (
               <div key={index} className="workout-component">
                 <ExerciseComponent
                   key={index}
-                  index={index} // Passing the index of the exercise
+                  index={index}
                   exercise={exercise}
-                  onChange={(updatedExercise) => handleCreateExercise(index, updatedExercise)}
-                  onDelete = {() => deleteExercise(index)}
+                  onChange={(updatedExercise) =>
+                    handleCreateExercise(index, updatedExercise)
+                  }
+                  onDelete={() => deleteExercise(index)}
                 />
               </div>
             ))}
           </div>
           <div className="button-container">
+            <button onClick={createExercise}>Add Exercise</button>
             <button onClick={cancelWorkoutCreation}>Cancel</button>
+            <button onClick={() => workoutSubmitted(exercises, workoutName, token)}>
+              Log Workout
+            </button>
           </div>
         </>
       ) : (
         <div>
-          {showCreateWorkout ? <CreateWorkout setShowCreateWorkout={setShowCreateWorkout} /> : null}
+          {showCreateWorkout ? (
+            <CreateWorkout setShowCreateWorkout={setShowCreateWorkout} />
+          ) : null}
           {workoutType !== "recommended" && (
             <div>
-              <div className="create-workout-box" onClick={initiateCreateWorkout}>
+              <div
+                className="create-workout-box"
+                onClick={initiateCreateWorkout}
+              >
                 <p>Log Workout</p>
               </div>
-              <div className="select-workout-box" onClick={() => setShowCreateWorkout(true)}>
+              <div
+                className="select-workout-box"
+                onClick={() => setShowCreateWorkout(true)}
+              >
                 <p>Create Workout</p>
               </div>
             </div>
           )}
         </div>
       )}
-      {createWorkout && <button onClick={createExercise}>Add Exercise</button>}
-
-      {createWorkout && <button onClick= {() => workoutSubmitted(exercises, workoutName, token)}>Log Workout</button>}
     </div>
   );
 }

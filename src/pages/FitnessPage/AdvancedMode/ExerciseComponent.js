@@ -106,6 +106,7 @@ const handleSetChange = (index, key, value) => {
           onChange={handleExerciseNameChange}
           placeholder="Exercise Name"
           className="exercise-name-input"
+          style={{width:'200px',height: '30px'}}
         />
         <button className="delete-exercise-button" onClick={() => props.onDelete()}>
           Delete
@@ -134,7 +135,7 @@ const handleSetChange = (index, key, value) => {
           value = {set.weight}
           onChange={(e) => handleSetChange(index, "weight", e.target.value)}
           placeholder="Weight"
-          style={{ width: '60px'}}
+          className="input"
           />
           
           <input
@@ -142,7 +143,7 @@ const handleSetChange = (index, key, value) => {
           value={set.reps}
           onChange={(e) => handleSetChange(index, "reps", e.target.value)}
           placeholder="Reps"
-          style={{ width: '60px' }}
+          className="input"
           />
 
           <button className="remove-set-button" onClick={() => removeSet(index)}>
