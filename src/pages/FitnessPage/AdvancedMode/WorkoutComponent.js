@@ -184,7 +184,7 @@ function WorkoutComponent({ selectedWorkout }) {
               <div key={index} className="workout-component">
                 <ExerciseComponent
                   key={index}
-                  index={index} // Passing the index of the exercise
+                  index={index}
                   exercise={exercise}
                   onChange={(updatedExercise) =>
                     handleCreateExercise(index, updatedExercise)
@@ -195,7 +195,11 @@ function WorkoutComponent({ selectedWorkout }) {
             ))}
           </div>
           <div className="button-container">
+            <button onClick={createExercise}>Add Exercise</button>
             <button onClick={cancelWorkoutCreation}>Cancel</button>
+            <button onClick={() => workoutSubmitted(exercises, workoutName, token)}>
+              Log Workout
+            </button>
           </div>
         </>
       ) : (
@@ -220,13 +224,6 @@ function WorkoutComponent({ selectedWorkout }) {
             </div>
           )}
         </div>
-      )}
-      {createWorkout && <button onClick={createExercise}>Add Exercise</button>}
-
-      {createWorkout && (
-        <button onClick={() => workoutSubmitted(exercises, workoutName, token)}>
-          Log Workout
-        </button>
       )}
     </div>
   );
