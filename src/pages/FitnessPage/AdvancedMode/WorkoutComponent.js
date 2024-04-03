@@ -1,10 +1,11 @@
 import "./WorkoutComponent.css";
 import ExerciseComponent from "./ExerciseComponent";
-import recommendedWorkouts from "./PopupPages/RecommendedWorkouts";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import PickWorkout from "./PopupPages/PickWorkout";
 import CreateWorkout from "./PopupPages/CreateWorkout";
+import WorkoutLogComponent from "./WorkoutLogComponent"; // Import the WorkoutLogComponent
+
 
 function WorkoutComponent({ selectedWorkout }) {
   //Your code to make the site functional goes in this empty space. The 'return()' below is what renders on the page (the html)
@@ -14,6 +15,8 @@ function WorkoutComponent({ selectedWorkout }) {
   const [workoutType, setWorkoutType] = useState(""); // this is used to sepeerate recommended workouts from the create and prebuilt
   const [showPickWorkout, setShowPickWorkout] = useState(false);
   const [showCreateWorkout, setShowCreateWorkout] = useState(false);
+  const [date, setDate] = useState(new Date()); // Current date
+
 
   const token = localStorage.getItem("jwt"); //Token for backend operations
 
@@ -78,7 +81,7 @@ function WorkoutComponent({ selectedWorkout }) {
         duration: duration,
         rating: ratingInput,
         exercises: exerciseBox,
-      };
+     };
 
       console.log("Workout Body:", body);
 
