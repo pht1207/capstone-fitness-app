@@ -8,7 +8,7 @@ function BeginnerHome(props) {
       <div className="LeftColumn">
 
         <div className="StartingJourney">
-          <h2>Starting Your Fitness Journey</h2>
+          <strong><p>Starting Your Fitness Journey</p></strong>
           <hr/><br/>
           <div className="HomeBoxText">
             <p>As a beginner, it can be difficult to start and choose how to accomplish your fitness goals.</p>
@@ -21,7 +21,7 @@ function BeginnerHome(props) {
 
         <div className="PPLDescription">
           <div className="PPLTopDescription">
-            <h2>The PPL Split</h2>
+          <strong><p>The PPL Split</p></strong>
             <hr/><br/>
             <div className="HomeBoxText">
               <p>The split we recommend for you is the PPL split.</p> 
@@ -35,15 +35,15 @@ function BeginnerHome(props) {
 
           <div className="SplitList">
             <div className="SplitContainer">
-            <h1>Standard Split</h1>
+            <strong><p>Standard Split</p></strong>
             <div className="SplitRow">
               <div className="SplitDescription">
-                <h1>Workout Days</h1>
+                <strong><p>Workout Days</p></strong>
                 <p>[MON: PUSH], [WED: PULL], [FRI: LEGS]</p>
               </div>
 
               <div className="SplitDescription">
-                <h1>Rest Days</h1>
+                <strong><p>Rest Days</p></strong>
                 <p>[TUE, WED, THU, SAT, SUN]</p>
               </div>
             </div>
@@ -51,15 +51,15 @@ function BeginnerHome(props) {
 
 
             <div className="SplitContainer">
-            <h1>Back-to-Back Split</h1>
+            <strong><p>Back-to-Back Split</p></strong>
             <div className="SplitRow">
               <div className="SplitDescription">
-                <h1>Workout Days</h1>
+              <strong><p>Workout Days</p></strong>
                 <p>[MON: PUSH], [TUE: PULL], [WED: LEGS]</p>
               </div>
 
               <div className="SplitDescription">
-                <h1>Rest Days</h1>
+              <strong><p>Rest Days</p></strong>
                 <p>[TUE, WED, THU, SAT, SUN]</p>
               </div>
             </div>
@@ -68,15 +68,15 @@ function BeginnerHome(props) {
 
             {/* Possibly remove the advanced split to keep it simple for the user, or replace it with a simpler one */}
             <div className="SplitContainer">
-            <h1>Advanced Split</h1>
+            <strong><p>Advanced Split</p></strong>
             <div className="SplitRow">
                 <div className="SplitDescription">
-                  <h1>Workout Days</h1>
+                <strong><p>Workout Days</p></strong>
                   <p>[MON: PUSH], [TUE, PULL] [WED: LEGS], [FRI: PUSH], [SAT: PUSH], [SUN: LEGS]</p>
                 </div>
 
                 <div className="SplitDescription">
-                  <h1>Rest Days</h1>
+                <strong><p>Rest Days</p></strong>
                   <p>[THU]</p>
                 </div>
               </div>

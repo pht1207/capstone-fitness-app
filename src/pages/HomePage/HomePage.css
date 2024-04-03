@@ -90,6 +90,7 @@
   flex-direction: row;
   align-self: center;
   justify-content: center;
+  align-items: center;
   width: 100%;
 }
 .WorkoutLog .PageChanger button{
