@@ -10,6 +10,7 @@ function WorkoutLogComponent(props) {
   useEffect(() => {
     const getWorkouts = async () => {
       try {
+        console.log(props.date);
         const response = await axios.get(
           "https://capstone.parkert.dev/backend/getCompleteWorkoutLogByDate?dateAccessed="+encodeURIComponent(props.date),
           {

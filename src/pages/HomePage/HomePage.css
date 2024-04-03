@@ -77,7 +77,7 @@
   width:100%;
   flex-direction: row;
   justify-content: space-between;
-  height: 15%;
+  height: 20%;
 }
 .WorkoutLogContainer .WorkoutLogRow p{
   padding-left: 1em;
@@ -94,9 +94,11 @@
   width: 100%;
 }
 .WorkoutLog .PageChanger button{
-  height: 50%;
+  height: 100%;
+  padding: .5em;
   align-self: center;
-  margin: 1em;
+  text-align: center;
+  line-height: 100%;
 }
 
 
