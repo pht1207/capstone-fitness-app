@@ -366,6 +366,43 @@ const updateProfile = async function(req, res) {
     })
   }
 }
+
+const updatePassword = async function(req, res) {
+  console.log(req.body);
+  const userID = req.user.id;
+  const password = req.body.password;
+
+  const encryptedPassword = await bcrypt.hash(password, saltRounds)
+
+  /*const validationResult = updateProfileSchema.validate(validatorObject);
+  if (validationResult.error) {
+    console.error(validationResult.error)
+    res.status(400).json({
+      message:"Error with "+validationResult.error.details[0].path
+    })
+  }*/
+  //else{
+    const query = (
+    "UPDATE userTable "+
+    "SET userTable.password = ? "+
+    "WHERE userTable.userTable_id = ?")
+    const values = [encryptedPassword, userID] //removed encryptedPassword from this array for now
+    pool.query(query, values, (error, results) =>{
+      if(error){
+        console.error(error)
+        res.status(400).json({
+          message: "Error changing password"
+        });
+      }
+      else{
+        res.status(200).json({
+          message:"update profile successful"
+        });
+      }
+    })
+  //}
+}
+
 const getProfileData = async function(req, res){
   const userID = req.user.id;
   pool.query(
@@ -390,6 +427,7 @@ const getProfileData = async function(req, res){
 }
 app.post('/updateProfile', jwtVerify, updateProfile);
 app.get('/getProfileData', jwtVerify, getProfileData);
+app.post('/updatePassword', jwtVerify, updatePassword);
 {/*
   * END OF SECTION: PROFILE
 */}

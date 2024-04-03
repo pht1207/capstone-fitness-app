@@ -5,7 +5,7 @@ function PPLDayComponent(props) {
 
   return (
     <div className="PPLDayComponent">
-        <h2>{props.title}</h2>
+        <strong><p>{props.title}</p></strong>
         <div className="ExerciseDescription">
             <p>{props.description1}</p>
             <p>{props.description2}</p>
