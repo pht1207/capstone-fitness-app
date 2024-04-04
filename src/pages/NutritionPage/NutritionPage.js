@@ -142,7 +142,7 @@ useEffect(() => {
         </div>
 
         <div className='NutritionPageTopRowMiddle'>
-          <input type='date' onChange={((event)=>setDate(event.target.value))} defaultValue={date}></input>
+          <input type='date' onChange={((event)=>setDate(event.target.value))} defaultValue={date} max={currentDate}></input>
           <button onClick={(()=> setShowLogNutritionForm(!showlogNutritionForm))}>Log Nutrition</button>
         </div>
         
