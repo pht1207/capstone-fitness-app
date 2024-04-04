@@ -1301,7 +1301,7 @@ const getUserWeightLog = async function(req, res) {
       for(let i = 0; i < results.length; i++){
         results[i].dateTimeChanged = results[i].dateTimeChanged.toISOString().split('T')[0];
       }
-
+      console.log(results)
       res.status(200).json({
         results,
         message:"Successfully fetched user's weight log"
