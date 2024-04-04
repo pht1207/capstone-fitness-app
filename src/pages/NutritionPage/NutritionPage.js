@@ -23,12 +23,13 @@ function NutritionPage() {
   useEffect(() => {//This useEffect gets the user's nutrition log when the date is changed to a valid date value
     const fetchData = async () => {
       try {
-        let endpoint = "https://capstone.parkert.dev/backend/getUserNutritionLog?dateAccessed="+date
+        let endpoint = "https://capstone.parkert.dev/backend/getUserNutritionLog?dateAccessed="+encodeURIComponent(date)
         const response = await axios.get(endpoint, {
           headers: {
             'Authorization': 'Bearer ' + token
           }
         });
+        console.log(response.data)
         setNutritionLog(response.data  || { proteinConsumed:"0", carbsConsumed:"0", fatsConsumed:"0"});
       }
         catch (error) {
