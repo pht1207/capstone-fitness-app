@@ -20,7 +20,7 @@
     border-radius: 1em;
     border-width: .1em;
     border-color: lightgray;
-    width: 25%;
+    max-width: 25%;
     padding: 3%;
     margin-top: 3%;
 }
