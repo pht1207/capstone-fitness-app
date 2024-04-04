@@ -22,7 +22,7 @@ function AdvancedFitness(props) {
       
           <div className="WorkoutLogContainer"> {/* The workout log will track certain info from the user's workout */}
             <h1>Workout Log</h1>
-            <WorkoutLogComponent/>
+            <WorkoutLogComponent  date = {date}/>
           </div>
 
         </div>
