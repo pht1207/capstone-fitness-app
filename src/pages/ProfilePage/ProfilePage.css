@@ -1,14 +1,13 @@
 /*Profile data background box*/
 .ProfilePage div{
     max-height: fit-content;
-    background-color: gainsboro;
+    background-color: rgb(235, 235, 235);
     min-width:525px;
     width: 50%;
   }
 /*Profile data alignment and style*/
 .ProfilePage .UserI {
     border: solid 1px;
-    border-bottom: solid 2px;
     display:flex;
     position: relative;
     flex-direction: row;
@@ -21,17 +20,15 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    border: sold;
     text-align: left;
 }
 .ProfilePage .UserI div p {
     margin-right: 5px;
     min-width: 0;
-    border: sold;
 }
 
 .ProfilePage .UserI div p:nth-child(2){
-    color: rgba(255, 0, 0, 0.5);
+    color: rgb(255, 0, 0);
 }
 
 .ProfilePage .UserI div {
@@ -40,7 +37,6 @@
     align-items: center;
     min-width: max-content;
     font-weight: bolder;
-    border: sold;
     width: 100%;
     min-width: 100px;
 }
