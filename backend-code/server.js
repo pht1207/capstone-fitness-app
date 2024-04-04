@@ -1098,6 +1098,9 @@ const getCompleteWorkoutLogByDate = async function(req, res){
     SELECT 
       uw.userWorkoutTable_id,
       wt.workoutName, 
+      uw.rating, 
+      uw.duration, 
+      uw.timeCompleted, 
       et.exerciseName, 
       sit.setNumber, 
       sit.reps, 
@@ -1120,13 +1123,14 @@ const getCompleteWorkoutLogByDate = async function(req, res){
       const workouts = results.reduce((workoutsAcc, cur) => {
         //finds workouts in the results object
         let workout = workoutsAcc.find(w => w.userWorkoutTable_id === cur.userWorkoutTable_id);
-        
+        console.log(cur)
         if (!workout) {//creates a workout object if one does not exist
           workout = {
             userWorkoutTable_id: cur.userWorkoutTable_id,//used to distinguish between workout instances
             workoutName: cur.workoutName,
-            rating: "5",
-            duration: "360",
+            rating: cur.rating,
+            duration: cur.duration,
+            date: cur.timeCompleted, 
             exercises: [],
           };
           workoutsAcc.push(workout);

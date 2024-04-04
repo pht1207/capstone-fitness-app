@@ -57,10 +57,10 @@ function WorkoutLog() {
 
   return (
     <div className="WorkoutLog">
+      <h4>Workout Log</h4>
       <div className='WorkoutLogContainer'>
         {renderedLog.length > 0 ?
           <>
-              <h4>Workout Log</h4>
               {renderedLog.map((log, index) =>(
                 <WorkoutLogRow key={index} workoutLog={log} index={index}/>
               ))}
