@@ -10,16 +10,13 @@ function FitnessPageTernary() {
 
     const [isBeginner, setIsBeginner] = useState(JSON.parse(localStorage.getItem("beginnerBoolean")));
     
-
+    useEffect(()=>{
+      localStorage.setItem("beginnerBoolean", isBeginner)
+    },[isBeginner])
 
   return (
     <>
         {isBeginner ? <BeginnerHome setIsBeginner={setIsBeginner}/> : <AdvancedFitness setIsBeginner={setIsBeginner}/>}
-        {isBeginner ? <button className='SwitchModeButton' onClick={async ()=>{{setIsBeginner(false); await localStorage.setItem("beginnerBoolean", false)}}}>Switch to advanced mode</button> 
-        :
-        <button className='SwitchModeButton' onClick={async ()=>{{setIsBeginner(true); await localStorage.setItem("beginnerBoolean", false)}}}>Switch to beginner mode</button>
-        }
-
     </>
   );
 }

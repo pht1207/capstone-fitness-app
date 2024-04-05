@@ -29,7 +29,11 @@
     margin: 0;
     padding: 0;
 }
+.RightContainer .Tips:hover{
+    cursor:pointer;
+    background-color: rgb(230, 230, 230);
 
+}
 
 
 
@@ -61,4 +65,9 @@
 .RightContainer .LogWeight .LogWeightForm label input{
     width: 40%;
     padding:0;
+}
+
+.RightContainer .LogWeight .LogWeightForm  button:hover{
+    cursor: pointer;
+    background-color: rgb(230, 230, 230);
 }

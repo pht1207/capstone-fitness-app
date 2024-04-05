@@ -57,7 +57,7 @@ function WorkoutLog() {
 
   return (
     <div className="WorkoutLog">
-      <h4>Workout Log</h4>
+      <h3>Workout Log</h3>
       <div className='WorkoutLogContainer'>
         {renderedLog.length > 0 ?
           <>

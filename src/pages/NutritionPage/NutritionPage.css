@@ -110,8 +110,16 @@
     align-items: center;
     justify-content: space-around;
 }
+
 .NutritionPageTopRow .NutritionPageTopRowMiddle button, .NutritionPageTopRow .NutritionPageTopRowMiddle input{
     width: 50%;
 }
 
 
+.NutritionPageTopRow .NutritionPageTopRowMiddle button:hover{
+    cursor:pointer
+}
+.LogNutritionForm form button:hover{
+    cursor:pointer
+
+}
