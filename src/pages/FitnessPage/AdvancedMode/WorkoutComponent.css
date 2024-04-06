@@ -79,9 +79,13 @@
 
 .create-workout-box,
 .select-workout-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin: 10px auto;
   padding: 12px;
-  width: 200px;
+  width: 220px;
+  height: 100px;
   background-color: #00bfff;
   color: #fff;
   border-radius: 4px;

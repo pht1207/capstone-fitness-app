@@ -213,13 +213,13 @@ function WorkoutComponent({ selectedWorkout }) {
                 className="create-workout-box"
                 onClick={initiateCreateWorkout}
               >
-                <p>Log Workout</p>
+                <h3>Log Workout</h3>
               </div>
               <div
                 className="select-workout-box"
                 onClick={() => setShowCreateWorkout(true)}
               >
-                <p>Create Workout</p>
+                <h3>Create Workout</h3>
               </div>
             </div>
           )}

@@ -33,6 +33,9 @@ function WorkoutLogComponent(props) {
   const handleWorkoutClick = (workout) => {
     setSelectedWorkout(workout);
   };
+  const handleExitClick = () => {
+    setSelectedWorkout(null); // Clear selected workout
+  };
 
   return (
     <div className="workout-log">
@@ -50,9 +53,16 @@ function WorkoutLogComponent(props) {
             <tr key={workoutIndex} onClick={() => handleWorkoutClick(workout)}>
               <td>{workout.workoutName}</td>
               <td>{workout.duration}</td>
-              <td>{workout.date.substring(0,10)}</td>
+              <td>{workout.date.substring(0, 10)}</td>
               <td>{workout.rating}</td>
-              {console.log("Duration for workout", workout.workoutName, "is", workout.duration, "and workout date is ", workout.date)}
+              {console.log(
+                "Duration for workout",
+                workout.workoutName,
+                "is",
+                workout.duration,
+                "and workout date is ",
+                workout.date
+              )}
             </tr>
           ))}
         </tbody>
@@ -60,25 +70,15 @@ function WorkoutLogComponent(props) {
 
       {selectedWorkout && (
         <div className="selected-workout-details">
+          <button onClick={handleExitClick}>Exit</button> {/* Exit button */}
           <h3>Selected Workout Details</h3>
           <div className="WorkoutLogItem">
-            <div className="WorkoutLogHeader">
-              <p>{selectedWorkout.workoutName}</p>
-            </div>
             {selectedWorkout.exercises.map((exercise, exerciseIndex) => (
-              <div
-                key={`${selectedWorkout.workoutName}-${exerciseIndex}`}
-                className="ExerciseLogEntry"
-              >
-                <p>{exercise.exerciseName}</p>
+              <div key={exerciseIndex} className="ExerciseLogEntry">
+                <h6 className="ExerciseName">{exercise.exerciseName}</h6>
                 {exercise.sets.map((set, setIndex) => (
-                  <div
-                    key={`${selectedWorkout.workoutName}-${exerciseIndex}-${setIndex}`}
-                    className="SetLogEntry"
-                  >
-                    <p>Set #{set.setNumber}</p>
-                    <p>Reps: {set.reps}</p>
-                    <p>Weight: {set.weight}</p>
+                  <div key={setIndex} className="SetLogEntry">
+                    <p>Set #{set.setNumber}: Reps: {set.reps}, Weight: {set.weight}</p>
                   </div>
                 ))}
               </div>
