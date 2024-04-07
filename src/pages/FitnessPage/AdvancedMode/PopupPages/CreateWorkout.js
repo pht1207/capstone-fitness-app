@@ -85,7 +85,7 @@ function CreateWorkout(props) {
                 <div className="CreateWorkoutRow">
                     <div className="MadeExercise">
                         <h4>Your Workout</h4>
-                        <label><p>Workout name: </p> <input placeholder={"Type a Workout Name"} onChange={(e)=>{setCreatedWorkoutContent({workoutName:e.target.value, exercises:createdWorkoutContent.exercises})}}></input></label>
+                        <label> <input placeholder={"Type a Workout Name"} onChange={(e)=>{setCreatedWorkoutContent({workoutName:e.target.value, exercises:createdWorkoutContent.exercises})}}></input></label>
                         {createdWorkoutContent.exercises.length > 0 ?
                                 <>
                                     {createdWorkoutContent.exercises.map((object, index) =>(
@@ -97,7 +97,7 @@ function CreateWorkout(props) {
                                     <button onClick={SubmitWorkout}>Create Workout</button>
                                 </>
                             :
-                                <h3>Click exercises to add them to your workout</h3>
+                                <h5>Click exercises to add them to your workout</h5>
                             }
                     </div>
                     <div className="PickExerciseWindowColumn">

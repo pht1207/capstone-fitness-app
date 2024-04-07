@@ -69,8 +69,8 @@ cursor: pointer;
 }
 
 
-.PickWorkout{
-    position:absolute;
+.PickWorkout {
+    position: absolute;
     z-index: 2;
     display: flex;
     flex-direction: column;
@@ -79,9 +79,9 @@ cursor: pointer;
     left: 0;
     right: 0;
     bottom: 0;
-  
 }
-.PickWorkout .PickWorkoutWindowColumn{
+
+.PickWorkout .PickWorkoutWindowColumn {
     background-color: white;
     width: 70%;
     height: 60%;
@@ -93,9 +93,22 @@ cursor: pointer;
     align-items: center;
 }
 
-.PickWorkout .PickWorkoutWindowColumn .PickWorkoutWindowContent{
+.PickWorkout .PickWorkoutWindowColumn .PickWorkoutWindowContent {
     display: flex;
-    flex-direction: row;
     justify-content: space-around;
     width: 100%;
+}
+
+.PickWorkoutWindowListElement {
+    background-color: #f2f2f2;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    margin-top: 15px;
+}
+
+.PickWorkoutWindowListElement:hover {
+    background-color: #e2e2e2;
 }

@@ -47,11 +47,13 @@ function PickWorkout(props) {
     return (
         <div className="PickWorkout">
             <div className="PickWorkoutWindowColumn">
-            <div className="PopupHeaderFlexRow"><button style={{opacity:0}}>.</button><h1>Pick Workout</h1><button className="ExitButton"onClick={()=>{props.setShowPickWorkout(false)}}>X</button></div>
+              <h3>Select a Workout</h3>
+            <div className="PopupHeaderFlexRow"><button style={{opacity:0}}>.</button><button className="ExitButton"onClick={()=>{props.setShowPickWorkout(false)}}>X</button></div>
                 <div className="PickWorkoutWindowContent">
                     {backendSystemWorkouts.length > 0 ?
+                        
                         <div className="CreatedWorkouts">
-                            <h4>System Created Workouts</h4>
+                            <h4>Beginner Workouts</h4>
                             {backendSystemWorkouts.map((object, index) =>(
                                 <div key={index} className="PickWorkoutWindowListElement" onClick={()=>{props.setShowPickWorkout(false); props.addPrebuiltWorkout(object)}}>
                                     <p>{object.workoutName}</p>

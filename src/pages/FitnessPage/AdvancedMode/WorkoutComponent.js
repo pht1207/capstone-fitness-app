@@ -20,7 +20,7 @@ function WorkoutComponent({ selectedWorkout }) {
   const workoutSubmitted = async (exercises, workoutName, token) => {
     try {
       const durationInput = prompt(
-        "Enter the duration of your workout (in seconds):"
+        "Enter the duration of your workout (in minutes):"
       );
       if (!durationInput) {
         console.log("Duration input failed");
