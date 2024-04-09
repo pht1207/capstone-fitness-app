@@ -22,14 +22,13 @@ function WorkoutLogComponent(props) {
             },
           }
         );
-        console.log("API Response:", response.data); // Log the response data
         setWorkoutLog(response.data);
       } catch (error) {
         console.error("Error - Cannot get workouts: ", error);
       }
     };
     getWorkouts();
-  }, [props.date]); // Ensure useEffect updates when props.date changes
+  }, [props.date, props.loggedWorkout]); // Ensure useEffect updates when props.date changes
 
 
   return (
@@ -46,7 +45,7 @@ function WorkoutLogComponent(props) {
         <tbody>
           {/* Maps each workout that has been returned from the useEffect above */}
           {workoutLog.map((workout, workoutIndex) => (
-            <tr key={workoutIndex} onClick={() => setSelectedWorkout(workout)}>
+            <tr key={workoutIndex} onClick={() => setSelectedWorkout(workout)} className="workoutTableRow">
               <td>{workout.workoutName}</td>
               <td>{workout.duration}</td>
               <td>{workout.date.substring(0, 10)}</td>

@@ -6,7 +6,8 @@ import WorkoutLogComponent from './WorkoutLogComponent';
 function AdvancedFitness(props) {
 
   const [date, setDate] = useState(new Date().toISOString().substring(0,10));
-  const [selectedWorkout, setSelectedWorkout] = useState(null); 
+
+  const [loggedWorkout, setLoggedWorkout] = useState(0);
 
  
   return (
@@ -17,12 +18,12 @@ function AdvancedFitness(props) {
 
           <div className= "WorkoutFunctionContainer"> {/* User made or templates will fall in this section */}
             <h1>My Workouts</h1>
-            <WorkoutComponent selectedWorkout={selectedWorkout}/> 
+            <WorkoutComponent loggedWorkout={loggedWorkout} setLoggedWorkout={setLoggedWorkout}/> 
           </div>
       
           <div className="WorkoutLogContainer"> {/* The workout log will track certain info from the user's workout */}
             <h1>Workout Log</h1>
-            <WorkoutLogComponent  date = {date}/>
+            <WorkoutLogComponent  date = {date} loggedWorkout={loggedWorkout} setLoggedWorkout={setLoggedWorkout}/>
           </div>
 
         </div>
