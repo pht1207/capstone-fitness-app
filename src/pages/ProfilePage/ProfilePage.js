@@ -18,7 +18,7 @@ function ProfilePage() {
     weight: "",
     goal: "",
     DOB: "",
-    notificationsOn: ""
+    notificationsOn: false
 }
   const [userData, setData] = useState(emptyUserData);
   const token = localStorage.getItem("jwt")
@@ -34,7 +34,7 @@ function ProfilePage() {
   const [weight, setWeight] = useState("");
   const [goal, setGoal] = useState("");
   const [DOB, setDOB] = useState("");
-  const [notificationsOn, setNotificationsOn] = useState('');
+  const [notificationsOn, setNotificationsOn] = useState(false);
   const [savedPassword, setsavedPassword] = useState('')
 
   const [feet, setFeet] = useState("")
@@ -48,10 +48,9 @@ function ProfilePage() {
     event.preventDefault();//This prevents the page from reloading right when you submit
 
     if (password){
-    try{      
+    try{
       setsavedPassword(password)
       savePasswordto(password)
-      console.log(password)
       let body = {  
         password: savedPassword
       }
@@ -60,7 +59,7 @@ function ProfilePage() {
           Authorization: "Bearer " + token
         }
       });
-      console.log("success password")
+      setResponse(axiosResponse) //used in httpopup.js
 
     }
     catch(error){
@@ -69,7 +68,6 @@ function ProfilePage() {
   }
     try{
       setDisablesave(true)
-      console.log(firstname, lastname, Number(notificationsOn))
       let body = {  
         email: email,
         username: username,
@@ -85,7 +83,6 @@ function ProfilePage() {
         }
       });
       setResponse(axiosResponse) //used in httpopup.js
-      console.log("success else")
 
       if (axiosResponse.status === 200){
 
@@ -111,7 +108,6 @@ function ProfilePage() {
             'Authorization': 'Bearer ' + token
           }
         });
-        console.log(axiosResponse.data[0])
         if(axiosResponse.data[0] !== undefined){
           setData(axiosResponse.data[0]);
         }
@@ -122,7 +118,6 @@ function ProfilePage() {
       }
     };
     fetchData();
-    console.log(userData)
   }, []);
 
   function savePasswordto (savepassword){
@@ -234,7 +229,7 @@ function flipDate (){
   
           <div className="UserI">
             <div><p>Password:</p><input type={passwordShow?('password'):('text')} name='password' defaultValue={savedPassword} onChange={(event)=>{setPassword(event.target.value)}}/><button type='button' onClick={passwordShowClickled}>show</button></div>
-            <div><p>Date of Birth:</p><input type="date" id='DOB' Value={DOB} onChange={(event)=>{setDOB(event.target.value)}}/></div>
+            <div><p>Date of Birth:</p><input type="date" id='DOB' defaultValue={DOB} onChange={(event)=>{setDOB(event.target.value)}}/></div>
           </div>
   
           <div className="UserI">
@@ -252,7 +247,7 @@ function flipDate (){
           </div>
 
             <div className="UserI">
-             <div><p>Notifications:<label className="switch" ><input type="checkbox" checked={notificationsOn} onClick={notificationsSwitch} /><span className="slider"></span></label></p></div>
+             <div><p>Notifications:<label className="switch" ><input type="checkbox" checked={notificationsOn} onChange={notificationsSwitch} /><span className="slider"></span></label></p></div>
             </div>
 
           <div className="UserI">
