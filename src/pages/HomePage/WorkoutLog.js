@@ -44,11 +44,13 @@ function WorkoutLog() {
       }, [workoutLog])
 
 
+  //If there is more content to show, the user is allowed to move forward a page
   function pageForward(){
     if(workoutLog.length > 5){
       setPage(page+1)
     }
   }
+  //If there is more content to show, the user is allowed to move backward a page
   function pageBackward(){
     if(page > 1){
       setPage(page-1);
