@@ -12,6 +12,7 @@ function LogWeight(props) {
   const [dateLogged, setDateLogged] = useState(currentDate);
   const {setResponse} = useContext(HttpPopupContext);
   
+  //Submits the weight log form to the backend
   async function weightLogSubmit(event){
     event.preventDefault();
     try{
@@ -25,7 +26,7 @@ function LogWeight(props) {
         }
       });
       setResponse(axiosResponse) //used in httpopup.js
-      props.setWeightLogged(props.weightLogged+1)
+      props.setWeightLogged(props.weightLogged+1) //Used as an event listener to update the weight graph
     }
     catch(error){
       console.error("error: ", error.response)
@@ -33,21 +34,14 @@ function LogWeight(props) {
     }
   }
 
-  function weightChange(event){
-    setWeightInput(event.target.value);
-  }
-  function dateChange(event){
-    setDateLogged(event.target.value);
-
-  }
 
 
   return (
     <div className="LogWeight">
         <h4>Log Weight</h4>
         <form onSubmit={weightLogSubmit} className='LogWeightForm'>
-          <label>Weight: <input className='WeightInput' type='number' onChange={weightChange}/></label>
-          <label>Date: <input type='date' onChange={dateChange} defaultValue={dateLogged} max={currentDate}></input></label>
+          <label>Weight: <input className='WeightInput' type='number' onChange={(e)=>{setWeightInput(e.target.value)}}/></label>
+          <label>Date: <input type='date' onChange={(e)=>{setDateLogged(e.target.value)}} defaultValue={dateLogged} max={currentDate}></input></label>
           <button type='submit'>Submit</button>
         </form>
 
