@@ -1,7 +1,7 @@
 
 const recommendedWorkouts = [
     {
-        workoutName: "Full Body",
+        workoutName: " Full Body",
         exercises: [
             {name: "Barbell Stiff Leg Deadlift", sets: "", reps:""},
             {name: "Smith Machine Back Squat", sets: "", reps:""},
@@ -14,7 +14,7 @@ const recommendedWorkouts = [
     },
 
     {
-        workoutName: "Back Focus",
+        workoutName: " Back Focus",
         exercises: [
             {name: "Chest Supported Row", sets: "", reps:""},
             {name: "Wide Grip Lat Pulldown", sets: "", reps:""},
