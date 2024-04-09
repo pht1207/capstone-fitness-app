@@ -185,7 +185,7 @@ function flipDate (){
     editProfileClicked ? (
     <div className="ProfilePage">
       <section>
-      <h1>PROFILE</h1>
+      <br></br>
         <div className="UserI">
           <div><p>First Name:</p><p>{firstname}</p></div>
           <div><p>Last Name:</p><p>{lastname}</p></div>

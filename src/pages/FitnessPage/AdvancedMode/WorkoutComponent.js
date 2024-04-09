@@ -20,7 +20,7 @@ function WorkoutComponent({ selectedWorkout }) {
   const workoutSubmitted = async (exercises, workoutName, token) => {
     try {
       const durationInput = prompt(
-        "Enter the duration of your workout (in seconds):"
+        "Enter the duration of your workout (in minutes):"
       );
       if (!durationInput) {
         console.log("Duration input failed");
@@ -213,13 +213,13 @@ function WorkoutComponent({ selectedWorkout }) {
                 className="create-workout-box"
                 onClick={initiateCreateWorkout}
               >
-                <p>Log Workout</p>
+                <h3>Log Workout</h3>
               </div>
               <div
                 className="select-workout-box"
                 onClick={() => setShowCreateWorkout(true)}
               >
-                <p>Create Workout</p>
+                <h3>Create Workout</h3>
               </div>
             </div>
           )}

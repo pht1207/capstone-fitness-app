@@ -11,8 +11,8 @@ function AdvancedFitness(props) {
  
   return (
     <div className= "FitnessPage"> {/*This div will contain every component for the fitness page. */}
-    <div>
-      <p>Pick date to check or log for:</p><input type='date' onChange={((event)=>setDate(event.target.value))} defaultValue={date}/>
+    <div className='MainPage'>
+      <p>Pick date to check or log for:</p><input type='date' onChange={((event)=>setDate(event.target.value))} defaultValue={date}max={date} />
         <div className='FitnessPageMainRow'>
 
           <div className= "WorkoutFunctionContainer"> {/* User made or templates will fall in this section */}
@@ -28,6 +28,7 @@ function AdvancedFitness(props) {
         </div>
 
     </div>
+    <button className='SwitchModeButton' onClick={async ()=>{{props.setIsBeginner(true);}}}>Switch to beginner mode</button> 
     </div>
   );
 }

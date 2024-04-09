@@ -1,8 +1,11 @@
-.BeginnerFitness{
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 95%;
+
+.MainDiv{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-content: space-between;
+  width: 100%;
+  height: 95%;
 }
 
 

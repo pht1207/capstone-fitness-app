@@ -26,7 +26,6 @@
 .ProfilePage .UserI div p {
     margin-right: .313em;
     min-width: 0;
-    border: sold;
 }
 
 .ProfilePage .UserI div p:nth-child(2){
@@ -39,7 +38,6 @@
     align-items: center;
     min-width: max-content;
     font-weight: bolder;
-    border: sold;
     width: 100%;
     min-width: 100px;
 }

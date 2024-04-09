@@ -18,16 +18,18 @@ function NutritionPage() {
   curr.setDate(curr.getDate());
   let currentDate = curr.toISOString().substring(0,10);
   const [date, setDate] = useState(currentDate)
+  const [minDate, setMinDate] = useState();
 
   useEffect(() => {//This useEffect gets the user's nutrition log when the date is changed to a valid date value
     const fetchData = async () => {
       try {
-        let endpoint = "https://capstone.parkert.dev/backend/getUserNutritionLog?dateAccessed="+date
+        let endpoint = "https://capstone.parkert.dev/backend/getUserNutritionLog?dateAccessed="+encodeURIComponent(date)
         const response = await axios.get(endpoint, {
           headers: {
             'Authorization': 'Bearer ' + token
           }
         });
+        console.log(response.data)
         setNutritionLog(response.data  || { proteinConsumed:"0", carbsConsumed:"0", fatsConsumed:"0"});
       }
         catch (error) {
@@ -115,14 +117,15 @@ function NutritionPage() {
 useEffect(() => {
   const fetchData = async () => { 
     try {
-      const response = await axios.get("https://capstone.parkert.dev/backend/getUserWeightLogByDate?dateAccessed="+date, {
+      const response = await axios.get("https://capstone.parkert.dev/backend/getUserWeightLog", {
         headers: {
           'Authorization': 'Bearer ' + token
         }
       });
       //setWeight(response.data[0].weightName);
-      console.log("Below is the response data for getUserWeightLogByDate: ")
-      console.log(response.data.results[0])
+      let length = response.data.results.length-1;
+      setWeight(response.data.results[length].weight)
+      setMinDate(response.data.results[0].dateTimeChanged);
     }
       catch (error) {
       console.error('Error fetching data: ', error);
@@ -142,7 +145,7 @@ useEffect(() => {
         </div>
 
         <div className='NutritionPageTopRowMiddle'>
-          <input type='date' onChange={((event)=>setDate(event.target.value))} defaultValue={date}></input>
+          <input type='date' onChange={((event)=>setDate(event.target.value))} defaultValue={date} max={currentDate} min={minDate}></input>
           <button onClick={(()=> setShowLogNutritionForm(!showlogNutritionForm))}>Log Nutrition</button>
         </div>
         
@@ -160,8 +163,8 @@ useEffect(() => {
           : 
           <div className='NutritionContainerRow'>
             <NutrientContainer containerName="Protein" goalValue={nutritionGoal.proteinGoal} remainingValue={1} loggedCount={nutritionLog.proteinConsumed} backgroundColor={"rgb(255,204,204)"}/>
-            <NutrientContainer containerName="Carb" goalValue={nutritionGoal.carbsGoal} loggedCount={nutritionLog.carbsConsumed} backgroundColor={"rgb(204,255,204)"}/>
-            <NutrientContainer containerName="Fat" goalValue={nutritionGoal.fatsGoal} remainingValue={1} loggedCount={nutritionLog.fatsConsumed} backgroundColor={"rgb(204,255,255)"}/>
+            <NutrientContainer containerName="Carbs" goalValue={nutritionGoal.carbsGoal} loggedCount={nutritionLog.carbsConsumed} backgroundColor={"rgb(204,255,204)"}/>
+            <NutrientContainer containerName="Fats" goalValue={nutritionGoal.fatsGoal} remainingValue={1} loggedCount={nutritionLog.fatsConsumed} backgroundColor={"rgb(204,255,255)"}/>
           </div>
         }
     </div>

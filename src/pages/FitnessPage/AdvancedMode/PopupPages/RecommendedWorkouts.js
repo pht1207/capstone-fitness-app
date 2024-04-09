@@ -1,29 +1,36 @@
 
 const recommendedWorkouts = [
     {
-        workoutName: "Chest Specialization",
+        workoutName: "Full Body",
         exercises: [
-            {name: "Machine Flat Press", sets: "", reps:""},
-            {name: "Incline Dumbbell Press", sets: "", reps:""},
-            {name: "Cable Chest Fly", sets: "", reps:""}
+            {name: "Barbell Stiff Leg Deadlift", sets: "", reps:""},
+            {name: "Smith Machine Back Squat", sets: "", reps:""},
+            {name: "Dumbbel Bench Press", sets: "", reps:""},
+            {name: "Barbell Row", sets: "", reps:""},
+            {name: "Dumbbell Shoulder Press", sets: "", reps:""},
+            {name: "Cable Curl", sets: "", reps:""},
+            {name: "Machine Tricep Dip", sets: "", reps:""}
         ]
     },
 
     {
-        workoutName: "Back Specialization",
+        workoutName: "Back Focus",
         exercises: [
-            {name: "Weighted/Body Weight Pull-Ups", sets: "", reps:""},
-            {name: "Neutral Grip Lat Pulldonmw", sets: "", reps:""},
-            {name: "Machine Chest Supported Row", sets: "", reps:""}
+            {name: "Chest Supported Row", sets: "", reps:""},
+            {name: "Wide Grip Lat Pulldown", sets: "", reps:""},
+            {name: "Chest Supported Machine Low to High Row", sets: "", reps:""},
+            {name: "Neutral Grip Cable Row", sets: "", reps: ""}
+            
         ]
     },
 
     {
-        workoutName: " Shoulder Specialization",
+        workoutName: " Shoulder Focus",
         exercises: [
             {name: "Smith Machine Shoulder Press", sets: "", reps:""},
             {name: "Cable Lateral Raise", sets: "", reps:""},
-            {name: "Reverse Cable Fly", sets: "", reps:""}
+            {name: "Reverse Cable Fly", sets: "", reps:""},
+            {name: "Cable Front Raise", sets: "", reps: ""}
         ]
     },
 
@@ -42,19 +49,10 @@ const recommendedWorkouts = [
         exercises: [
             {name: "Leg Extension", sets: "", reps:""},
             {name: "Hack Squat", sets: "", reps:""},
-            {name: "Leg Press", sets: "", reps:""}
-        ]
-    },
-
-    {
-        workoutName: " Hamstring Specialization",
-        exercises: [
-            {name: "Seated Leg Curl", sets: "", reps:""},
-            {name: "Lying Leg Curl", sets: "", reps:""},
-            {name: "Stiff Legged RDL", sets: "", reps:""}
+            {name: "Leg Press", sets: "", reps:""},
+            {name: "Weight Lunges", sets: "", reps: ""}
         ]
     }
-
 
 ];
 

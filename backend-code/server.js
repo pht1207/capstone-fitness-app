@@ -499,7 +499,8 @@ const logNutrition = async function(req, res) {
   //write insert statements for the user
   const userID = req.user.id;
   const nutritionLog = req.body;
-  const values = [userID, nutritionLog.caloriesConsumed || null, nutritionLog.carbsConsumed || null, nutritionLog.proteinConsumed || null, nutritionLog.fatsConsumed || null, nutritionLog.dateTimeConsumed || null]
+  console.log(nutritionLog)
+  const values = [userID, nutritionLog.caloriesConsumed, nutritionLog.carbsConsumed, nutritionLog.proteinConsumed, nutritionLog.fatsConsumed, nutritionLog.dateTimeConsumed]
   const query = "INSERT INTO userConsumptionTable (userTable_id, caloriesConsumed, carbsConsumed, proteinConsumed, fatsConsumed, dateTimeConsumed)  VALUES (?, ?, ?, ?, ?, ?)"
   pool.query(query, values, (error, results) =>{
     if(error){
@@ -519,7 +520,7 @@ const getUserNutritionLog = async function(req, res) {
   const userID = req.user.id;
 
   pool.query(
-  'SELECT userConsumptionTable_id caloriesConsumed, carbsConsumed, proteinConsumed, fatsConsumed, dateTimeConsumed ' +
+  'SELECT userConsumptionTable_id, caloriesConsumed, carbsConsumed, proteinConsumed, fatsConsumed, dateTimeConsumed ' +
   'FROM userConsumptionTable ' +
   'WHERE userTable_id = ? AND DATE(dateTimeConsumed) = ? ',
   [userID, dateAccessed],
@@ -546,6 +547,7 @@ const getUserNutritionLog = async function(req, res) {
             nutritionLog.fatsConsumed += results[i].fatsConsumed;
           }
         }
+          console.log(nutritionLog)
           res.status(200).json(nutritionLog);
     }
     catch(error){
@@ -1301,7 +1303,7 @@ const getUserWeightLog = async function(req, res) {
       for(let i = 0; i < results.length; i++){
         results[i].dateTimeChanged = results[i].dateTimeChanged.toISOString().split('T')[0];
       }
-
+      console.log(results)
       res.status(200).json({
         results,
         message:"Successfully fetched user's weight log"

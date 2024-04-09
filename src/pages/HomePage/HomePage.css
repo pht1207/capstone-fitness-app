@@ -102,6 +102,9 @@
 
 
 
-.HomePage #next_button:hover{
-  background-color: rgba(23, 251, 255, 0.411);
+
+.PageChanger button:hover{
+  cursor: pointer;
+  background-color: rgb(230, 230, 230);
+
 }

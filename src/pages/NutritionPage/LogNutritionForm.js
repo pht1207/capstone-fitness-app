@@ -23,6 +23,7 @@ const {setResponse} = useContext(HttpPopupContext);
       fatsConsumed:fatsConsumed,
       dateTimeConsumed:date
     }
+    console.log(body)
     const axiosResponse = await axios.post("https://capstone.parkert.dev/backend/logNutrition", body, {
       headers: {
         Authorization: "Bearer " + localStorage.getItem("jwt")

@@ -61,10 +61,6 @@
     cursor: pointer;
 }
 
-
-
-
-
 .CreateWorkout .PickWorkoutWindowColumn .PickWorkoutWindowContent{
     display: flex;
     flex-direction: row;
@@ -72,12 +68,44 @@
     width: 100%;
 }
 
-
 .CreateWorkout .CreateWorkoutWindow .CreateWorkoutRow{
     display: flex;
     flex-direction: row;
     width: 100%;
 
+}
+
+.CreatedWorkoutContentElement {
+    display: flex;
+    align-items: center;
+    padding: 0.5em;
+    margin: 0.5em;
+    background-color: #e2e2e2; /* Background color */
+    border: 1px solid #ccc; /* Border */
+    border-radius: 5px; /* Rounded corners */
+}
+
+.ExitButton {
+    position: absolute;
+    height: 35px;
+    right: 215px; /* Adjust right spacing */
+    background-color: #ff6347; /* Red button background color */
+    color: #fff; /* Button text color */
+    border: none;
+    border-radius: 3px;
+    padding: 6px 10px; /* Adjust padding */
+    font-size: 14px; /* Adjust font size */
+    max-width: 50px; /* Limit button width */
+    white-space: nowrap; /* Prevent button text from wrapping */
+    overflow: hidden; /* Hide overflow text */
+    text-overflow: ellipsis; /* Show ellipsis for overflow text */
+    cursor: pointer;
+  }
+.MadeExercise input {
+    padding: 0.5em; /* Add padding to the input */
+    font-size: 1em; /* Set the font size */
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .MadeExercise{
