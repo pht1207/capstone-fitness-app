@@ -68,14 +68,7 @@ function PickWorkout(props) {
                 <h4>No results found</h4>
               </div>                    
             }
-              <div className="CreatedWorkouts">
-                  <h4>Recommended Workouts</h4>
-                  {recommendedWorkouts.map((object, index) => (
-                  <div key={index} className="PickWorkoutWindowListElement" onClick={() => {props.setShowPickWorkout(false); props.addPrebuiltWorkout(object)}}>
-                      <p>{object.workoutName}</p>
-                  </div>
-                  ))}
-              </div>
+
               {backendUserWorkouts.length > 0 ?
               
                   <div className="CreatedWorkouts">
