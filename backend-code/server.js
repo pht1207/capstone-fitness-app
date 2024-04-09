@@ -304,7 +304,6 @@ app.post('/login', upload.none(), login);
 */}
 
 const updateProfile = async function(req, res) {
-  console.log(req.body);
   const userID = req.user.id;
   const requestData = req.body;
   const email = requestData.email;
@@ -368,7 +367,6 @@ const updateProfile = async function(req, res) {
 }
 
 const updatePassword = async function(req, res) {
-  console.log(req.body);
   const userID = req.user.id;
   const password = req.body.password;
 
@@ -459,7 +457,6 @@ const setUserGoal = async function(req, res){
     const query = "INSERT INTO user_goalTable "+
     "(goalTable_id, userTable_id, dateTimeChanged) VALUES (?, ?, ?)"
     const values = [goal, userID, getCurrentTime()];
-    console.log(values)
     pool.query(query, values, (error, results) =>{
       if(error){
         console.error(error);
@@ -499,7 +496,6 @@ const logNutrition = async function(req, res) {
   //write insert statements for the user
   const userID = req.user.id;
   const nutritionLog = req.body;
-  console.log(nutritionLog)
   const values = [userID, nutritionLog.caloriesConsumed, nutritionLog.carbsConsumed, nutritionLog.proteinConsumed, nutritionLog.fatsConsumed, nutritionLog.dateTimeConsumed]
   const query = "INSERT INTO userConsumptionTable (userTable_id, caloriesConsumed, carbsConsumed, proteinConsumed, fatsConsumed, dateTimeConsumed)  VALUES (?, ?, ?, ?, ?, ?)"
   pool.query(query, values, (error, results) =>{
@@ -547,7 +543,6 @@ const getUserNutritionLog = async function(req, res) {
             nutritionLog.fatsConsumed += results[i].fatsConsumed;
           }
         }
-          console.log(nutritionLog)
           res.status(200).json(nutritionLog);
     }
     catch(error){
@@ -1125,7 +1120,6 @@ const getCompleteWorkoutLogByDate = async function(req, res){
       const workouts = results.reduce((workoutsAcc, cur) => {
         //finds workouts in the results object
         let workout = workoutsAcc.find(w => w.userWorkoutTable_id === cur.userWorkoutTable_id);
-        console.log(cur)
         if (!workout) {//creates a workout object if one does not exist
           workout = {
             userWorkoutTable_id: cur.userWorkoutTable_id,//used to distinguish between workout instances
@@ -1303,7 +1297,6 @@ const getUserWeightLog = async function(req, res) {
       for(let i = 0; i < results.length; i++){
         results[i].dateTimeChanged = results[i].dateTimeChanged.toISOString().split('T')[0];
       }
-      console.log(results)
       res.status(200).json({
         results,
         message:"Successfully fetched user's weight log"
