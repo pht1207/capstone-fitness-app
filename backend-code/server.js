@@ -313,6 +313,7 @@ const updateProfile = async function(req, res) {
   const lastName = requestData.lastName;
   const DOB = requestData.DOB;
   const height = requestData.height;
+  const goal = requestData.goal
   const notificationsOn = requestData.notificationsOn;
 
  {/* removed  from validator object for now*/}
@@ -358,9 +359,20 @@ const updateProfile = async function(req, res) {
       }
       }
       else{
-        res.status(200).json({
-          message:"update profile successful"
-        });
+        const updateGoalQuery = "UPDATE user_goalTable SET goalTable_id = ? WHERE userTable_id = ?"
+        const updateGoalValues = [goal, userID]
+        pool.query(updateGoalQuery, updateGoalValues, (error, results) =>{
+          if(error){
+            res.status(500).json({
+              message: "Internal Server Error"
+          });
+          }
+          else{
+            res.status(200).json({
+              message:"update profile successful"
+            });
+          }
+        })
       }
     })
   }
