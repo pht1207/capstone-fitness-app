@@ -17,6 +17,7 @@ function WorkoutLogRow(props) {
             setBackgroundColor("rgba(0, 0, 0, 0.123)");
         }
     },[])
+    
     return (
     <div className="WorkoutLogRow" style={{background:backgroundColor}}>
         <p>Workout Name: {workoutTable_id}</p>
