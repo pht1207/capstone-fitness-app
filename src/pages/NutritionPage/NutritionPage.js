@@ -159,7 +159,7 @@ useEffect(() => {
         {/*This block of code below hides or shows information on the page depending on if the button coded above has been clicked */}
         {
           showlogNutritionForm ? 
-            <LogNutritionForm date={date}/> 
+            <LogNutritionForm date={date} setShowLogNutritionForm={setShowLogNutritionForm}/> 
           : 
           <div className='NutritionContainerRow'>
             <NutrientContainer containerName="Protein" goalValue={nutritionGoal.proteinGoal} remainingValue={1} loggedCount={nutritionLog.proteinConsumed} backgroundColor={"rgb(255,204,204)"}/>

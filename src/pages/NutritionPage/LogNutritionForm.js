@@ -13,6 +13,7 @@ const [fatsConsumed, setFatsConsumed] = useState(0);
 
 const {setResponse} = useContext(HttpPopupContext);
 
+
  async function formSubmitted(event){
   event.preventDefault();
   try{
@@ -29,14 +30,15 @@ const {setResponse} = useContext(HttpPopupContext);
         Authorization: "Bearer " + localStorage.getItem("jwt")
       }
     });
-    setResponse(axiosResponse) //used in httpopup.js
+    await setResponse(axiosResponse) //used in httpopup.js
+    props.setShowLogNutritionForm(false);
   }
   catch(error){
     console.error("error: ", error.response)
     setResponse(error.response)
   }
-
  }
+
 
   return (
     <div className="LogNutritionForm">
