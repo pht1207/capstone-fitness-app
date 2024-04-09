@@ -6,6 +6,7 @@ import { HttpPopupContext } from './HttpPopupContext';
 function HttpPopup() {
   const {response, setResponse} = useContext(HttpPopupContext);
   const [popupColor, setPopupColor] = useState("LightGreen")
+  //This useEffect sets the background color of the http response popup and has it timeout after 8 seconds
   useEffect(()=>{
     if(response.status === 200){
       setPopupColor("LightGreen")
@@ -15,7 +16,7 @@ function HttpPopup() {
     }
     setTimeout(() =>{ //Wait 10 seconds before hiding the response message
       setResponse(false)
-    },10000)
+    },8000)
   },[response])
 
   

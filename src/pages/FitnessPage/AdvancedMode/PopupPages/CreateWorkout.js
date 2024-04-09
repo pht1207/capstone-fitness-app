@@ -8,6 +8,7 @@ function CreateWorkout(props) {
     const token = localStorage.getItem("jwt"); //Token for backend operations
     const [createdWorkoutContent, setCreatedWorkoutContent] = useState({workoutName:'Placeholder', exercises:[],});
 
+    //This useeffect gets all exercises available to the user in DB, and shows them. It also has a filter available to sort by muscle group
     useEffect(() => {
         const getExercises = async () => {
         let response;
@@ -51,14 +52,12 @@ function CreateWorkout(props) {
         console.log(createdWorkoutContent)
     },[createdWorkoutContent])
 
+    //This function sends a workout object to be inserted into the DB to be used for future use by the user as a preset
     function SubmitWorkout(){
-        console.log("submitted")
-
         const SendWorkout = async () => {
             let response;
             let body = createdWorkoutContent;
             try{
-                console.log("trying")
                 response = await axios.post(
                     "https://capstone.parkert.dev/backend/createWorkoutsWithExercises",
                     body,
@@ -68,7 +67,6 @@ function CreateWorkout(props) {
                         }
                     }
                 );
-                console.log("response: ", response)
                 props.setShowCreateWorkout(false);
             }
     
