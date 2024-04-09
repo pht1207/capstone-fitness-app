@@ -30,12 +30,6 @@ function WorkoutLogComponent(props) {
     getWorkouts();
   }, [props.date]); // Ensure useEffect updates when props.date changes
 
-  const handleWorkoutClick = (workout) => {
-    setSelectedWorkout(workout);
-  };
-  const handleExitClick = () => {
-    setSelectedWorkout(null); // Clear selected workout
-  };
 
   return (
     <div className="workout-log">
@@ -50,19 +44,11 @@ function WorkoutLogComponent(props) {
         </thead>
         <tbody>
           {workoutLog.map((workout, workoutIndex) => (
-            <tr key={workoutIndex} onClick={() => handleWorkoutClick(workout)}>
+            <tr key={workoutIndex} onClick={() => setSelectedWorkout(workout)}>
               <td>{workout.workoutName}</td>
               <td>{workout.duration}</td>
               <td>{workout.date.substring(0, 10)}</td>
               <td>{workout.rating}</td>
-              {console.log(
-                "Duration for workout",
-                workout.workoutName,
-                "is",
-                workout.duration,
-                "and workout date is ",
-                workout.date
-              )}
             </tr>
           ))}
         </tbody>
@@ -70,7 +56,7 @@ function WorkoutLogComponent(props) {
 
       {selectedWorkout && (
         <div className="selected-workout-details">
-          <button onClick={handleExitClick}>Exit</button> {/* Exit button */}
+          <button onClick={()=>{setSelectedWorkout(null)}}>Exit</button> {/* Exit button */}
           <h3>Selected Workout Details</h3>
           <div className="WorkoutLogItem">
             {selectedWorkout.exercises.map((exercise, exerciseIndex) => (
