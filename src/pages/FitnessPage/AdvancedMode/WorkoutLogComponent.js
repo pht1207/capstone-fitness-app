@@ -8,6 +8,7 @@ function WorkoutLogComponent(props) {
   const [workoutLog, setWorkoutLog] = useState([]);
   const [selectedWorkout, setSelectedWorkout] = useState(null);
 
+  //This useEffect is used to get workoutlogs from the database for the selected date
   useEffect(() => {
     const getWorkouts = async () => {
       try {
@@ -43,6 +44,7 @@ function WorkoutLogComponent(props) {
           </tr>
         </thead>
         <tbody>
+          {/* Maps each workout that has been returned from the useEffect above */}
           {workoutLog.map((workout, workoutIndex) => (
             <tr key={workoutIndex} onClick={() => setSelectedWorkout(workout)}>
               <td>{workout.workoutName}</td>
@@ -53,7 +55,7 @@ function WorkoutLogComponent(props) {
           ))}
         </tbody>
       </table>
-
+      {/*This section is used to display additional information about the exercise if the user clicks on it */}
       {selectedWorkout && (
         <div className="selected-workout-details">
           <button onClick={()=>{setSelectedWorkout(null)}}>Exit</button> {/* Exit button */}
