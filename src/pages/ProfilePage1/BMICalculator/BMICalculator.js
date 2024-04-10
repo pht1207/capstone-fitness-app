@@ -1,19 +1,13 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { LineChart, XAxis, YAxis, Line, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import axios from 'axios';
-import {HttpPopupContext} from '../../../components/HttpPopupContext';
 import "./BMICalculator.css"
 
 function BMICalculator(props) {
-
-  const [axiosData, setAxiosData] = useState();
-  const {setResponse} = useContext(HttpPopupContext);
-    const [weight, setWeight] = useState(props.userData.userWeight)
-    const [height, setHeight] = useState(props.userData.height)
-
+  const [weight, setWeight] = useState(props.userData.userWeight)
+  const [height, setHeight] = useState(props.userData.height)
 
   return (
     <div className="BMICalculator">
+      <div className='BMIContainer'>
         <h4>BMI Calculator</h4>
         <div className='BMIRow'><p>Height (inches):</p><input defaultValue={height} onChange={(e)=>{setHeight(e.target.value)}}></input></div>
         <div className='BMIRow'><p>Weight (lbs):</p><input defaultValue={weight} onChange={(e)=>{setWeight(e.target.value)}}></input></div>
@@ -25,7 +19,7 @@ function BMICalculator(props) {
         <div className='BMIRow'><p>Overweight: </p><p>24.9-29.9</p></div>
         <div className='BMIRow'><p>Obese: </p><p>{"≥"}30</p></div>
 
-
+      </div>
   </div>
   );
 }

@@ -1,14 +1,13 @@
 import './ProfilePage.css'
-import './EditProfilePage.css'
 import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import { HttpPopupContext } from '../../../components/HttpPopupContext';
+import { HttpPopupContext } from '../../components/HttpPopupContext';
 import { toInteger } from 'lodash';
-import ViewProfile from './ViewProfile';
-import EditProfile from './EditProfile';
-import EditPassword from './EditPassword';
-import WeightGraphFull from './WeightGraphFull';
-import BMICalculator from './BMICalculator';
+import ViewProfile from './ProfilePage/ViewProfile';
+import EditProfile from './ProfilePage/EditProfile';
+import EditPassword from './ProfilePage/EditPassword';
+import WeightGraphFull from './WeightGraphFull/WeightGraphFull';
+import BMICalculator from './BMICalculator/BMICalculator';
 
 
 function NewProfilePage() {
@@ -64,13 +63,13 @@ function NewProfilePage() {
       {contentView === 'profile' &&
       <> 
         {profileView === 'view' && 
-          <ViewProfile setProfileView={setProfileView}/>
+          <ViewProfile setProfileView={setProfileView} userData={userData}/>
         }
         {profileView === 'edit' && 
-          <EditProfile setProfileView={setProfileView}/>
+          <EditProfile setProfileView={setProfileView} userData={userData}/>
         }
         {profileView === 'password' && 
-          <EditPassword setProfileView={setProfileView}/>
+          <EditPassword setProfileView={setProfileView} userData={userData}/>
         }
         </>
       }

@@ -17,7 +17,7 @@ import { jwtDecode } from 'jwt-decode';
 import HttpPopup from './components/HttpPopup';
 import { HttpPopupContext } from './components/HttpPopupContext';
 import FitnessPageTernary from './pages/FitnessPage/FitnessPageTernary';
-import NewProfilePage from './pages/ProfilePage1/ProfilePage/ProfilePageNew';
+import NewProfilePage from './pages/ProfilePage1/ProfilePageNew';
 
 
 function App() {
@@ -64,16 +64,16 @@ function App() {
                 <Link to="/">Home</Link>
                 <Link to="/FitnessPageTernary">Fitness </Link>
                 <Link to="/NutritionPage">Nutrition</Link>
-                <Link to="/NewProfilePage">ProfileNew</Link>
+                
 
-                {isJWTExpired ? <Link to="/LoginRegisterPage" >Login/Register</Link> : <Link to="/ProfilePage">Profile</Link>}
+                {isJWTExpired ? <Link to="/LoginRegisterPage" >Login/Register</Link> : <Link to="/NewProfilePage">ProfileNew</Link>}
             </nav>
 
             <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/FitnessPageTernary" element={<FitnessPageTernary />} />
                 <Route path="/NutritionPage" element={<NutritionPage />} />
-                <Route path="/ProfilePage" element={<ProfilePage />} />
+                {/*<Route path="/ProfilePage" element={<ProfilePage />} />*/}
                 <Route path="/NewProfilePage" element={<NewProfilePage />} />
                 <Route path="/LoginRegisterPage" element={<LoginRegisterPage loginEvent= {loginEvent} setLoginEvent={setLoginEvent}/>} />
             </Routes>

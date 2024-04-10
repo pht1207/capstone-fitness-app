@@ -1,9 +1,8 @@
-import './ProfilePage.css'
-import './EditProfilePage.css'
 import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { HttpPopupContext } from '../../../components/HttpPopupContext';
 import { toInteger } from 'lodash';
+import './ViewProfile.css'
 
 function ViewProfile(props) {
 
@@ -71,7 +70,7 @@ function ViewProfile(props) {
     setWeight(userData.userWeight);
     setGoal(userData.goalName);
     setDOB(userData.DOB.substring(0,10))
-    setNotificationsOn(0);
+    setNotificationsOn(Number(userData.notificationsOn))
     setFeet(toInteger(height/12))
     setInches(toInteger(height%12))
   },[userData])
@@ -83,41 +82,25 @@ function flipDate (){
 }
 
   return (
-    <div className="ProfilePage">
-      <h1>Your Profile</h1>
-      <section>
-        <div className="UserI">
-          <div><p>First Name:</p><p>{firstname}</p></div>
-          <div><p>Last Name:</p><p>{lastname}</p></div>
-        </div>
-
-        <div className="UserI">
-          <div><p>Username:</p><p>{username}</p></div>
-          <div><p>Email:</p><p>{email}</p></div>
-        </div>
-
-        <div className="UserI">
-          <div><p>Date of Birth:</p><p>{flipDate()}</p></div>
-        </div>
-
-        <div className="UserI">
-          <div><p>Height:</p><p>{feet} feet {inches} inches</p></div>
-          <div><p>Weight:</p><p>{weight} </p></div>
-        </div>
-
-        <div className="UserI">
-          <div><p>Goal:</p><p>{goal}</p></div>
-        </div>
-
-        <div className="UserI">
-          <div><p>Notifications:</p><p>{notificationsOn ? 'on': 'off'}</p></div>
-        </div>
-
-        <div className="UserI">
-          <div className='ButtonContainerForProfileView'><button className="button2" onClick={()=>{props.setProfileView("password")}}>Change Password</button><button className="button3" onClick={()=>{props.setProfileView("edit")}}>Edit Profile</button></div>
-        </div>
-        </section>
+    <div className="ViewProfile">
+      <div className='LeftColumn'>
+        <figure>
+          <img src='/placeholdericon.jpeg'></img>
+          <figcaption>{firstname} {lastname}</figcaption>
+        </figure>
       </div>
+
+      <div className='RightColumn'>
+        <div className='RightColumnRow'><p>Username: </p><p>{username}</p></div>
+        <div className='RightColumnRow'><p>Email:</p><p>{email}</p></div>
+        <div className='RightColumnRow'><p>Date of Birth:</p><p> {flipDate()}</p></div>
+        <div className='RightColumnRow'><p>Height: </p><p>{feet} ft &nbsp; {inches} in</p></div>
+        <div className='RightColumnRow'><p>Weight: </p><p>{weight} lbs</p></div>
+        <div className='RightColumnRow'><p>Goal: </p><p>{goal}</p></div>
+        <div className='RightColumnRow'><p>Notifications:</p><p>{notificationsOn ? 'on': 'off'}</p></div>
+        <div className='ButtonContainerForProfileView'><button className="button2" onClick={()=>{props.setProfileView("password")}}>Change Password</button><button className="button3" onClick={()=>{props.setProfileView("edit")}}>Edit Profile</button></div>
+      </div>
+    </div>
   );
 }
 

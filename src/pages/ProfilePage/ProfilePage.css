@@ -146,13 +146,7 @@
     transform: translateX(115%);
 }
 
-.ButtonContainerForProfileView{
-    background-color: red;
-    width: 100% !important;
-    display: flex;
-    flex-direction: row;
-    justify-content: right !important;
-}
+
 .ButtonContainerForProfileView button{
     margin-left: 1em;
 }
