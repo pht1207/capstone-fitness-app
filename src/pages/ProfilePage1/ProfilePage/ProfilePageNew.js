@@ -8,6 +8,7 @@ import ViewProfile from './ViewProfile';
 import EditProfile from './EditProfile';
 import EditPassword from './EditPassword';
 import WeightGraphFull from './WeightGraphFull';
+import BMICalculator from './BMICalculator';
 
 
 function NewProfilePage() {
@@ -41,6 +42,7 @@ function NewProfilePage() {
         if(axiosResponse.data[0] !== undefined){
           setData(axiosResponse.data[0]);
         }
+        console.log(axiosResponse.data[0])
       }
         catch (error) {
         console.error('Error fetching data: ', error);
@@ -53,7 +55,7 @@ function NewProfilePage() {
   return (
     <div className='ProfileRoot'>
       <div className='Selector'>
-        <p onClick={()=>{setContentView("profile")}}>Profile</p>
+        <p onClick={()=>{setContentView("profile")}}>View Profile</p>
         <p onClick={()=>{setContentView("weightgraph")}}>Weight Graph</p>
         <p onClick={()=>{setContentView("bmi")}}>BMI Calculator</p>
       </div>
@@ -74,6 +76,9 @@ function NewProfilePage() {
       }
       {contentView === 'weightgraph' &&
         <WeightGraphFull userData={userData}/>
+      }
+      {contentView === 'bmi' &&
+        <BMICalculator userData={userData}/>
       }
 
     </div>

@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { LineChart, XAxis, YAxis, Line, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import axios from 'axios';
 import {HttpPopupContext} from '../../../components/HttpPopupContext';
+import './WeightGraphFull.css'
 
 function WeightGraphFull(props) {
 
@@ -47,7 +48,7 @@ function WeightGraphFull(props) {
           <Tooltip />
           <Legend />
           <Line type="monotone" dataKey="weight" stroke="#8884d8" /> {/* The line for the graph is set to each entries' weight and time */}
-          <Line type="monotone" dataKey="bmi" stroke="#FFA500" /> {/* The line for the graph is set to each entries' weight and time */}
+          <Line type="monotone" dataKey="bmi" stroke="#FFA500" /> {/* The line for the graph is set to each entries' bmi and time */}
         </LineChart>
       </ResponsiveContainer>
 
