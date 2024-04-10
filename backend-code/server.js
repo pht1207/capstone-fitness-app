@@ -366,6 +366,7 @@ const updateProfile = async function(req, res) {
           });
           }
           else{
+            dailyNutritionTableCalculator();
             res.status(200).json({
               message:"update profile successful"
             });
@@ -619,7 +620,7 @@ function dailyNutritionTableCalculator(){
         for(let i = 0; i < userData.length; i++){
           currentUser = userData[i];
           let calculatedNutrition = nutritionCalculator(userData[i]);
-          mysqlDateTime = new Date().toISOString().slice(0, 19).replace('T', ' '); //this is a way to get the current date and time and format it so it will go into a datetime column in mysql correctly
+          mysqlDateTime = getCurrentTime(); //this is a way to get the current date and time and format it so it will go into a datetime column in mysql correctly
           let query = "INSERT INTO dailyNutritionTable (userTable_id, caloriesGoal, carbsGoal, proteinGoal, fatsGoal, dateCalculated)  VALUES (?, ?, ?, ?, ?, ?)"
           let values = [currentUser.userTable_id, calculatedNutrition.dailyCalories || null, calculatedNutrition.gramsCarbs || null, calculatedNutrition.gramsProtein || null, calculatedNutrition.gramsFat || null, mysqlDateTime || null]
           pool.query(query, values, (error, results) =>{
@@ -674,20 +675,18 @@ function dailyNutritionTableCalculator(){
       return(dailyNutritionIntake)
     }
   }
-  console.log("dailyNutritionTable values for all users logged");
 }
-const getDailyRecommendedNutrition = async function(req, res){
 
+const getDailyRecommendedNutrition = async function(req, res){
   const dateAccessed = req.query.dateAccessed;
   const userID = req.user.id;
-  //Need to do a left join on workoutsTable so names for the workouts can be attatched
   pool.query(
   'SELECT caloriesGoal, carbsGoal, proteinGoal, fatsGoal, dateCalculated ' +
   'FROM dailyNutritionTable ' +
   'WHERE userTable_id = ? '+
   'AND DATE(dateCalculated) = ? '+
-  'ORDER BY DATE(dateCalculated) DESC '+
-  'LIMIT 1', //DATE(dateTimeConsumed) extracts only the date from dateTimeConsumed column
+  'ORDER BY dateCalculated DESC '+
+  'LIMIT 1',
   [userID, dateAccessed],
   (error, results, fields) =>{
     if(error){
@@ -696,7 +695,6 @@ const getDailyRecommendedNutrition = async function(req, res){
     }
     else{
       res.status(200).json(results);
-
     }
   })
 }
@@ -1293,6 +1291,7 @@ const logWeight = async function(req, res) {
       });
     }
     else{
+      dailyNutritionTableCalculator();
       res.status(200).json({
         message: "weight log successful",
       });
