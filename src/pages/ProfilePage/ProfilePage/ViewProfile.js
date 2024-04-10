@@ -98,7 +98,10 @@ function flipDate (){
         <div className='RightColumnRow'><p>Weight: </p><p>{weight} lbs</p></div>
         <div className='RightColumnRow'><p>Goal: </p><p>{goal}</p></div>
         <div className='RightColumnRow'><p>Notifications:</p><p>{notificationsOn ? 'on': 'off'}</p></div>
-        <div className='ButtonContainerForProfileView'><button className="button2" onClick={()=>{props.setProfileView("password")}}>Change Password</button><button className="button3" onClick={()=>{props.setProfileView("edit")}}>Edit Profile</button></div>
+        <div className='ButtonContainerForProfileView'>
+          <button onClick={()=>{props.setProfileView("password")}}>Change Password</button>
+          <button onClick={()=>{props.setProfileView("edit")}}>Edit Profile</button>
+        </div>
       </div>
     </div>
   );

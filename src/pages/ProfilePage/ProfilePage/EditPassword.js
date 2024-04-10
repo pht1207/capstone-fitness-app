@@ -48,8 +48,8 @@ function passwordShowClickled(){
       <h1>Change Password</h1>
         <div className='EditPasswordRow'><p>Password:</p><input type={passwordShow?('password'):('text')} name='password' onChange={(event)=>{setPassword(event.target.value)}}/><button type='button' onClick={passwordShowClickled}>show</button></div>
         <div className='ButtonContainerForProfileView'>
-            <button className="button2" type='submit' onClick={updateProfileFormSubmit}>Save</button>
-            <button className="button3" type='button' onClick={()=>{props.setProfileView("view")}}>Cancel</button>
+            <button type='submit' onClick={updateProfileFormSubmit}>Save</button>
+            <button type='button' onClick={()=>{props.setProfileView("view")}}>Cancel</button>
       </div>
     </div>
   );

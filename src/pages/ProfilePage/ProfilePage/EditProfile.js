@@ -163,8 +163,10 @@ function EditProfile(props) {
           </label>
         </div>
 
-        <div className='ButtonContainerForProfileView'><button className="button2" type='submit' onClick={updateProfileFormSubmit}>Save</button><button className="button3" type='button' onClick={()=>{props.setProfileView("view")}}>Cancel</button></div>
-      </form>
+        <div className='ButtonContainerForProfileView'>
+            <button type='submit' onClick={updateProfileFormSubmit}>Save</button>
+            <button type='button' onClick={()=>{props.setProfileView("view")}}>Cancel</button>
+      </div>      </form>
     </div>
   );
   

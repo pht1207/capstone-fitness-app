@@ -50,9 +50,3 @@
     justify-content: space-between;
 }
 
-.ButtonContainerForProfileView{
-    width: 80%;
-    display: flex;
-    flex-direction: row;
-    justify-content: right;
-}
