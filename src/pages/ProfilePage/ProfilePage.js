@@ -2,12 +2,12 @@ import './ProfilePage.css'
 import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { HttpPopupContext } from '../../components/HttpPopupContext';
-import { toInteger } from 'lodash';
 import ViewProfile from './ProfilePage/ViewProfile';
 import EditProfile from './ProfilePage/EditProfile';
 import EditPassword from './ProfilePage/EditPassword';
 import WeightGraphFull from './WeightGraphFull/WeightGraphFull';
 import BMICalculator from './BMICalculator/BMICalculator';
+import RadarChartViewer from './RadarChart/RadarChart';
 
 
 function ProfilePage(props) {
@@ -41,7 +41,6 @@ function ProfilePage(props) {
         if(axiosResponse.data[0] !== undefined){
           setData(axiosResponse.data[0]);
         }
-        console.log(axiosResponse.data[0])
       }
         catch (error) {
         console.error('Error fetching data: ', error);
@@ -49,7 +48,7 @@ function ProfilePage(props) {
       }
     };
     fetchData();
-  }, []);
+  }, [contentView]);
 
   return (
     <div className='ProfileRoot'>
@@ -57,6 +56,8 @@ function ProfilePage(props) {
         <p onClick={()=>{setContentView("profile")}}>View Profile</p>
         <p onClick={()=>{setContentView("weightgraph")}}>Weight Graph</p>
         <p onClick={()=>{setContentView("bmi")}}>BMI Calculator</p>
+        <p onClick={()=>{setContentView("radarchartviewer")}}>Radar Chart</p>
+
       </div>
 
     <div className='ContentWindow'>
@@ -78,6 +79,9 @@ function ProfilePage(props) {
       }
       {contentView === 'bmi' &&
         <BMICalculator userData={userData}/>
+      }
+      {contentView === 'radarchartviewer' &&
+        <RadarChartViewer userData={userData}/>
       }
 
     </div>
