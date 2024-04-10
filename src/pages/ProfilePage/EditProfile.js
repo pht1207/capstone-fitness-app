@@ -137,46 +137,49 @@ function flipDate (){
   return (
 
         <div className="ProfilePage">
-        <form onSubmit={updateProfileFormSubmit}>
-        <h1>UPDATE PROFILE</h1>
-          <div className="UserI">
-            <div><p>First Name:</p><input type='text' name='firstName'  defaultValue={firstname} onChange={(event)=>{setFirstname(event.target.value)}}/></div>
-            <div><p>Last Name:</p><input type='text' name='lastName' defaultValue={lastname} onChange={(event)=>{setLastname(event.target.value)}}/></div>
-          </div>
-  
-          <div className="UserI">
-            <div><p>Username:</p><input type='text' name='username' onChange={(event)=>{setUsername(event.target.value)}} defaultValue={username}/></div>
-            <div><p>Email:</p><input type='text' name='email' onChange={(event)=>{setEmail(event.target.value)}} defaultValue={email}/></div>
-          </div>
-  
-          <div className="UserI">
-            <div><p>Date of Birth:</p><input type="date" id='DOB' defaultValue={DOB} onChange={(event)=>{setDOB(event.target.value)}}/></div>
-          </div>
-  
-          <div className="UserI">
-            <div><p>Height:</p><input type='text' name='feet' onChange={(event)=>{setFeet(event.target.value)}} defaultValue={feet}/><label>ft.</label><input type='text' name='inches' onChange={(event)=>{setInches(event.target.value)}} defaultValue={inches}/><label>in.</label></div>
-            <div><p>Weight:</p><input type='text' name='Weight' onChange={(event)=>{setWeight(event.target.value)}} defaultValue={weight}/></div>
-          </div>
+            <form>
+            <h1>UPDATE PROFILE</h1>
+                <div className="UserI">
+                    <div><p>First Name:</p><input type='text' name='firstName'  defaultValue={firstname} onChange={(event)=>{setFirstname(event.target.value)}}/></div>
+                    <div><p>Last Name:</p><input type='text' name='lastName' defaultValue={lastname} onChange={(event)=>{setLastname(event.target.value)}}/></div>
+                </div>
+        
+                <div className="UserI">
+                    <div><p>Username:</p><input type='text' name='username' onChange={(event)=>{setUsername(event.target.value)}} defaultValue={username}/></div>
+                    <div><p>Email:</p><input type='text' name='email' onChange={(event)=>{setEmail(event.target.value)}} defaultValue={email}/></div>
+                </div>
+        
+                <div className="UserI">
+                    <div><p>Date of Birth:</p><input type="date" id='DOB' defaultValue={DOB} onChange={(event)=>{setDOB(event.target.value)}}/></div>
+                </div>
+        
+                <div className="UserI">
+                    <div><p>Height:</p><input type='text' name='feet' onChange={(event)=>{setFeet(event.target.value)}} defaultValue={feet}/><label>ft.</label><input type='text' name='inches' onChange={(event)=>{setInches(event.target.value)}} defaultValue={inches}/><label>in.</label></div>
+                </div>
+                <div className="UserI">
+                    <div><p>Weight:</p><input type='text' name='Weight' onChange={(event)=>{setWeight(event.target.value)}} defaultValue={weight}/></div>
+                </div>
 
-          <div className="UserI">
-            <div><p>Goal:</p><select defaultValue={goal} onChange={(event)=>{setGoal(event.target.value)}}>
-                                <option value="1">Weight Loss</option>
-                                <option value="2">Weight Gain</option>
-                                <option value="3">Health</option>
-                              </select>
-            </div>
-          </div>
+                <div className="UserI">
+                    <div>
+                        <p>Goal:</p>
+                        <select defaultValue={goal} onChange={(event)=>{setGoal(event.target.value)}}>
+                            <option value="1">Weight Loss</option>
+                            <option value="2">Weight Gain</option>
+                            <option value="3">Health</option>
+                        </select>
+                    </div>
+                </div>
+                    <div className="UserI">
+                    <div><p>Notifications:<label className="switch" ><input type="checkbox" checked={notificationsOn} onChange={notificationsSwitch} /><span className="slider"></span></label></p></div>
+                </div>
 
-            <div className="UserI">
-             <div><p>Notifications:<label className="switch" ><input type="checkbox" checked={notificationsOn} onChange={notificationsSwitch} /><span className="slider"></span></label></p></div>
-            </div>
-
-          <div className="UserI">
-            <div className='ButtonContainerForProfileView'>
-              <button className="button2" type='submit'>Save</button>
-              <button className="button3" type='button' onClick={()=>{props.setProfileView("view")}}>Cancel</button></div>
-          </div>
-          </form>
+                <div className="UserI">
+                    <div className='ButtonContainerForProfileView'>
+                    <button className="button2" type='submit' onClick={updateProfileFormSubmit}>Save</button>
+                    <button className="button3" type='button' onClick={()=>{props.setProfileView("view")}}>Cancel</button></div>
+                </div>
+            </form>
         </div>
   );
   
