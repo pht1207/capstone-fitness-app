@@ -51,4 +51,5 @@
     color:blue;
     text-decoration-line: underline;
     cursor: pointer;
+    margin-left: .5em;
 }

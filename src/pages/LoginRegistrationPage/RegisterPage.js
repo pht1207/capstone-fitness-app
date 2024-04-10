@@ -90,7 +90,9 @@ function RegisterPage(props) {
           <label>Notifications on: <input type='checkbox' checked={checked} onChange={handleCheckboxChange}></input></label>
 
           <button type='submit'>Register</button>
+          <div className='SwapToLogin'><p>Already have an account?</p><p className='SwapLink' onClick={()=>{props.setLoginRegisterBoolean(true)}}>Login</p></div>
         </form>
+        
     </div>
   );
 }
