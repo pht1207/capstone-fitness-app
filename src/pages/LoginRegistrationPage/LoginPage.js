@@ -40,6 +40,7 @@ function LoginPage(props) {
           <label>Your username: <input type='text'></input></label>
           <label>Your password: <input type='text'></input></label>
           <button type='submit'>Login</button>
+          <div className='SwapToLogin'><p>Don't have an account?</p><p className='SwapLink'>Sign up</p></div>
         </form>
     </div>
   );

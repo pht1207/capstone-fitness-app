@@ -123,8 +123,6 @@ function EditProfile(props) {
 
 //Fuction to change from ProfilePage to UpdateProfile page when edit is clickled,  using useState to trigger a re-render that allows seeing the new data
 //changes current state value(true) according to previous state
-
-
 function notificationsSwitch(){
   setNotificationsOn(!notificationsOn)
 }

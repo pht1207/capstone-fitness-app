@@ -20,10 +20,8 @@ import FitnessPageTernary from './pages/FitnessPage/FitnessPageTernary';
 
 
 function App() {
-  //localStorage.setItem("jwt", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ0ZXN0IiwiaWF0IjoxNzA4NjQ5MjExLCJleHAiOjE3MTEzMjc2MTF9._umAnFpQ1Y7sNRogBEY50tTdsGTKetHgZ0QbbOmv31U")
-
   const [isJWTExpired, setJWTExpired] = useState(true);
-  const [loginEvent, setLoginEvent] = useState(0) //loginpage.js will increment this upon login effectively re-rendering the homepage upon login, showing profilepage.js in the navigation bar rather than loginregister.js
+  const [loginEvent, setLoginEvent] = useState() //loginpage.js will increment this upon login effectively re-rendering the homepage upon login, showing profilepage.js in the navigation bar rather than loginregister.js
 
   //These are state's used in the context api
   const [response, setResponse] = useState(false)
@@ -52,7 +50,8 @@ function App() {
       setJWTExpired(false);
     }
 
-  }, [])
+  }, [loginEvent])
+
 
   return (
     <HttpPopupContext.Provider value={{response, setResponse}}>

@@ -39,3 +39,16 @@
     padding: .1em;
     border-width: .1em;
 }
+
+.SwapToLogin{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+}
+.SwapToLogin .SwapLink{
+    color:blue;
+    text-decoration-line: underline;
+    cursor: pointer;
+}

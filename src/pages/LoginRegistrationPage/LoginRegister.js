@@ -13,7 +13,7 @@ function LoginRegisterPage(props) {
 
   return (
     <div className="LoginRegisterPage">
-        {loginRegisterBoolean ? <LoginPage loginEvent= {props.loginEvent} setLoginEvent={props.setLoginEvent} /> : <RegisterPage loginRegisterBoolean={loginRegisterBoolean} setLoginRegisterBoolean={setLoginRegisterBoolean}/>} {/* Sends loginevent state and method to loginpage for rerender of homepage.js upon login event */}
+        {loginRegisterBoolean ? <LoginPage loginEvent= {props.loginEvent} setLoginEvent={props.setLoginEvent} setLoginRegisterBoolean={setLoginRegisterBoolean}/> : <RegisterPage loginRegisterBoolean={loginRegisterBoolean} setLoginRegisterBoolean={setLoginRegisterBoolean}/>} {/* Sends loginevent state and method to loginpage for rerender of homepage.js upon login event */}
         <label><button onClick={handleBoolean}>Swap between Login and Register</button></label>
     </div>
   );
