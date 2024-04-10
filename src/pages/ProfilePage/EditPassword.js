@@ -48,7 +48,7 @@ function passwordShowClickled(){
   return (
     <div className="ProfilePage">
     <form onSubmit={updateProfileFormSubmit}>
-    <h1>UPDATE Password</h1>
+    <h1>Change Password</h1>
 
 
       <div className="UserI">

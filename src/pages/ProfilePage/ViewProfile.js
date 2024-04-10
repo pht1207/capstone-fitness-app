@@ -38,63 +38,6 @@ function ViewProfile(props) {
 
   const [feet, setFeet] = useState("")
   const [inches, setInches] = useState("")
-  const [disablesave, setDisablesave] = useState(false)
-  const [cancel, setCancel] = useState(false)
-
-
-  async function updateProfileFormSubmit(event){
-    event.preventDefault();//This prevents the page from reloading right when you submit
-
-    if (password){
-      try{
-        let body = {  
-          password: password
-        }
-        const axiosResponse = await axios.post("https://capstone.parkert.dev/backend/updatePassword", body, {
-          headers: {
-            Authorization: "Bearer " + token
-          }
-        });
-        setResponse(axiosResponse) //used in httpopup.js
-      }
-      catch(error){
-        console.error("post error: ", error.response)
-      }
-  }
-  try{
-    setDisablesave(true)
-    let body = {  
-      email: email,
-      username: username,
-      firstName: firstname,
-      lastName: lastname,
-      goal:goal,
-      DOB: DOB,
-      height: (feet*12)+inches,
-      notificationsOn: Number(notificationsOn)
-    }
-    console.log(body)
-    const axiosResponse = await axios.post("https://capstone.parkert.dev/backend/updateProfile", body, {
-      headers: {
-        Authorization: "Bearer " + token
-      }
-    });
-    setResponse(axiosResponse) //used in httpopup.js
-
-    if (axiosResponse.status === 200){
-
-      editClicked()
-      setTimeout(() => {
-      setDisablesave(false);
-    }, 2000);
-    }
-  } 
-  catch(error){
-    console.error("post error: ", error.response)
-    setResponse(error.response) //used in httpopup.js
-  }
-  }
-
 
   //This useEffect is used on render to get the profile data from the backend
   useEffect(() => {
@@ -131,31 +74,8 @@ function ViewProfile(props) {
     setNotificationsOn(0);
     setFeet(toInteger(height/12))
     setInches(toInteger(height%12))
-  },[userData,cancel])
+  },[userData])
   
-
-//Fuction to change from ProfilePage to UpdateProfile page when edit is clickled,  using useState to trigger a re-render that allows seeing the new data
-//changes current state value(true) according to previous state
-
-function editClicked(){
-  props.setProfileView("edit");
-  }
-
-function cancelClicked(){
-  editClicked()
-  setCancel(!cancel)
-}
-//fuction to hide or show password when show is clicked, using useState to trigger a re-render that allows seeing the new data
-//changes current state value(true) according to previous state
-
-const [passwordShow, setpasswordShow] = useState(true)
-function passwordShowClickled(){
-  setpasswordShow(!passwordShow);
-}
-
-function notificationsSwitch(){
-  setNotificationsOn(!notificationsOn)
-}
 
 function flipDate (){
   let parts = DOB.split('-')
@@ -164,8 +84,8 @@ function flipDate (){
 
   return (
     <div className="ProfilePage">
+      <h1>Your Profile</h1>
       <section>
-      <br></br>
         <div className="UserI">
           <div><p>First Name:</p><p>{firstname}</p></div>
           <div><p>Last Name:</p><p>{lastname}</p></div>

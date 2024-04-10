@@ -129,16 +129,12 @@ function notificationsSwitch(){
   setNotificationsOn(!notificationsOn)
 }
 
-function flipDate (){
-  let parts = DOB.split('-')
-  return parts[2]+'-'+parts[1]+'-'+parts[0]
-}
 
   return (
 
         <div className="ProfilePage">
             <form>
-            <h1>UPDATE PROFILE</h1>
+            <h1>Update Profile</h1>
                 <div className="UserI">
                     <div><p>First Name:</p><input type='text' name='firstName'  defaultValue={firstname} onChange={(event)=>{setFirstname(event.target.value)}}/></div>
                     <div><p>Last Name:</p><input type='text' name='lastName' defaultValue={lastname} onChange={(event)=>{setLastname(event.target.value)}}/></div>
