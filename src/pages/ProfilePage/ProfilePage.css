@@ -20,6 +20,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    margin:0;
 }
 .Selector p:hover{
     cursor: pointer;
@@ -33,7 +34,6 @@
     flex-direction: column;
     justify-content: start;
     align-items: center;
-    margin: 1em;
     
 }
 

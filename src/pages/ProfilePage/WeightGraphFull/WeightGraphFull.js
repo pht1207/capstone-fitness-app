@@ -39,19 +39,18 @@ function WeightGraphFull(props) {
   return (
     <div className="WeightGraph">
       <h4>Weight Graph</h4>
-      <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={axiosData} 
-          margin={{right: 20}}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="dateTimeChanged" /> {/* Sets the x axis to the date */}
-          <YAxis dataKey="weight"/> {/* Y axis is set to the weight */}
-          <Tooltip />
-          <Legend />
-          <Line type="monotone" dataKey="weight" stroke="#8884d8" /> {/* The line for the graph is set to each entries' weight and time */}
-          <Line type="monotone" dataKey="bmi" stroke="#FFA500" /> {/* The line for the graph is set to each entries' bmi and time */}
-        </LineChart>
-      </ResponsiveContainer>
-
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={axiosData} 
+            margin={{right: 20}}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="dateTimeChanged" /> {/* Sets the x axis to the date */}
+            <YAxis dataKey="weight"/> {/* Y axis is set to the weight */}
+            <Tooltip />
+            <Legend />
+            <Line type="monotone" dataKey="weight" stroke="#8884d8" /> {/* The line for the graph is set to each entries' weight and time */}
+            <Line type="monotone" dataKey="bmi" stroke="#FFA500" /> {/* The line for the graph is set to each entries' bmi and time */}
+          </LineChart>
+        </ResponsiveContainer>
   </div>
   );
 }
