@@ -180,7 +180,7 @@ const register = async function(req,res){
       const userWeightTableQuery = "INSERT INTO userWeightTable (userTable_id, userWeight, dateTimeChanged) VALUES (?, ?, ?);";
       const userWeightTableQueryValues = [newUserId, user.weight, getCurrentTime()];
       const userWeightTableInsert = await executeQuery(userWeightTableQuery, userWeightTableQueryValues);
-
+      dailyNutritionTableCalculator(); //calls the dailynutritiontablecalculator upon an account registration, updating it for every user
       return res.status(200).json({
         message: "Account creation successful"
       });
@@ -582,6 +582,18 @@ const getFoods = async function(req, res){
 const cron = require('node-cron');
 cron.schedule('0 0 * * *', function() {
   console.log('Running daily user nutrition calculator every day at 12 AM for each user');
+  dailyNutritionTableCalculator()
+});
+cron.schedule('0 6 * * *', function() {
+  console.log('Running daily user nutrition calculator every day at 6 AM for each user');
+  dailyNutritionTableCalculator()
+});
+cron.schedule('0 12 * * *', function() {
+  console.log('Running daily user nutrition calculator every day at 12 PM for each user');
+  dailyNutritionTableCalculator()
+});
+cron.schedule('0 18 * * *', function() {
+  console.log('Running daily user nutrition calculator every day at 6 PM for each user');
   dailyNutritionTableCalculator()
 });
 //Calculates a daily nutrition recommendation for each user in the DB based around their weight and goal as a user.
