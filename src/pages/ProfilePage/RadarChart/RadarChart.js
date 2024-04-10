@@ -31,7 +31,6 @@ function RadarChartViewer(props) {
     }
     //creates an object that can be utilized by the radar chart component
     function muscleGroupMaker(array){
-        console.log(array)
         let muscleGroupsObject = {
             chest:0,
             shoulders:0,
@@ -86,7 +85,6 @@ function RadarChartViewer(props) {
                 muscleGroupsObject.legs++;
             }
         }
-        console.log(muscleGroupsObject)
         const chartData = Object.keys(muscleGroupsObject).map((key) => ({
             muscleGroup:key,
             A: muscleGroupsObject[key],
