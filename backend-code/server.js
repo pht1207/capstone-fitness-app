@@ -308,7 +308,6 @@ const updateProfile = async function(req, res) {
   const requestData = req.body;
   const email = requestData.email;
   const username = requestData.username;
-  //const password = "fa;sdhbb!@12314";
   const firstName = requestData.firstName;
   const lastName = requestData.lastName;
   const DOB = requestData.DOB;
@@ -318,8 +317,6 @@ const updateProfile = async function(req, res) {
 
  {/* removed  from validator object for now*/}
   let validatorObject = {email: email, username: username, firstName: firstName, lastName: lastName, DOB: DOB, height:height, notificationsOn: notificationsOn}
-
-  //const encryptedPassword = await bcrypt.hash(password, saltRounds)
 
   const validationResult = updateProfileSchema.validate(validatorObject);
   if (validationResult.error) {
@@ -363,6 +360,7 @@ const updateProfile = async function(req, res) {
         const updateGoalValues = [goal, userID]
         pool.query(updateGoalQuery, updateGoalValues, (error, results) =>{
           if(error){
+            console.error("error setting goal:"+error)
             res.status(500).json({
               message: "Internal Server Error"
           });
@@ -427,7 +425,7 @@ const getProfileData = async function(req, res){
     (error, results, fields) =>{
       if(error){
         console.error("db query error", error);
-        res.status(500).send("Error fetching foods from database");
+        res.status(500).send("Error fetching profile data from database");
       }
       else{
         res.status(200).json(results);
