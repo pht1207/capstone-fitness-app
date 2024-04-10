@@ -10,7 +10,7 @@ import WeightGraphFull from './WeightGraphFull/WeightGraphFull';
 import BMICalculator from './BMICalculator/BMICalculator';
 
 
-function ProfilePage() {
+function ProfilePage(props) {
   //Used as default case for if no data is retrieved for userData
   const emptyUserData = {
     firstName: "",
@@ -63,7 +63,7 @@ function ProfilePage() {
       {contentView === 'profile' &&
       <> 
         {profileView === 'view' && 
-          <ViewProfile setProfileView={setProfileView} userData={userData}/>
+          <ViewProfile setProfileView={setProfileView} userData={userData} loginEvent= {props.loginEvent} setLoginEvent={props.setLoginEvent}/>
         }
         {profileView === 'edit' && 
           <EditProfile setProfileView={setProfileView} userData={userData}/>

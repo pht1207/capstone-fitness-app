@@ -22,7 +22,7 @@ import NewProfilePage from './pages/ProfilePage/ProfilePage';
 
 function App() {
   const [isJWTExpired, setJWTExpired] = useState(true);
-  const [loginEvent, setLoginEvent] = useState() //loginpage.js will increment this upon login effectively re-rendering the homepage upon login, showing profilepage.js in the navigation bar rather than loginregister.js
+  const [loginEvent, setLoginEvent] = useState(0) //loginpage.js will increment this upon login effectively re-rendering the homepage upon login, showing profilepage.js in the navigation bar rather than loginregister.js
 
   //These are state's used in the context api
   const [response, setResponse] = useState(false)
@@ -74,7 +74,7 @@ function App() {
                 <Route path="/FitnessPageTernary" element={<FitnessPageTernary />} />
                 <Route path="/NutritionPage" element={<NutritionPage />} />
                 {/*<Route path="/ProfilePage" element={<ProfilePage />} />*/}
-                <Route path="/ProfilePage" element={<ProfilePage />} />
+                <Route path="/ProfilePage" element={<ProfilePage  loginEvent= {loginEvent} setLoginEvent={setLoginEvent}/>} />
                 <Route path="/LoginRegisterPage" element={<LoginRegisterPage loginEvent= {loginEvent} setLoginEvent={setLoginEvent}/>} />
             </Routes>
         </Router>

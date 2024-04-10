@@ -3,9 +3,11 @@ import axios from 'axios';
 import { HttpPopupContext } from '../../../components/HttpPopupContext';
 import { toInteger } from 'lodash';
 import './ViewProfile.css'
+import { useNavigate } from 'react-router-dom';
+
 
 function ViewProfile(props) {
-
+  const navigate = useNavigate();
   //Used as default case for if no data is retrieved for userData
   const emptyUserData = {
     firstName: "",
@@ -71,10 +73,19 @@ function ViewProfile(props) {
     setGoal(userData.goalName);
     setDOB(userData.DOB.substring(0,10))
     setNotificationsOn(Number(userData.notificationsOn))
-    setFeet(toInteger(height/12))
-    setInches(toInteger(height%12))
+    setFeet(toInteger(userData.height/12))
+    setInches(toInteger(userData.height%12))
   },[userData])
   
+
+
+  async function logout(){
+    localStorage.setItem('jwt', "");
+    await props.setLoginEvent(props.loginEvent+1) //This will re-render the homepage.js file, showing loginregister.js instead of profile.js
+    await navigate('/'); //redirects the user to the homepage upon login
+
+  }
+
 
 function flipDate (){
   let parts = DOB.split('-')
@@ -99,6 +110,7 @@ function flipDate (){
         <div className='RightColumnRow'><p>Goal: </p><p>{goal}</p></div>
         <div className='RightColumnRow'><p>Notifications:</p><p>{notificationsOn ? 'on': 'off'}</p></div>
         <div className='ButtonContainerForProfileView'>
+          <button onClick={logout}>Logout</button>
           <button onClick={()=>{props.setProfileView("password")}}>Change Password</button>
           <button onClick={()=>{props.setProfileView("edit")}}>Edit Profile</button>
         </div>
