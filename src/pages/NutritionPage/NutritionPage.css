@@ -5,6 +5,9 @@
     flex-direction: column;
     align-items: center;
 }
+.NutritionPage p{
+    margin:1em;
+}
 .NutritionContainerRow{
     display: flex;
     flex-direction: row;
