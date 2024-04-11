@@ -13,9 +13,9 @@ function NutrientContainer(props) {
 
   return (
     <div className="MacroNutrientContainer" style={{backgroundColor:props.backgroundColor}}>
-        <h3>{props.containerName}</h3>
+        <h1>{props.containerName}</h1>
         <p>{props.containerName} Logged</p>
-          <p>{props.loggedCount}</p>
+          <p>{props.loggedCount}g</p>
           <CircularProgressbar
             className="CircularProgressBar"
             size={".5rem"}

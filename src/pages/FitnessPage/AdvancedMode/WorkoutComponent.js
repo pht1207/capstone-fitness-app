@@ -1,12 +1,13 @@
 import "./WorkoutComponent.css";
 import ExerciseComponent from "./ExerciseComponent";
-import recommendedWorkouts from "./PopupPages/RecommendedWorkouts";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import PickWorkout from "./PopupPages/PickWorkout";
 import CreateWorkout from "./PopupPages/CreateWorkout";
+import { HttpPopupContext } from '../../../components/HttpPopupContext';
 
-function WorkoutComponent({ selectedWorkout }) {
+
+function WorkoutComponent(props) {
   //Your code to make the site functional goes in this empty space. The 'return()' below is what renders on the page (the html)
   const [createWorkout, setCreateWorkout] = useState(false);
   const [workoutName, setWorkoutName] = useState("");
@@ -14,23 +15,25 @@ function WorkoutComponent({ selectedWorkout }) {
   const [workoutType, setWorkoutType] = useState(""); // this is used to sepeerate recommended workouts from the create and prebuilt
   const [showPickWorkout, setShowPickWorkout] = useState(false);
   const [showCreateWorkout, setShowCreateWorkout] = useState(false);
+  const {setResponse} = useContext(HttpPopupContext);
 
   const token = localStorage.getItem("jwt"); //Token for backend operations
 
+  //Used in creating the workout object with exercises, sets, reps, weight included and submitting it to the backend to be logged
   const workoutSubmitted = async (exercises, workoutName, token) => {
     try {
       const durationInput = prompt(
         "Enter the duration of your workout (in minutes):"
       );
       if (!durationInput) {
-        console.log("Duration input failed");
+        console.error("Duration input failed");
         return;
       }
       const duration = parseInt(durationInput);
 
       let ratingInput = prompt("Rate the workout experience between 1-5:");
       if (!ratingInput) {
-        console.log("Rating input cancelled");
+        console.error("Rating input cancelled");
         return;
       }
 
@@ -70,7 +73,6 @@ function WorkoutComponent({ selectedWorkout }) {
         .toISOString()
         .slice(0, 19)
         .replace("T", " "); // Format: yyyy-mm-ddThh:mm:ss
-      console.log("Current Time:", currentTime);
 
       const body = {
         workoutName: workoutName,
@@ -80,9 +82,8 @@ function WorkoutComponent({ selectedWorkout }) {
         exercises: exerciseBox,
       };
 
-      console.log("Workout Body:", body);
 
-      //Send the data to the database
+      //Send the workout object to the database to be logged
       const response = await axios.post(
         "https://capstone.parkert.dev/backend/logCompleteWorkout",
         body,
@@ -92,19 +93,15 @@ function WorkoutComponent({ selectedWorkout }) {
           },
         }
       );
-
-      // Handle response if needed
-      // console.log("Workout logged successfully:", response.data);
-    } catch (error) {
-      // Handle error
+      setResponse(response) //used in httpopup.js
+      props.setLoggedWorkout((props.loggedWorkout)+1);
+    } 
+    catch (error) {
       console.error("Error logging workout:", error);
+      setResponse(error.response) //used in httpopup.js
     }
   };
 
-  // Component code
-  useEffect(() => {
-    // Call workoutSubmitted when there are exercises added or workoutName has a value
-  }, [exercises, workoutName, token]);
 
   const initiateCreateWorkout = () => {
     setCreateWorkout(true);
@@ -150,15 +147,8 @@ function WorkoutComponent({ selectedWorkout }) {
     setExercises(updatedExercises);
   };
 
-  useEffect(() => {
-    if (selectedWorkout) {
-      setWorkoutName(selectedWorkout.workoutName);
-      setExercises(selectedWorkout.exercises);
-      setCreateWorkout(true);
-    }
-  }, [selectedWorkout]);
 
-  console.log(exercises);
+
 
   return (
     <div className="myworkout-table">
@@ -202,27 +192,21 @@ function WorkoutComponent({ selectedWorkout }) {
             </button>
           </div>
         </>
-      ) : (
+      )
+      : 
+      (
         <div>
           {showCreateWorkout ? (
             <CreateWorkout setShowCreateWorkout={setShowCreateWorkout} />
           ) : null}
-          {workoutType !== "recommended" && (
             <div>
-              <div
-                className="create-workout-box"
-                onClick={initiateCreateWorkout}
-              >
+              <div className="create-workout-box" onClick={initiateCreateWorkout}>
                 <h3>Log Workout</h3>
               </div>
-              <div
-                className="select-workout-box"
-                onClick={() => setShowCreateWorkout(true)}
-              >
+              <div className="select-workout-box" onClick={() => setShowCreateWorkout(true)}>
                 <h3>Create Workout</h3>
               </div>
             </div>
-          )}
         </div>
       )}
     </div>

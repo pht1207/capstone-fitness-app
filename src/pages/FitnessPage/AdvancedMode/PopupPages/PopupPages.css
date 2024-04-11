@@ -1,17 +1,7 @@
-.PickExercise{
-    position:absolute;
-    z-index: 2;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    top: 6%;
-    left: 0;
-    right: 0;
-    bottom: 0;
-  
-}
-.PickExercise .PickExerciseWindow{
+
+.PickExercise .PickExerciseWindow {
     background-color: white;
+    position: absolute;
     width: 70%;
     height: 60%;
     border-style: solid;
@@ -21,17 +11,18 @@
     flex-direction: column;
     align-items: center;
 }
-.PickExercise .PickExerciseWindow .PickExerciseWindowList{
+
+.PickExercise .PickExerciseWindow .PickExerciseWindowList {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    flex-wrap:wrap;
+    flex-wrap: wrap;
     width: 80%;
     overflow-y: scroll;
-    
 }
-.PickExercise .PickExerciseWindow .PickExerciseWindowList .PickExerciseWindowListElement{
+
+.PickExercise .PickExerciseWindow .PickExerciseWindowList .PickExerciseWindowListElement {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
@@ -39,36 +30,47 @@
     display: inline-block;
     border-style: solid;
     border-width: .1em;
-    margin:1em;
+    margin: 1em;
 }
-.PickExerciseWindowListElement :hover{
-cursor: pointer;
-}
-.PickExercise .PickExerciseWindow .PickExerciseWindowList :hover{
+
+.PickExerciseWindowListElement:hover {
     cursor: pointer;
 }
 
-.PopupHeaderFlexRow{
+.PickExercise .PickExerciseWindow .PickExerciseWindowList:hover {
+    cursor: pointer;
+}
+
+.PopupHeaderFlexRow {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0;
-    margin:0;
+    margin: 0;
     width: 100%;
-  }
-.PopupHeaderFlexRow h1{
+}
+
+.PopupHeaderFlexRow h1 {
     justify-self: center;
+    width: 33%;
 }
-.PopupHeaderFlexRow button{
+
+.PopupHeaderFlexRow button {
     align-self: baseline;
-    font-size: x-large;
-    width: 15%;
-    border-top-right-radius: .5em;
-    border-width: .1em;
-    border-color: #d1d1d1;
+    right:0;
+    top:0;
+    width: 10%;
+    height: 50%;
+    background-color: #ff6347; /* Red button background color */
+    color: #fff; /* Button text color */
+    border: none;
+    border-top-right-radius: 1em;
+    font-size: 1em; /* Adjust font size */
+    cursor: pointer;
+    z-index: 3; /* Ensure button is on top of other elements */
 }
 
-
+/* Styling for PickWorkout component */
 .PickWorkout {
     position: absolute;
     z-index: 2;
@@ -81,16 +83,34 @@ cursor: pointer;
     bottom: 0;
 }
 
+.PickWorkout .ExitButton {
+    right: 0; /* Adjust this value to move the button further right */
+    background-color: #ff6347; /* Red button background color */
+    color: #fff; /* Button text color */
+    border: none;
+    border-top-right-radius: 1em;
+    font-size: 1em; /* Adjust font size */
+    cursor: pointer;
+    z-index: 3; /* Ensure button is on top of other elements */
+}
+
 .PickWorkout .PickWorkoutWindowColumn {
+    position: relative; /* Ensure relative positioning */
     background-color: white;
     width: 70%;
-    height: 60%;
+    height: 100%;
     border-style: solid;
     border-radius: 1em;
     border-width: .1em;
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.PickWorkout .PickWorkoutWindowColumn .PopupHeaderFlexRow h3 {
+    margin: 0; /* Remove default margin */
+    flex: 1; /* Let the title take remaining space */
+    margin-bottom: 10px;
 }
 
 .PickWorkout .PickWorkoutWindowColumn .PickWorkoutWindowContent {
@@ -106,7 +126,7 @@ cursor: pointer;
     padding: 10px;
     margin-bottom: 10px;
     cursor: pointer;
-    margin-top: 15px;
+    margin-top: 20px;
 }
 
 .PickWorkoutWindowListElement:hover {

@@ -17,11 +17,10 @@ import { jwtDecode } from 'jwt-decode';
 import HttpPopup from './components/HttpPopup';
 import { HttpPopupContext } from './components/HttpPopupContext';
 import FitnessPageTernary from './pages/FitnessPage/FitnessPageTernary';
+import NewProfilePage from './pages/ProfilePage/ProfilePage';
 
 
 function App() {
-  //localStorage.setItem("jwt", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ0ZXN0IiwiaWF0IjoxNzA4NjQ5MjExLCJleHAiOjE3MTEzMjc2MTF9._umAnFpQ1Y7sNRogBEY50tTdsGTKetHgZ0QbbOmv31U")
-
   const [isJWTExpired, setJWTExpired] = useState(true);
   const [loginEvent, setLoginEvent] = useState(0) //loginpage.js will increment this upon login effectively re-rendering the homepage upon login, showing profilepage.js in the navigation bar rather than loginregister.js
 
@@ -52,7 +51,8 @@ function App() {
       setJWTExpired(false);
     }
 
-  }, [])
+  }, [loginEvent])
+
 
   return (
     <HttpPopupContext.Provider value={{response, setResponse}}>
@@ -64,6 +64,8 @@ function App() {
                 <Link to="/">Home</Link>
                 <Link to="/FitnessPageTernary">Fitness </Link>
                 <Link to="/NutritionPage">Nutrition</Link>
+                
+
                 {isJWTExpired ? <Link to="/LoginRegisterPage" >Login/Register</Link> : <Link to="/ProfilePage">Profile</Link>}
             </nav>
 
@@ -71,7 +73,8 @@ function App() {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/FitnessPageTernary" element={<FitnessPageTernary />} />
                 <Route path="/NutritionPage" element={<NutritionPage />} />
-                <Route path="/ProfilePage" element={<ProfilePage />} />
+                {/*<Route path="/ProfilePage" element={<ProfilePage />} />*/}
+                <Route path="/ProfilePage" element={<ProfilePage  loginEvent= {loginEvent} setLoginEvent={setLoginEvent}/>} />
                 <Route path="/LoginRegisterPage" element={<LoginRegisterPage loginEvent= {loginEvent} setLoginEvent={setLoginEvent}/>} />
             </Routes>
         </Router>

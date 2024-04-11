@@ -78,8 +78,8 @@ function RegisterPage(props) {
           <label>Your first name: <input type='text' onChange={(e)=>{setFirstname(e.target.value)}}></input></label>
           <label>Your last name: <input type='text' onChange={(e)=>{setLastname(e.target.value)}}></input></label>
           <label>Your date of birth: <input type='date' onChange={(e)=>{setDOB(e.target.value)}}></input></label>
-          <label>Your weight: <input type='text' onChange={(e)=>{setWeight(e.target.value)}}></input></label>
-          <label>Your height: <input type='text' onChange={(e)=>{setHeight(e.target.value)}}></input></label>
+          <label>Your weight (lbs): <input type='text' onChange={(e)=>{setWeight(e.target.value)}}></input></label>
+          <label>Your height (inches): <input type='text' onChange={(e)=>{setHeight(e.target.value)}}></input></label>
           <label>Fitness goal: 
             <select  onChange={(e)=>{setGoal(e.target.value)}} defaultValue={goal}>
               <option value="1">Weight loss</option>
@@ -90,7 +90,9 @@ function RegisterPage(props) {
           <label>Notifications on: <input type='checkbox' checked={checked} onChange={handleCheckboxChange}></input></label>
 
           <button type='submit'>Register</button>
+          <div className='SwapToLogin'><p>Already have an account?</p><p className='SwapLink' onClick={()=>{props.setLoginRegisterBoolean(true)}}>Login</p></div>
         </form>
+        
     </div>
   );
 }

@@ -47,6 +47,9 @@
   border-collapse: collapse; /* Collapse borders */
   border-spacing: 0; /* Remove space between cells */
 }
+.workoutTableRow:hover{
+cursor: pointer;
+}
 
 .main-workout-log-table table {
   width: 100%;

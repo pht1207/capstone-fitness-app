@@ -180,7 +180,7 @@ const register = async function(req,res){
       const userWeightTableQuery = "INSERT INTO userWeightTable (userTable_id, userWeight, dateTimeChanged) VALUES (?, ?, ?);";
       const userWeightTableQueryValues = [newUserId, user.weight, getCurrentTime()];
       const userWeightTableInsert = await executeQuery(userWeightTableQuery, userWeightTableQueryValues);
-
+      dailyNutritionTableCalculator(); //calls the dailynutritiontablecalculator upon an account registration, updating it for every user
       return res.status(200).json({
         message: "Account creation successful"
       });
@@ -304,22 +304,19 @@ app.post('/login', upload.none(), login);
 */}
 
 const updateProfile = async function(req, res) {
-  console.log(req.body);
   const userID = req.user.id;
   const requestData = req.body;
   const email = requestData.email;
   const username = requestData.username;
-  //const password = "fa;sdhbb!@12314";
   const firstName = requestData.firstName;
   const lastName = requestData.lastName;
   const DOB = requestData.DOB;
   const height = requestData.height;
+  const goal = requestData.goal
   const notificationsOn = requestData.notificationsOn;
 
  {/* removed  from validator object for now*/}
   let validatorObject = {email: email, username: username, firstName: firstName, lastName: lastName, DOB: DOB, height:height, notificationsOn: notificationsOn}
-
-  //const encryptedPassword = await bcrypt.hash(password, saltRounds)
 
   const validationResult = updateProfileSchema.validate(validatorObject);
   if (validationResult.error) {
@@ -359,16 +356,28 @@ const updateProfile = async function(req, res) {
       }
       }
       else{
-        res.status(200).json({
-          message:"update profile successful"
-        });
+        const updateGoalQuery = "UPDATE user_goalTable SET goalTable_id = ? WHERE userTable_id = ?"
+        const updateGoalValues = [goal, userID]
+        pool.query(updateGoalQuery, updateGoalValues, (error, results) =>{
+          if(error){
+            console.error("error setting goal:"+error)
+            res.status(500).json({
+              message: "Internal Server Error"
+          });
+          }
+          else{
+            dailyNutritionTableCalculator();
+            res.status(200).json({
+              message:"update profile successful"
+            });
+          }
+        })
       }
     })
   }
 }
 
 const updatePassword = async function(req, res) {
-  console.log(req.body);
   const userID = req.user.id;
   const password = req.body.password;
 
@@ -406,7 +415,7 @@ const updatePassword = async function(req, res) {
 const getProfileData = async function(req, res){
   const userID = req.user.id;
   pool.query(
-    'SELECT userTable.email, userTable.DOB, userTable.username, userTable.firstName, userTable.lastName, userTable.height, goalTable.goalName, userWeightTable.userWeight, userWeightTable.dateTimeChanged ' + //specify each column that should be gathered throughout the query
+    'SELECT userTable.email, userTable.DOB, userTable.username, userTable.firstName, userTable.lastName, userTable.height, userTable.notificationsOn, goalTable.goalName, userWeightTable.userWeight, userWeightTable.dateTimeChanged ' + //specify each column that should be gathered throughout the query
     'FROM userTable ' + //get all rows from usertable and only show columns in select statement
     'LEFT JOIN user_goalTable ON userTable.userTable_id = user_goalTable.userTable_id '+ //get all rows from user_goalTable that match the userTable_id in userTable
     'INNER JOIN goalTable ON user_goalTable.goalTable_id = goalTable.goalTable_id '+ //Gets the rows from goalTable where goalTable_id matches both tables
@@ -417,7 +426,7 @@ const getProfileData = async function(req, res){
     (error, results, fields) =>{
       if(error){
         console.error("db query error", error);
-        res.status(500).send("Error fetching foods from database");
+        res.status(500).send("Error fetching profile data from database");
       }
       else{
         res.status(200).json(results);
@@ -459,7 +468,6 @@ const setUserGoal = async function(req, res){
     const query = "INSERT INTO user_goalTable "+
     "(goalTable_id, userTable_id, dateTimeChanged) VALUES (?, ?, ?)"
     const values = [goal, userID, getCurrentTime()];
-    console.log(values)
     pool.query(query, values, (error, results) =>{
       if(error){
         console.error(error);
@@ -499,7 +507,6 @@ const logNutrition = async function(req, res) {
   //write insert statements for the user
   const userID = req.user.id;
   const nutritionLog = req.body;
-  console.log(nutritionLog)
   const values = [userID, nutritionLog.caloriesConsumed, nutritionLog.carbsConsumed, nutritionLog.proteinConsumed, nutritionLog.fatsConsumed, nutritionLog.dateTimeConsumed]
   const query = "INSERT INTO userConsumptionTable (userTable_id, caloriesConsumed, carbsConsumed, proteinConsumed, fatsConsumed, dateTimeConsumed)  VALUES (?, ?, ?, ?, ?, ?)"
   pool.query(query, values, (error, results) =>{
@@ -547,7 +554,6 @@ const getUserNutritionLog = async function(req, res) {
             nutritionLog.fatsConsumed += results[i].fatsConsumed;
           }
         }
-          console.log(nutritionLog)
           res.status(200).json(nutritionLog);
     }
     catch(error){
@@ -579,6 +585,18 @@ cron.schedule('0 0 * * *', function() {
   console.log('Running daily user nutrition calculator every day at 12 AM for each user');
   dailyNutritionTableCalculator()
 });
+cron.schedule('0 6 * * *', function() {
+  console.log('Running daily user nutrition calculator every day at 6 AM for each user');
+  dailyNutritionTableCalculator()
+});
+cron.schedule('0 12 * * *', function() {
+  console.log('Running daily user nutrition calculator every day at 12 PM for each user');
+  dailyNutritionTableCalculator()
+});
+cron.schedule('0 18 * * *', function() {
+  console.log('Running daily user nutrition calculator every day at 6 PM for each user');
+  dailyNutritionTableCalculator()
+});
 //Calculates a daily nutrition recommendation for each user in the DB based around their weight and goal as a user.
 function dailyNutritionTableCalculator(){
   pool.query(
@@ -602,7 +620,7 @@ function dailyNutritionTableCalculator(){
         for(let i = 0; i < userData.length; i++){
           currentUser = userData[i];
           let calculatedNutrition = nutritionCalculator(userData[i]);
-          mysqlDateTime = new Date().toISOString().slice(0, 19).replace('T', ' '); //this is a way to get the current date and time and format it so it will go into a datetime column in mysql correctly
+          mysqlDateTime = getCurrentTime(); //this is a way to get the current date and time and format it so it will go into a datetime column in mysql correctly
           let query = "INSERT INTO dailyNutritionTable (userTable_id, caloriesGoal, carbsGoal, proteinGoal, fatsGoal, dateCalculated)  VALUES (?, ?, ?, ?, ?, ?)"
           let values = [currentUser.userTable_id, calculatedNutrition.dailyCalories || null, calculatedNutrition.gramsCarbs || null, calculatedNutrition.gramsProtein || null, calculatedNutrition.gramsFat || null, mysqlDateTime || null]
           pool.query(query, values, (error, results) =>{
@@ -657,20 +675,18 @@ function dailyNutritionTableCalculator(){
       return(dailyNutritionIntake)
     }
   }
-  console.log("dailyNutritionTable values for all users logged");
 }
-const getDailyRecommendedNutrition = async function(req, res){
 
+const getDailyRecommendedNutrition = async function(req, res){
   const dateAccessed = req.query.dateAccessed;
   const userID = req.user.id;
-  //Need to do a left join on workoutsTable so names for the workouts can be attatched
   pool.query(
   'SELECT caloriesGoal, carbsGoal, proteinGoal, fatsGoal, dateCalculated ' +
   'FROM dailyNutritionTable ' +
   'WHERE userTable_id = ? '+
   'AND DATE(dateCalculated) = ? '+
-  'ORDER BY DATE(dateCalculated) DESC '+
-  'LIMIT 1', //DATE(dateTimeConsumed) extracts only the date from dateTimeConsumed column
+  'ORDER BY dateCalculated DESC '+
+  'LIMIT 1',
   [userID, dateAccessed],
   (error, results, fields) =>{
     if(error){
@@ -679,7 +695,6 @@ const getDailyRecommendedNutrition = async function(req, res){
     }
     else{
       res.status(200).json(results);
-
     }
   })
 }
@@ -812,17 +827,16 @@ const logExercises = async function(req, res) {
 }
 
 const getUserExerciseLog = async function(req, res) {
-  const page = (parseInt(req.query.page)*5)-5;
   const userID = req.user.id;
 
   //Need to do a left join on workoutsTable so names for the workouts can be attatched
   pool.query(
-  'SELECT * ' +
-  'FROM user_exerciseTable ' +
+  'SELECT muscleGroup ' +
+  'FROM user_exercise_workoutTable ' +
+  'LEFT JOIN exerciseTable ON exerciseTable.exerciseTable_id = user_exercise_workoutTable.exerciseTable_id '+
   'WHERE userTable_id = ? '+
-  'ORDER BY timeCompleted DESC '+
-  'LIMIT ?, 5', //DATE(dateTimeConsumed) extracts only the date from dateTimeConsumed column
-  [userID, page],
+  'ORDER BY muscleGroup DESC ',
+  [userID],
   (error, results, fields) =>{
     if(error){
       console.error("db query error", error);
@@ -1125,7 +1139,6 @@ const getCompleteWorkoutLogByDate = async function(req, res){
       const workouts = results.reduce((workoutsAcc, cur) => {
         //finds workouts in the results object
         let workout = workoutsAcc.find(w => w.userWorkoutTable_id === cur.userWorkoutTable_id);
-        console.log(cur)
         if (!workout) {//creates a workout object if one does not exist
           workout = {
             userWorkoutTable_id: cur.userWorkoutTable_id,//used to distinguish between workout instances
@@ -1277,6 +1290,7 @@ const logWeight = async function(req, res) {
       });
     }
     else{
+      dailyNutritionTableCalculator();
       res.status(200).json({
         message: "weight log successful",
       });
@@ -1303,7 +1317,6 @@ const getUserWeightLog = async function(req, res) {
       for(let i = 0; i < results.length; i++){
         results[i].dateTimeChanged = results[i].dateTimeChanged.toISOString().split('T')[0];
       }
-      console.log(results)
       res.status(200).json({
         results,
         message:"Successfully fetched user's weight log"

@@ -12,7 +12,6 @@ function LoginPage(props) {
   //Your code to make the site functional goes in this empty space. The 'return()' below is what renders on the page (the html)
   async function handleSubmit(event){
     event.preventDefault();
-    console.log("form submitted");
     const body = {
       username:event.target[0].value,
       password:event.target[1].value,
@@ -21,7 +20,6 @@ function LoginPage(props) {
         const axiosResponse = await axios.post("https://capstone.parkert.dev/backend/login", body, {})
         setResponse(axiosResponse)
         localStorage.setItem('jwt', axiosResponse.data.accessToken);
-        console.log("This is new token " + axiosResponse.data.accessToken);
         props.setLoginEvent(props.loginEvent+1) //This will re-render the homepage.js file, showing profilepage.js instead of loginregister.js
         navigate('/'); //redirects the user to the homepage upon login
     }
@@ -40,6 +38,7 @@ function LoginPage(props) {
           <label>Your username: <input type='text'></input></label>
           <label>Your password: <input type='text'></input></label>
           <button type='submit'>Login</button>
+          <div className='SwapToLogin'><p>Don't have an account?</p><p className='SwapLink' onClick={()=>{props.setLoginRegisterBoolean(false)}}>Sign up</p></div>
         </form>
     </div>
   );

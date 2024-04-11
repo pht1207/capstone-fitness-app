@@ -8,6 +8,7 @@ function WorkoutLogComponent(props) {
   const [workoutLog, setWorkoutLog] = useState([]);
   const [selectedWorkout, setSelectedWorkout] = useState(null);
 
+  //This useEffect is used to get workoutlogs from the database for the selected date
   useEffect(() => {
     const getWorkouts = async () => {
       try {
@@ -21,21 +22,14 @@ function WorkoutLogComponent(props) {
             },
           }
         );
-        console.log("API Response:", response.data); // Log the response data
         setWorkoutLog(response.data);
       } catch (error) {
         console.error("Error - Cannot get workouts: ", error);
       }
     };
     getWorkouts();
-  }, [props.date]); // Ensure useEffect updates when props.date changes
+  }, [props.date, props.loggedWorkout]); // Ensure useEffect updates when props.date changes
 
-  const handleWorkoutClick = (workout) => {
-    setSelectedWorkout(workout);
-  };
-  const handleExitClick = () => {
-    setSelectedWorkout(null); // Clear selected workout
-  };
 
   return (
     <div className="workout-log">
@@ -49,28 +43,21 @@ function WorkoutLogComponent(props) {
           </tr>
         </thead>
         <tbody>
+          {/* Maps each workout that has been returned from the useEffect above */}
           {workoutLog.map((workout, workoutIndex) => (
-            <tr key={workoutIndex} onClick={() => handleWorkoutClick(workout)}>
+            <tr key={workoutIndex} onClick={() => setSelectedWorkout(workout)} className="workoutTableRow">
               <td>{workout.workoutName}</td>
               <td>{workout.duration}</td>
               <td>{workout.date.substring(0, 10)}</td>
               <td>{workout.rating}</td>
-              {console.log(
-                "Duration for workout",
-                workout.workoutName,
-                "is",
-                workout.duration,
-                "and workout date is ",
-                workout.date
-              )}
             </tr>
           ))}
         </tbody>
       </table>
-
+      {/*This section is used to display additional information about the exercise if the user clicks on it */}
       {selectedWorkout && (
         <div className="selected-workout-details">
-          <button onClick={handleExitClick}>Exit</button> {/* Exit button */}
+          <button onClick={()=>{setSelectedWorkout(null)}}>Exit</button> {/* Exit button */}
           <h3>Selected Workout Details</h3>
           <div className="WorkoutLogItem">
             {selectedWorkout.exercises.map((exercise, exerciseIndex) => (

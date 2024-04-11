@@ -1,0 +1,54 @@
+.ViewProfile{
+    display: flex;
+    flex-direction: row;
+    width: 80%;
+    height: fit-content;
+    align-items: start;
+    justify-content: start;
+    height: fit-content;
+    min-height: 40%;
+    margin-top:1em;
+}
+.ViewProfile p{
+    font-size: large;
+}
+.ViewProfile .LeftColumn{
+    padding-top:1em;
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    justify-content:start;
+    align-items: center;
+    background-color: rgba(245, 245, 245);
+
+
+}
+.ViewProfile .LeftColumn figure img{
+    width: 100%;
+}
+.ViewProfile .LeftColumn figure, .ViewProfile .LeftColumn p{
+    height: fit-content;
+    width: 100%;
+}
+
+
+
+
+
+
+.ViewProfile .RightColumn{
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    background-color: rgba(245, 245, 245);
+}
+
+.ViewProfile .RightColumn .RightColumnRow{
+    width: 80%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+

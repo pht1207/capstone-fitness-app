@@ -99,7 +99,9 @@
   text-align: center;
   line-height: 100%;
 }
-
+.WorkoutLog .PageChanger p{
+  margin:0;
+}
 
 
 

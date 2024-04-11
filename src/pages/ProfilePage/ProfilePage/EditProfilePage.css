@@ -1,0 +1,62 @@
+.EditProfile{
+    display: flex;
+    flex-direction: row;
+    width: 80%;
+    height: fit-content;
+    align-items: start;
+    justify-content: start;
+    height: fit-content;
+    min-height: 40%;
+    margin-top:1em;
+}
+.EditProfile p{
+    font-size: large;
+    margin:0;
+}
+
+.HeightChanger input{
+    width: 25%;
+}
+
+.EditProfile .EditProfileColumn{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    background-color: rgba(245, 245, 245);
+    padding:1em
+}
+
+.EditProfile .EditProfileColumn .EditProfileRow{
+    width: 80%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.EditProfile .EditProfileColumn .EditProfileRow p{
+    width: 75%;
+    text-align: left;
+    align-self: center;
+}
+.EditProfileRow label{
+    border-width: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.EditProfileRow label, .EditProfileRow input, .EditProfileRow select{
+    width: 25%;
+}
+
+
+
+
+
+.NotificationsSwitch{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+}

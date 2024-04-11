@@ -7,3 +7,7 @@
 .LoginRegisterPage label{
     margin:1em
 }
+
+button:hover{
+    cursor: pointer;
+}
