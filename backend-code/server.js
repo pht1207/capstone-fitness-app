@@ -523,6 +523,7 @@ const logNutrition = async function(req, res) {
 
 
 const getUserNutritionLog = async function(req, res) {
+  await dailyNutritionTableCalculator();
   const dateAccessed = req.query.dateAccessed;
   const userID = req.user.id;
 
