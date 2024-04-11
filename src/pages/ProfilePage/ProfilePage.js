@@ -184,8 +184,10 @@ function flipDate (){
   return (
     editProfileClicked ? (
     <div className="ProfilePage">
+            <h1>PROFILE</h1>
+
       <section>
-      <br></br>
+
         <div className="UserI">
           <div><p>First Name:</p><p>{firstname}</p></div>
           <div><p>Last Name:</p><p>{lastname}</p></div>
@@ -202,7 +204,7 @@ function flipDate (){
 
         <div className="UserI">
           <div><p>Height:</p><p>{feet} feet {inches} inches</p></div>
-          <div><p>Weight:</p><p>{weight} </p></div>
+          <div><p>Weight:</p><p>{weight} Lb.</p></div>
         </div>
 
         <div className="UserI">
@@ -233,7 +235,7 @@ function flipDate (){
           </div>
   
           <div className="UserI">
-            <div><p>Password:</p><input type={passwordShow?('password'):('text')} name='password' defaultValue={savedPassword} onChange={(event)=>{setPassword(event.target.value)}}/><button type='button' onClick={passwordShowClickled}>show</button></div>
+            <div><p>Password:</p><input type={passwordShow?('password'):('text')} name='password' defaultValue={savedPassword} onChange={(event)=>{setPassword(event.target.value)}}/><button type='button' onClick={passwordShowClickled}>{passwordShow?'show':'hide'}</button></div>
             <div><p>Date of Birth:</p><input type="date" id='DOB' Value={DOB} onChange={(event)=>{setDOB(event.target.value)}}/></div>
           </div>
   

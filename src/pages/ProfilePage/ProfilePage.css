@@ -5,6 +5,7 @@
     min-width:33em;
     width: 50%;
   }
+  
 /*Profile data alignment and style*/
 .ProfilePage .UserI {
     border: solid .05em;
@@ -29,7 +30,7 @@
 }
 
 .ProfilePage .UserI div p:nth-child(2){
-    color: rgb(255, 65, 65);
+    color: rgb(52, 37, 255);
 }
 
 .ProfilePage .UserI div {
