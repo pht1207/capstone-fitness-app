@@ -36,22 +36,20 @@ function EditProfile(props) {
   const [goal, setGoal] = useState("1");
   const [DOB, setDOB] = useState("");
   const [notificationsOn, setNotificationsOn] = useState(false);
-
   const [feet, setFeet] = useState("")
   const [inches, setInches] = useState("")
-  const [disablesave, setDisablesave] = useState(false)
   const [cancel, setCancel] = useState(false)
 
 
   async function updateProfileFormSubmit(event){
     event.preventDefault();//This prevents the page from reloading right when you submit
     try{
-        setDisablesave(true)
         let body = {  
         email: email,
         username: username,
         firstName: firstname,
         lastName: lastname,
+        weight: Number(weight),
         goal:goal,
         DOB: DOB,
         height: (feet*12)+inches,

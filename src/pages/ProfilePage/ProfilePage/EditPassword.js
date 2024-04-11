@@ -46,7 +46,7 @@ function passwordShowClickled(){
   return (
     <div className="EditPassword">
       <h1>Change Password</h1>
-        <div className='EditPasswordRow'><p>Password:</p><input type={passwordShow?('password'):('text')} name='password' onChange={(event)=>{setPassword(event.target.value)}}/><button type='button' onClick={passwordShowClickled}>show</button></div>
+        <div className='EditPasswordRow'><p>Password:</p><input type={passwordShow?('password'):('text')} name='password' onChange={(event)=>{setPassword(event.target.value)}}/><button type='button' onClick={passwordShowClickled}>{passwordShow?'show':'hide'}</button></div>
         <div className='ButtonContainerForProfileView'>
             <button type='submit' onClick={updateProfileFormSubmit}>Save</button>
             <button type='button' onClick={()=>{props.setProfileView("view")}}>Cancel</button>
