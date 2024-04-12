@@ -132,11 +132,11 @@ function BeginnerHome(props) {
             description2={
               "The primary muscles are the chest, shoulders, and triceps."
             }
-            link1 ={"https://youtu.be/SJs956cQ7Vs?si=D-vJKRnjYBbZK2dM"} // Add your link here
+            link1 ={"https://youtu.be/SJs956cQ7Vs?si=D-vJKRnjYBbZK2dM"} 
             exercise1Header={"Dumbell Press"}
-            link2 ={"https://youtu.be/8urE8Z8AMQ4?si=UFYtX6bLawsuD_Vi"} // Add your link here
+            link2 ={"https://youtu.be/8urE8Z8AMQ4?si=UFYtX6bLawsuD_Vi"} 
             exercise2Header={"Incline Smith Machine Press"}
-            link3 ={"https://youtu.be/QLhZkUhWFJs?si=481MvRiTT4EZUpkr"} // Add your link here
+            link3 ={"https://youtu.be/QLhZkUhWFJs?si=481MvRiTT4EZUpkr"} 
             exercise3Header={"Dumbell Shoulder Press"}
             link4 ={"https://youtu.be/8cNUvKQqvAU?si=vCQhBLDWWUBOupEo"}
             exercise4Header={"Dumbbell Lateral Raise"}
@@ -151,11 +151,11 @@ function BeginnerHome(props) {
             description2={
               "The primary muscles are the back, shoulders, and the biceps."
             }
-            link1={"https://youtu.be/0UBRfiO4zDs?si=JZ7OXLWmbou1fOKX"} // Add your link here
+            link1={"https://youtu.be/0UBRfiO4zDs?si=JZ7OXLWmbou1fOKX"} 
             exercise1Header={"Chest Supported Row"}
-            link2={"https://youtu.be/YCKPD4BSD2E?si=qCS2JWLsWEZJLZXO"} // Add your link here
+            link2={"https://youtu.be/YCKPD4BSD2E?si=qCS2JWLsWEZJLZXO"} 
             exercise2Header={"Lat Pulldowns"}
-            link3={"https://youtu.be/UCXxvVItLoM?si=WzKi414xYOK3IoVm"} // Add your link here
+            link3={"https://youtu.be/UCXxvVItLoM?si=WzKi414xYOK3IoVm"} 
             exercise3Header={"Neutral Grip Row"}
             link4 ={"https://youtu.be/5YK4bgzXDp0?si=GNWpoSOyJei9HrMf"}
             exercise4Header={"Reverse Pec Dec Fly"}
