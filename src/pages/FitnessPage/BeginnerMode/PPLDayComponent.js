@@ -11,20 +11,30 @@ function PPLDayComponent(props) {
             <p>{props.description2}</p>
         </div>
         <div className='ExercisePictureRow'>
-            <figure>
-                <img src={props.image1src}></img>
-                <figcaption>{props.image1Header}</figcaption>
-            </figure>
+        <figure>
+          <p>{props.exercise1Header}</p>
+          <a href={props.link1} target="_blank" rel="noopener noreferrer">Tutorial</a>
+        </figure>
 
-            <figure>
-                <img src={props.image2src}></img>
-                <figcaption>{props.image2Header}</figcaption>
-            </figure>
+        <figure>
+          <p>{props.exercise2Header}</p>
+          <a href={props.link2} target="_blank" rel="noopener noreferrer">Tutorial</a>
+        </figure>
 
-            <figure>
-                <img src={props.image3src}></img>
-                <figcaption>{props.image3Header}</figcaption>
-            </figure>
+        <figure>
+          <p>{props.exercise3Header}</p>
+          <a href={props.link3} target="_blank" rel="noopener noreferrer">Tutorial</a>
+        </figure>
+
+        <figure>
+          <p>{props.exercise4Header}</p>
+          <a href={props.link4} target="_blank" rel="noopener noreferrer">Tutorial</a>
+        </figure>
+
+        <figure>
+          <p>{props.exercise5Header}</p>
+          <a href={props.link5} target="_blank" rel="noopener noreferrer">Tutorial</a>
+        </figure>
         </div>
   </div>  
 );
