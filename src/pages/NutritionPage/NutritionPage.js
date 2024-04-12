@@ -5,7 +5,7 @@ import NutrientContainer from './NutrientContainer';
 import LogNutritionForm from './LogNutritionForm'
 import { HttpPopupContext } from '../../components/HttpPopupContext';
 
-function NutritionPage() {
+function NutritionPage(props) {
 
   const [nutritionLog, setNutritionLog] = useState({ proteinConsumed:"0", carbsConsumed:"0", fatsConsumed:"0"});
   const [nutritionGoal, setNutritionGoal] = useState({ proteinGoal:"0", carbsGoal:"0", fatsGoal:"0"});
@@ -100,39 +100,44 @@ function NutritionPage() {
   },[])
 
   return (
+    <>
+    {!props.isJWTExpired ? 
     <div className="NutritionPage">
-      
       <div className='NutritionPageTopRow'>
-
-        <div className='NutritionPageTopRowGoal'>
-          <div><p>Calories Needed:</p> <p>{nutritionGoal.caloriesGoal}</p></div>
-          <div><p>Calories Consumed:</p> <p>{nutritionLog.caloriesConsumed}</p></div>
-        </div>
-
-        <div className='NutritionPageTopRowMiddle'>
-          <input type='date' onChange={((event)=>setDate(event.target.value))} defaultValue={date} max={currentDate} min={minDate}></input>
-          <button onClick={(()=> setShowLogNutritionForm(!showlogNutritionForm))}>Log Nutrition</button>
-        </div>
         
-        <div className='NutritionPageTopRowWeight'>
-          <div><p>Your Goal:</p> <p>{goal}</p></div>
-          <div><p>Latest Weight:</p> <p>{weight}</p></div>
+          <div className='NutritionPageTopRowGoal'>
+            <div><p>Calories Needed:</p> <p>{nutritionGoal.caloriesGoal}</p></div>
+            <div><p>Calories Consumed:</p> <p>{nutritionLog.caloriesConsumed}</p></div>
+          </div>
+
+          <div className='NutritionPageTopRowMiddle'>
+            <input type='date' onChange={((event)=>setDate(event.target.value))} defaultValue={date} max={currentDate} min={minDate}></input>
+            <button onClick={(()=> setShowLogNutritionForm(!showlogNutritionForm))}>Log Nutrition</button>
+          </div>
+          
+          <div className='NutritionPageTopRowWeight'>
+            <div><p>Your Goal:</p> <p>{goal}</p></div>
+            <div><p>Latest Weight:</p> <p>{weight}</p></div>
+          </div>
+
         </div>
 
-      </div>
-
-        {/*This block of code below hides or shows information on the page depending on if the button coded above has been clicked */}
-        {
-          showlogNutritionForm ? 
-            <LogNutritionForm date={date} setShowLogNutritionForm={setShowLogNutritionForm}/> 
-          : 
-          <div className='NutritionContainerRow'>
-            <NutrientContainer containerName="Protein" goalValue={nutritionGoal.proteinGoal} remainingValue={1} loggedCount={nutritionLog.proteinConsumed} backgroundColor={"rgb(255,204,204)"}/>
-            <NutrientContainer containerName="Carbs" goalValue={nutritionGoal.carbsGoal} loggedCount={nutritionLog.carbsConsumed} backgroundColor={"rgb(204,255,204)"}/>
-            <NutrientContainer containerName="Fats" goalValue={nutritionGoal.fatsGoal} remainingValue={1} loggedCount={nutritionLog.fatsConsumed} backgroundColor={"rgb(204,255,255)"}/>
-          </div>
-        }
+          {/*This block of code below hides or shows information on the page depending on if the button coded above has been clicked */}
+          {
+            showlogNutritionForm ? 
+              <LogNutritionForm date={date} setShowLogNutritionForm={setShowLogNutritionForm}/> 
+            : 
+            <div className='NutritionContainerRow'>
+              <NutrientContainer containerName="Protein" goalValue={nutritionGoal.proteinGoal} remainingValue={1} loggedCount={nutritionLog.proteinConsumed} backgroundColor={"rgb(255,204,204)"}/>
+              <NutrientContainer containerName="Carbs" goalValue={nutritionGoal.carbsGoal} loggedCount={nutritionLog.carbsConsumed} backgroundColor={"rgb(204,255,204)"}/>
+              <NutrientContainer containerName="Fats" goalValue={nutritionGoal.fatsGoal} remainingValue={1} loggedCount={nutritionLog.fatsConsumed} backgroundColor={"rgb(204,255,255)"}/>
+            </div>
+          }
     </div>
+      :
+      <h1>Login or create an account to view the contents of this page</h1>
+      }
+    </>
   );
 }
 

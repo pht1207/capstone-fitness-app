@@ -421,7 +421,7 @@ const getProfileData = async function(req, res){
     'INNER JOIN goalTable ON user_goalTable.goalTable_id = goalTable.goalTable_id '+ //Gets the rows from goalTable where goalTable_id matches both tables
     'LEFT JOIN userWeightTable  ON userTable.userTable_id = userWeightTable.userTable_id ' +
     'WHERE userTable.userTable_id = ? ' + //filter all results to only show if they match the usertable_id in the request
-    'ORDER BY userWeightTable.dateTimeChanged DESC LIMIT 1',
+    'ORDER BY userWeightTable.dateTimeChanged ASC LIMIT 1',
     [userID],
     (error, results, fields) =>{
       if(error){
@@ -523,6 +523,7 @@ const logNutrition = async function(req, res) {
 
 
 const getUserNutritionLog = async function(req, res) {
+  await dailyNutritionTableCalculator();
   const dateAccessed = req.query.dateAccessed;
   const userID = req.user.id;
 
@@ -1313,7 +1314,6 @@ const getUserWeightLog = async function(req, res) {
       res.status(500).send("Error fetching weight log from database");
     }
     else{
-
       for(let i = 0; i < results.length; i++){
         results[i].dateTimeChanged = results[i].dateTimeChanged.toISOString().split('T')[0];
       }

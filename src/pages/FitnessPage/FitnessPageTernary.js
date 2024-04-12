@@ -1,7 +1,7 @@
 import React,{useEffect, useState} from 'react';
 import AdvancedFitness from './AdvancedMode/AdvancedFitness';
 import BeginnerHome from './BeginnerMode/BeginnerHome';
-function FitnessPageTernary() {
+function FitnessPageTernary(props) {
     //If there isn't a beginnerboolean set, set ti to true
     useEffect(()=>{
       if(localStorage.getItem("beginnerBoolean") === null){
@@ -16,8 +16,16 @@ function FitnessPageTernary() {
     },[isBeginner])
 
   return (
-    <>  {/* Shows beginnermode or advanced mode depending ont he value of isbeginner */}
-        {isBeginner ? <BeginnerHome setIsBeginner={setIsBeginner}/> : <AdvancedFitness setIsBeginner={setIsBeginner}/>}
+    <>
+    {!props.isJWTExpired ? 
+      <>  {/* Shows beginnermode or advanced mode depending ont he value of isbeginner */}
+          {isBeginner ? <BeginnerHome setIsBeginner={setIsBeginner}/> : <AdvancedFitness setIsBeginner={setIsBeginner}/>}
+      </>
+    :
+      <>
+        <h1>Login or create an account to view the contents of this page</h1>
+      </>
+    }
     </>
   );
 }

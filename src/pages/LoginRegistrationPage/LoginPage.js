@@ -36,7 +36,7 @@ function LoginPage(props) {
         <form className='LoginForm' onSubmit={handleSubmit}>
           <h3>Login Here</h3>
           <label>Your username: <input type='text'></input></label>
-          <label>Your password: <input type='text'></input></label>
+          <label>Your password: <input type='password'></input></label>
           <button type='submit'>Login</button>
           <div className='SwapToLogin'><p>Don't have an account?</p><p className='SwapLink' onClick={()=>{props.setLoginRegisterBoolean(false)}}>Sign up</p></div>
         </form>

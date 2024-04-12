@@ -74,7 +74,7 @@ function RegisterPage(props) {
           <h3>Register Here</h3>
           <label>Email: <input type='text' onChange={(e)=>{setEmail(e.target.value)}}></input></label>
           <label>Your username: <input type='text' onChange={(e)=>{setUsername(e.target.value)}}></input></label>
-          <label>Your password: <input type='text' onChange={(e)=>{setPassword(e.target.value)}}></input></label>
+          <label>Your password: <input type='password' onChange={(e)=>{setPassword(e.target.value)}}></input></label>
           <label>Your first name: <input type='text' onChange={(e)=>{setFirstname(e.target.value)}}></input></label>
           <label>Your last name: <input type='text' onChange={(e)=>{setLastname(e.target.value)}}></input></label>
           <label>Your date of birth: <input type='date' onChange={(e)=>{setDOB(e.target.value)}}></input></label>
