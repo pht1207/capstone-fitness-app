@@ -70,10 +70,9 @@ function App() {
             </nav>
 
             <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/FitnessPageTernary" element={<FitnessPageTernary />} />
-                <Route path="/NutritionPage" element={<NutritionPage />} />
-                {/*<Route path="/ProfilePage" element={<ProfilePage />} />*/}
+                <Route path="/" element={<HomePage isJWTExpired={isJWTExpired}/>} />
+                <Route path="/FitnessPageTernary" element={<FitnessPageTernary isJWTExpired={isJWTExpired}/>} />
+                <Route path="/NutritionPage" element={<NutritionPage isJWTExpired={isJWTExpired} />} />
                 <Route path="/ProfilePage" element={<ProfilePage  loginEvent= {loginEvent} setLoginEvent={setLoginEvent}/>} />
                 <Route path="/LoginRegisterPage" element={<LoginRegisterPage loginEvent= {loginEvent} setLoginEvent={setLoginEvent}/>} />
             </Routes>
