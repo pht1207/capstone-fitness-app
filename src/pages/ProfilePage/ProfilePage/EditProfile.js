@@ -17,7 +17,6 @@ function EditProfile(props) {
     username: "",
     email: "",
     height: "",
-    weight: "",
     goal: "1",
     DOB: "",
     notificationsOn: false
@@ -32,7 +31,6 @@ function EditProfile(props) {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [height, setHeight] = useState("");
-  const [weight, setWeight] = useState("");
   const [goal, setGoal] = useState("1");
   const [DOB, setDOB] = useState("");
   const [notificationsOn, setNotificationsOn] = useState(false);
@@ -49,7 +47,6 @@ function EditProfile(props) {
         username: username,
         firstName: firstname,
         lastName: lastname,
-        weight: Number(weight),
         goal:goal,
         DOB: DOB,
         height: (feet*12)+inches,
@@ -100,7 +97,6 @@ function EditProfile(props) {
     setUsername(userData.username);
     setEmail(userData.email);
     setHeight(userData.height);
-    setWeight(userData.userWeight);
     setGoal(goalNumberSet(userData))
     setDOB(userData.DOB.substring(0,10))
     setNotificationsOn(Number(userData.notificationsOn))
@@ -136,7 +132,6 @@ function EditProfile(props) {
         <div className='EditProfileRow'><p>Date of Birth:</p><input type="date" id='DOB' defaultValue={DOB} onChange={(event)=>{setDOB(event.target.value)}}/></div>
 
         <div className='EditProfileRow'><p>Height:</p><label className='HeightChanger'><input type='text' name='feet' onChange={(event)=>{setFeet(event.target.value)}} defaultValue={feet}/><p>ft.</p><input type='text' name='inches' onChange={(event)=>{setInches(event.target.value)}} defaultValue={inches}/><p>in.</p></label></div>
-        <div className='EditProfileRow'><p>Weight:</p><input type='text' name='Weight' onChange={(event)=>{setWeight(event.target.value)}} defaultValue={weight}/></div>
 
         <div className='EditProfileRow'>
             <p>Goal:</p>
