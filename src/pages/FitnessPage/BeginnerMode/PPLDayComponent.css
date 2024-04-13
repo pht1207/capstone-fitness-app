@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 30%;
+    height: fit-content;
     border-style: solid;
 }
 .ExerciseDescription{
@@ -30,16 +30,5 @@ figure {
     flex-direction: column;
     width: 20%;
     height: 100%;
-}
-figcaption{
-    display: block;
-    height: 20%;
-    flex: 0 0 auto;
-    text-align: center;
-
-}
-img {
-    height: 80%;
-    width: 100%;
-    object-fit: contain;
+    justify-content: end;
 }
