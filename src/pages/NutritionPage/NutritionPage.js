@@ -112,7 +112,11 @@ function NutritionPage(props) {
 
           <div className='NutritionPageTopRowMiddle'>
             <input type='date' onChange={((event)=>setDate(event.target.value))} defaultValue={date} max={currentDate} min={minDate}></input>
+            {showlogNutritionForm ? 
+            <button onClick={(()=> setShowLogNutritionForm(!showlogNutritionForm))}>Exit</button>
+            :
             <button onClick={(()=> setShowLogNutritionForm(!showlogNutritionForm))}>Log Nutrition</button>
+            }
           </div>
           
           <div className='NutritionPageTopRowWeight'>

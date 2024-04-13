@@ -50,6 +50,7 @@ const {setResponse} = useContext(HttpPopupContext);
         <label>Carbs Consumed: <input type='number' defaultValue={carbsConsumed} onChange={(event)=>{setCarbsConsumed(event.target.value)}}/></label>
         <label>Fats Consumed: <input type='number' defaultValue={fatsConsumed} onChange={(event)=>{setFatsConsumed(event.target.value)}}/></label>
         <button>Submit</button>
+        <br/>
 
       </form>
     </div>
