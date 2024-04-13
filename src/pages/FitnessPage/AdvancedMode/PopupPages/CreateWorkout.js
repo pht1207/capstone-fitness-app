@@ -88,7 +88,7 @@ function CreateWorkout(props) {
                                 <>
                                     {createdWorkoutContent.exercises.map((object, index) =>(
                                         <div key={index} className="CreatedWorkoutContentElement" onClick={()=>{console.log("implement feature to remove me on click later")}}>
-                                            <p>{index}: {object}</p>
+                                            <p>{object}</p>
                                         </div>
                                         
                                     ))}
